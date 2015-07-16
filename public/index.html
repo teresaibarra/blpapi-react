@@ -12,22 +12,23 @@
   <body>
     <div id="content"></div>
     <script type="text/jsx">
+
+
 		var MainPage = React.createClass({
 			getInitialState: function() {
 				return {
-					receivedData: "null"
+					receivedData: ""
 				};
 			},
 			componentDidMount: function() {
-				this.postData();
+
 			},
-			postData: function() {
-				var myJSONObject = { "securities": ["AAPL US Equity"],"fields": ["LAST_PRICE"]};
+			handleQuerySubmit: function(query) {
 				return(
 				$.ajax({
 				    url: 'http://localhost:3000/request?ns=blp&service=refdata&type=ReferenceDataRequest', //URL to hit
 				    type: 'POST', 
-				    data: JSON.stringify(myJSONObject),
+				    data: JSON.stringify(query),
 				    success: function(data) {
 				    	console.log(JSON.stringify(data));
 				    	this.setState({receivedData: JSON.stringify(data)});
@@ -40,24 +41,69 @@
 			render: function() {
 				return(
 					<div>
-					<h1> Hello world! </h1>
+					<h1> Hello there! </h1>
 					<h3> What would you like to look at? </h3>
+					<QueryForm onQuerySubmit={this.handleQuerySubmit} />
 					<ReturnInfo data={this.state.receivedData} />
 					</div>
 				);
 			}
 		});
+
+
 		var ReturnInfo = React.createClass({
 			render: function(){
+				var jsonString = this.props.data;
+	
 				return (
 					<div className="returnInfo">
 						<h4 className="data">
-						{this.props.data}
+						{
+							//TO-DO: change from hardcoded "security" to entered fields
+							jsonString.substring(jsonString.indexOf('"security":'), jsonString.indexOf(",")).replace(/"/g,"").replace(/:/g, ": ")
+						}
+						<br />
+						{
+							// TO-DO: change from hardcoded "last_price" to entered fields
+							jsonString.substring(jsonString.indexOf('"last_price":'), jsonString.indexOf("}}]}],")).replace(/"/g,"").replace(/:/g, ": ").replace(/_/g, " ")
+						}
 						</h4>
 					</div>
 				)
 			}
 		});
+
+
+		var QueryForm = React.createClass({
+			handleSubmit: function(e) {
+				e.preventDefault();
+				var securities = React.findDOMNode(this.refs.securities).value.trim();
+				var fields = React.findDOMNode(this.refs.fields).value.trim();
+				if(!securities || !fields)
+				{
+					return;
+				}
+
+				console.log({securities: [securities], fields: [fields]});
+				this.props.onQuerySubmit({securities: [securities], fields: [fields]});
+
+				React.findDOMNode(this.refs.securities).value = "";
+				React.findDOMNode(this.refs.fields).value = "";
+				return;
+			},
+			render: function() {
+				return(
+					<form className="queryForm" onSubmit={this.handleSubmit}>
+					<input type="text" placeholder="Enter seecurities here." ref="securities" />
+					<input type="text" placeholder="Enter fields here." ref="fields" />
+					<input type="submit" value="Post!" />
+					</form>
+				);
+				
+			}
+		});
+
+
 		React.render(
 		<MainPage />,
 		document.body
