@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hello React!</title>
+    <!-- Not present in the tutorial. Just for basic styling. -->
+    <link rel="stylesheet" href="css/base.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+  </head>
+  <body>
+    <div id="content"></div>
+    <script type="text/jsx">
+		var MainPage = React.createClass({
+			getInitialState: function() {
+				return {
+					receivedData: "null"
+				};
+			},
+			componentDidMount: function() {
+				this.postData();
+			},
+			postData: function() {
+				var myJSONObject = { "securities": ["AAPL US Equity"],"fields": ["LAST_PRICE"]};
+				return(
+				$.ajax({
+				    url: 'http://localhost:3000/request?ns=blp&service=refdata&type=ReferenceDataRequest', //URL to hit
+				    type: 'POST', 
+				    data: JSON.stringify(myJSONObject),
+				    success: function(data) {
+				    	console.log(JSON.stringify(data));
+				    	this.setState({receivedData: JSON.stringify(data)});
+				      }.bind(this),
+				    error: function(xhr, status, err) {
+				        console.error(this.props.url, status, err.toString());
+				      }.bind(this)
+			     }))
+			},
+			render: function() {
+				return(
+					<div>
+					<h1> Hello world! </h1>
+					<h3> What would you like to look at? </h3>
+					<ReturnInfo data={this.state.receivedData} />
+					</div>
+				);
+			}
+		});
+		var ReturnInfo = React.createClass({
+			render: function(){
+				return (
+					<div className="returnInfo">
+						<h4 className="data">
+						{this.props.data}
+						</h4>
+					</div>
+				)
+			}
+		});
+		React.render(
+		<MainPage />,
+		document.body
+		);
+
+    </script>
+  </body>
+</html>
