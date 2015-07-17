@@ -17,7 +17,7 @@
 		var MainPage = React.createClass({
 			getInitialState: function() {
 				return {
-					receivedData: ""
+					receivedData: undefined
 				};
 			},
 			componentDidMount: function() {
@@ -31,7 +31,7 @@
 				    data: JSON.stringify(query),
 				    success: function(data) {
 				    	console.log(JSON.stringify(data));
-				    	this.setState({receivedData: JSON.stringify(data)});
+				    	this.setState({receivedData: data});
 				      }.bind(this),
 				    error: function(xhr, status, err) {
 				        console.error(this.props.url, status, err.toString());
@@ -53,20 +53,26 @@
 
 		var ReturnInfo = React.createClass({
 			render: function(){
-				var jsonString = this.props.data;
-	
+				var object = this.props.data;
+				var returnedString;
+				if(object) {
+					var secData = object.data[0].securityData;
+					returnedString = secData.map(function (sec) {
+						var s = [];
+						s.push(<h4> {sec.security} </h4>)
+						for (var j in sec.fieldData)
+						{
+							s.push(<h5> {j.trim() + ": " + sec.fieldData[j]} </h5>);
+						}
+						return (
+							{s}
+						);
+					});
+				}
 				return (
 					<div className="returnInfo">
 						<h4 className="data">
-						{
-							//TO-DO: change from hardcoded "security" to entered fields
-							jsonString.substring(jsonString.indexOf('"security":'), jsonString.indexOf(",")).replace(/"/g,"").replace(/:/g, ": ")
-						}
-						<br />
-						{
-							// TO-DO: change from hardcoded "last_price" to entered fields
-							jsonString.substring(jsonString.indexOf('"last_price":'), jsonString.indexOf("}}]}],")).replace(/"/g,"").replace(/:/g, ": ").replace(/_/g, " ")
-						}
+							{returnedString}
 						</h4>
 					</div>
 				)
@@ -83,18 +89,23 @@
 				{
 					return;
 				}
-
-				console.log({securities: [securities], fields: [fields]});
-				this.props.onQuerySubmit({securities: [securities], fields: [fields]});
-
+				securities = securities.split(",");
+				fields = fields.split(",");
+				securities.forEach(function (sec) {
+					sec = sec.trim();
+				});
+				fields.forEach(function (fld){
+					fld = fld.trim();
+				})
+				this.props.onQuerySubmit({securities: securities, fields: fields});
 				React.findDOMNode(this.refs.securities).value = "";
 				React.findDOMNode(this.refs.fields).value = "";
-				return;
+				return;					
 			},
 			render: function() {
 				return(
 					<form className="queryForm" onSubmit={this.handleSubmit}>
-					<input type="text" placeholder="Enter seecurities here." ref="securities" />
+					<input type="text" placeholder="Enter securities here." ref="securities" />
 					<input type="text" placeholder="Enter fields here." ref="fields" />
 					<input type="submit" value="Post!" />
 					</form>
