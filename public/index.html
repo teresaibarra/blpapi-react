@@ -23,10 +23,10 @@
 			componentDidMount: function() {
 
 			},
-			handleQuerySubmit: function(query) {
+			handleQuerySubmit: function(query, service, type) {
 				return(
 				$.ajax({
-				    url: 'http://localhost:3000/request?ns=blp&service=refdata&type=ReferenceDataRequest', //URL to hit
+				    url: 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type, //URL to hit
 				    type: 'POST', 
 				    data: JSON.stringify(query),
 				    success: function(data) {
@@ -83,9 +83,11 @@
 		var QueryForm = React.createClass({
 			handleSubmit: function(e) {
 				e.preventDefault();
+				var service = React.findDOMNode(this.refs.service).value.trim();
+				var type = React.findDOMNode(this.refs.type).value.trim();
 				var securities = React.findDOMNode(this.refs.securities).value.trim();
 				var fields = React.findDOMNode(this.refs.fields).value.trim();
-				if(!securities || !fields)
+				if(!service || !type || !securities || !fields)
 				{
 					return;
 				}
@@ -97,7 +99,9 @@
 				fields.forEach(function (fld){
 					fld = fld.trim();
 				})
-				this.props.onQuerySubmit({securities: securities, fields: fields});
+				this.props.onQuerySubmit({securities: securities, fields: fields}, service, type);
+				React.findDOMNode(this.refs.service).value = "";
+				React.findDOMNode(this.refs.type).value = "";
 				React.findDOMNode(this.refs.securities).value = "";
 				React.findDOMNode(this.refs.fields).value = "";
 				return;					
@@ -105,6 +109,8 @@
 			render: function() {
 				return(
 					<form className="queryForm" onSubmit={this.handleSubmit}>
+					<input type="text" placeholder="Enter service here." ref="service" />
+					<input type="text" placeholder="Enter request type here." ref="type" />
 					<input type="text" placeholder="Enter securities here." ref="securities" />
 					<input type="text" placeholder="Enter fields here." ref="fields" />
 					<input type="submit" value="Post!" />
