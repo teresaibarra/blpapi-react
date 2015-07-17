@@ -1,10 +1,11 @@
 body {
   background: #fff;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
   font-size: 15px;
   line-height: 1.7;
   margin: 0;
   padding: 30px;
+  text-align: center;
 }
 
 a {
@@ -27,22 +28,25 @@ code {
 }
 
 h1, h2, h3, h4 {
-  font-weight: bold;
-  margin: 0 0 15px;
   padding: 0;
+  text-align: center;
+  color: #4A4A4A;
 }
 
 h1 {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 3px solid #66A3FF;
+  margin: auto;
   font-size: 2.5em;
   font-weight: bold;
-  margin: 0 0 15px;
-  padding: 0;
+  padding: 6px;
+  letter-spacing: 1.5px;
+  background-color: #CCE0FF;
 }
 
 h2 {
-  border-bottom: 1px solid #eee;
   font-size: 2em;
+  margin-top: 1 auto;
+  margin-bottom: auto;
 }
 
 h3 {
@@ -52,11 +56,51 @@ h3 {
 h4 {
   font-size: 1.2em;
 }
+h5 {
+  margin-top: auto;
+  font-size: 1em;
+}
 
 p, ul {
   margin: 15px 0;
+  text-align: center;
 }
 
 ul {
   padding-left: 30px;
+}
+
+#formbox {
+  width: 250px;
+  height: 30px;
+  font-size: 15px;
+  text-align: center;
+  word-spacing: 2px;
+  letter-spacing: 1.5px;
+  padding: 8px;
+  margin: .5%;
+}
+#submit {
+  font-size: 17px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  width: 100px;
+  border: none;
+  height: 35px;
+  text-align: center;
+  margin: .7%;
+  color: #4C4C4C;
+}
+#security {
+  color: #666666;
+  margin-bottom: 5px;
+}
+#fieldData {
+  color: #808080;
+  margin: 5px;
+}
+#dataTitle {
+  margin-top: 100px;
+  margin-bottom: 20px;
+  text-decoration: underline;
 }

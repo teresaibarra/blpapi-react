@@ -1,23 +1,20 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Hello React!</title>
-    <!-- Not present in the tutorial. Just for basic styling. -->
-    <link rel="stylesheet" href="css/base.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
-  </head>
-  <body>
-    <div id="content"></div>
-    <script type="text/jsx">
-
-
+	<head>
+	<title>Bloomberg API Demo</title>
+	<link rel="stylesheet" href="css/base.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/react.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.0/JSXTransformer.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js"></script>
+	</head>
+	<body>
+	<div id="content"></div>
+	<script type="text/jsx">
 		var MainPage = React.createClass({
 			getInitialState: function() {
 				return {
-					receivedData: undefined
+					receivedData: ""
 				};
 			},
 			componentDidMount: function() {
@@ -30,7 +27,6 @@
 				    type: 'POST', 
 				    data: JSON.stringify(query),
 				    success: function(data) {
-				    	console.log(JSON.stringify(data));
 				    	this.setState({receivedData: data});
 				      }.bind(this),
 				    error: function(xhr, status, err) {
@@ -41,8 +37,9 @@
 			render: function() {
 				return(
 					<div>
-					<h1> Hello there! </h1>
-					<h3> What would you like to look at? </h3>
+					<h1>Bloomberg API Demo</h1>
+					<h2>What would you like to look at?</h2>
+					<h5>Pro-Tip: Separate multiple parameters with commas.</h5>
 					<QueryForm onQuerySubmit={this.handleQuerySubmit} />
 					<ReturnInfo data={this.state.receivedData} />
 					</div>
@@ -55,14 +52,21 @@
 			render: function(){
 				var object = this.props.data;
 				var returnedString;
+				var dataTitle;
 				if(object) {
+					dataTitle = <h2 id="dataTitle"> Returned Data: </h2>
 					var secData = object.data[0].securityData;
 					returnedString = secData.map(function (sec) {
 						var s = [];
-						s.push(<h4> {sec.security} </h4>)
+						s.push(<h3 id="security"> {"SECURITY: " + sec.security.toUpperCase()} </h3>);
 						for (var j in sec.fieldData)
 						{
-							s.push(<h5> {j.trim() + ": " + sec.fieldData[j]} </h5>);
+							var value = j;
+							if (value.indexOf("_") != -1)
+							{
+								value = value.replace(/_/g, " ");
+							}
+							s.push(<h4 id="fieldData"> {value.trim().charAt(0).toUpperCase() + value.trim().slice(1).toLowerCase() + ": " + sec.fieldData[j]} </h4>)
 						}
 						return (
 							{s}
@@ -71,9 +75,10 @@
 				}
 				return (
 					<div className="returnInfo">
-						<h4 className="data">
+						<p className="data">
+							{dataTitle}
 							{returnedString}
-						</h4>
+						</p>
 					</div>
 				)
 			}
@@ -109,11 +114,16 @@
 			render: function() {
 				return(
 					<form className="queryForm" onSubmit={this.handleSubmit}>
-					<input type="text" placeholder="Enter service here." ref="service" />
-					<input type="text" placeholder="Enter request type here." ref="type" />
-					<input type="text" placeholder="Enter securities here." ref="securities" />
-					<input type="text" placeholder="Enter fields here." ref="fields" />
-					<input type="submit" value="Post!" />
+					<input type="text" placeholder="service" ref="service" id="formbox" />
+					<br />
+					<input type="text" placeholder="request type (case-sensitive)" ref="type" id="formbox" />
+					<br />
+					<input type="text" placeholder="securities" ref="securities" id="formbox" />
+					<br />
+					<input type="text" placeholder="fields" ref="fields" id="formbox" />
+					<br />
+					<input type="submit" value="Submit" id="submit" />
+					<br />
 					</form>
 				);
 				
@@ -126,6 +136,6 @@
 		document.body
 		);
 
-    </script>
-  </body>
+	</script>
+	</body>
 </html>
