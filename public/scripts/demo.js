@@ -28,24 +28,25 @@ var MainPage = React.createClass({
 			<h2>What would you like to look at?</h2>
 			<h5>Pro-Tip: Separate multiple parameters with commas.</h5>
 			<QueryForm onQuerySubmit={this.handleQuerySubmit} />
-			<ReturnInfo data={this.state.receivedData} />
+			<ResponseList data={this.state.receivedData} />
 			</div>
 		);
 	}
 });
 
 
-var ReturnInfo = React.createClass({
+
+var ResponseList = React.createClass({
 	render: function(){
 		var object = this.props.data;
-		var returnedString;
+		var responseNodes;
 		var dataTitle;
 		if(object) {
 			dataTitle = <h2 id="dataTitle"> Returned Data: </h2>
 			var secData = object.data[0].securityData;
-			returnedString = secData.map(function (sec) {
-				var s = [];
-				s.push(<h3 id="security"> {"SECURITY: " + sec.security.toUpperCase()} </h3>);
+			responseNodes = secData.map(function (sec) {
+				var info = [];
+				info.push(<h3 id="security"> {"SECURITY: " + sec.security.toUpperCase()} </h3>);
 				for (var j in sec.fieldData)
 				{
 					var value = j;
@@ -53,23 +54,38 @@ var ReturnInfo = React.createClass({
 					{
 						value = value.replace(/_/g, " ");
 					}
-					s.push(<h4 id="fieldData"> {value.trim().charAt(0).toUpperCase() + value.trim().slice(1).toLowerCase() + ": " + sec.fieldData[j]} </h4>)
+					info.push(<h4 id="fieldData"> {value.trim().charAt(0).toUpperCase() + value.trim().slice(1).toLowerCase() + ": " + sec.fieldData[j]} </h4>)
 				}
 				return (
-					{s}
+					<Response info = {info} />
 				);
 			});
 		}
 		return (
-			<div className="returnInfo">
+			<div className="responseList">
 				<p className="data">
 					{dataTitle}
-					{returnedString}
+					{responseNodes}
 				</p>
 			</div>
 		)
 	}
 });
+
+
+
+var Response = React.createClass({
+	render: function(){
+		return(
+			<div className="response">
+				<p className="responseInfo">
+					{this.props.info}
+				</p>
+			</div>
+		);
+	}
+});
+
 
 
 var QueryForm = React.createClass({
@@ -116,6 +132,7 @@ var QueryForm = React.createClass({
 		
 	}
 });
+
 
 
 React.render(
