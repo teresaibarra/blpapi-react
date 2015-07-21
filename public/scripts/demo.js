@@ -89,6 +89,30 @@ var Response = React.createClass({
 
 
 var QueryForm = React.createClass({
+	getInitialState: function() {
+		return {
+			showReqTypes: true,
+			showSecurities: true,
+			showFields: true,
+			showSubmit: true,
+			reqTypeChoice: ""
+		};
+	},
+	handleQueryChoice: function(type) {
+		this.setState({reqTypeChoice: React.findDOMNode(this.refs.service).value.toString() });
+		if (type === "service"){
+			this.setState({showReqTypes: false});
+		}else if (type === "reqType") {
+			this.setState({showSecurities: false});
+		}else if (type === "securities"){
+			this.setState({showFields: false});
+		}else if (type === "fields"){
+			this.setState({showSubmit: false});
+		}else{
+			return;
+		}
+		return;
+	},
 	handleSubmit: function(e) {
 		e.preventDefault();
 		var service = React.findDOMNode(this.refs.service).value.trim();
@@ -115,10 +139,9 @@ var QueryForm = React.createClass({
 		return;					
 	},
 	render: function() {
-
 		return(
 			<form className="queryForm" onSubmit={this.handleSubmit}>
-			<input type="text" list="services" className="service" placeholder="service" ref="service" id="formbox" />
+			<input type="text" list="services" placeholder="service" ref="service" id="formbox" onChange={this.handleQueryChoice.bind(null, "service")} />
 				<datalist id="services">
 					<option value="refdata">Reference Data Service</option>
 					<option value="apiflds">API Field Information Service</option>
@@ -126,20 +149,33 @@ var QueryForm = React.createClass({
 					<option value="instruments">Instruments Service</option>
 				</datalist>
 			<br />
-			<input type="text" list="refTypes" placeholder="request type" ref="type" id="formbox" />
-				<datalist id="refTypes">
+			<input type="text" list={this.state.reqTypeChoice} placeholder="request type" ref="type" id="formbox" disabled={this.state.showReqTypes} onChange={this.handleQueryChoice.bind(null, "reqType")}/>
+				<datalist id="refdata">
+					<option value="ReferenceDataRequest">Reference Data Request</option>
 					<option value="HistoricalDataRequest">Historical Data Request</option>
 					<option value="IntradayTickRequest">Intraday Tick Request</option>
 					<option value="IntradayBarRequest">Intraday Bar Request</option>
 					<option value="PortfolioDataRequest">Portfolio Data Request</option>
 					<option value="BeqsRequest">Beqs Request</option>
 				</datalist>
+			<datalist id="apiflds">
+					<option value="FieldInfoRequest">Field Info Request</option>
+					<option value="FieldSearchRequest">Field Search Request</option>
+					<option value="categorizedFieldSearchRequest">Categorized Field Search Request</option>
+			</datalist>
+			<datalist id="tasvc">
+				<option value="studyRequest">Study Request</option>
+			</datalist>
+			<datalist id="instruments">
+				<option value="InstrumentListRequest">Security Lookup Request</option>
+			</datalist>
+
 			<br />
-			<input type="text" placeholder="securities" ref="securities" id="formbox" />
+			<input type="text" placeholder="securities" ref="securities" id="formbox" disabled={this.state.showSecurities} onChange={this.handleQueryChoice.bind(null, "securities")} />
 			<br />
-			<input type="text" placeholder="fields" ref="fields" id="formbox" />
+			<input type="text" placeholder="fields" ref="fields" id="formbox" disabled={this.state.showFields} onChange={this.handleQueryChoice.bind(null, "fields")} />
 			<br />
-			<input type="submit" value="Submit" id="submit" />
+			<input type="submit" value="Submit" id="submit" disabled={this.state.showSubmit} />
 			<br />
 			</form>
 		);

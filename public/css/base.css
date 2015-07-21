@@ -80,6 +80,9 @@ ul {
   padding: 8px;
   margin: .5%;
 }
+#formbox:disabled {
+  background: #FFECEC;
+}
 #submit {
   font-size: 17px;
   font-weight: bold;
