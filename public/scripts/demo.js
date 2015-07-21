@@ -115,11 +115,25 @@ var QueryForm = React.createClass({
 		return;					
 	},
 	render: function() {
+
 		return(
 			<form className="queryForm" onSubmit={this.handleSubmit}>
-			<input type="text" placeholder="service" ref="service" id="formbox" />
+			<input type="text" list="services" className="service" placeholder="service" ref="service" id="formbox" />
+				<datalist id="services">
+					<option value="refdata">Reference Data Service</option>
+					<option value="apiflds">API Field Information Service</option>
+					<option value="tasvc">Technical Analysis Service</option>
+					<option value="instruments">Instruments Service</option>
+				</datalist>
 			<br />
-			<input type="text" placeholder="request type (case-sensitive)" ref="type" id="formbox" />
+			<input type="text" list="refTypes" placeholder="request type" ref="type" id="formbox" />
+				<datalist id="refTypes">
+					<option value="HistoricalDataRequest">Historical Data Request</option>
+					<option value="IntradayTickRequest">Intraday Tick Request</option>
+					<option value="IntradayBarRequest">Intraday Bar Request</option>
+					<option value="PortfolioDataRequest">Portfolio Data Request</option>
+					<option value="BeqsRequest">Beqs Request</option>
+				</datalist>
 			<br />
 			<input type="text" placeholder="securities" ref="securities" id="formbox" />
 			<br />
@@ -132,6 +146,7 @@ var QueryForm = React.createClass({
 		
 	}
 });
+
 
 
 
