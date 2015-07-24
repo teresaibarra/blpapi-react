@@ -81,8 +81,29 @@ ul {
   margin: .5%;
 }
 #formbox:disabled {
-  background: #FFECEC;
+  background: #FFFFFF;
+  border: #FFFFFF;
+  color: #FFFFFF;
+  opacity: 0;
+
 }
+#formbox:disabled::-webkit-input-placeholder { /* WebKit browsers */
+  color: #FFFFFF;
+  opacity: 0;
+}
+#formbox:disabled:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color: #FFFFFF;
+  opacity: 0;
+}
+#formbox:disabled::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color: #FFFFFF;
+  opacity: 0;
+}
+#formbox:disabled:-ms-input-placeholder { /* Internet Explorer 10+ */
+  color: #FFFFFF;
+  opacity: 0;
+}
+
 #submit {
   font-size: 17px;
   font-weight: bold;
@@ -94,6 +115,14 @@ ul {
   margin: .7%;
   color: #4C4C4C;
 }
+#submit:disabled {
+  background: #FFFFFF;
+  border: #FFFFFF;
+  color: #FFFFFF;
+}
+#dataTitle {
+  text-decoration: underline;
+}
 #security {
   color: #666666;
   margin-bottom: 5px;
@@ -102,8 +131,22 @@ ul {
   color: #808080;
   margin: 5px;
 }
-#dataTitle {
-  margin-top: 100px;
-  margin-bottom: 20px;
-  text-decoration: underline;
+pre {
+  text-align: left;
+}
+#prettyResponse {
+    display:inline-block;
+    margin: 5em;
+    vertical-align: top;
+
+}
+#postBody {
+    display:inline-block;
+    margin: 5em;
+    vertical-align: top;
+}
+#rawResponse {
+    display:inline-block;
+    margin: 5em;
+    vertical-align: top;
 }
