@@ -36,6 +36,11 @@ var QueryForm = React.createClass({
 			this.setState({hideEndDate: true});
 			this.setState({hideSubmit: true});
 
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		    this.refs.startDate.getDOMNode().value = "";
+		    this.refs.endDate.getDOMNode().value = "";
+
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString() }, function(){
 				console.log(this.refs.type.getDOMNode().value.toString())
 
@@ -88,7 +93,7 @@ var QueryForm = React.createClass({
 				<br />
 
 				<input type="text" list={this.state.servTypeChoice} placeholder="request type" ref="type" 
-				id="formbox" disabled={this.state.hideReqTypes} onChange={this.handleRequestChoice}/>
+				id="formbox" hidden={this.state.hideReqTypes} onChange={this.handleRequestChoice}/>
 
 					<datalist id="refdata">
 						<option value="ReferenceDataRequest">Reference Data Request</option>
@@ -115,24 +120,23 @@ var QueryForm = React.createClass({
 
 				<br />
 
-				<input type="text" placeholder="securities" ref="securities" id="formbox" 
-				disabled={this.state.hideSecurities}  />
+				<input type="text" placeholder="securities" ref="securities" id="formbox" hidden={this.state.hideSecurities}  />
 
 				<br />
 
-				<input type="text" placeholder="fields" ref="fields" id="formbox" disabled={this.state.hideFields}  />
+				<input type="text" placeholder="fields" ref="fields" id="formbox" hidden={this.state.hideFields}  />
 
 				<br />
 
-				<input type="text" placeholder="start date" ref="startDate" id="formbox" disabled={this.state.hideStartDate}  />
+				<input type="text" placeholder="start date" ref="startDate" id="formbox" hidden={this.state.hideStartDate}  />
 
 				<br />
 
-				<input type="text" placeholder="end date" ref="endDate" id="formbox" disabled={this.state.hideEndDate}  />
+				<input type="text" placeholder="end date" ref="endDate" id="formbox" hidden={this.state.hideEndDate}  />
 
 				<br />
 
-				<input type="submit" value="Submit" id="submit" disabled={this.state.hideSubmit} />
+				<input type="submit" value="Submit" id="submit" hidden={this.state.hideSubmit} />
 
 				<br />
 
@@ -144,25 +148,72 @@ var QueryForm = React.createClass({
 	_onSubmit: function(e){
 		e.preventDefault();
 
-		var service = this.refs.service.getDOMNode().value.trim();
-		var type = this.refs.type.getDOMNode().value.trim();
-		var securities = this.refs.securities.getDOMNode().value.trim();
-		var fields = this.refs.fields.getDOMNode().value.trim();
-		AppActions.submitQuery([service, type, securities, fields]);
+		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
+			var service = this.refs.service.getDOMNode().value.trim();
+			var type = this.refs.type.getDOMNode().value.trim();
+			var securities = this.refs.securities.getDOMNode().value.trim();
+			var fields = this.refs.fields.getDOMNode().value.trim();
 
-		this.refs.service.getDOMNode().value = "";
-	    this.refs.type.getDOMNode().value = "";
-	    this.refs.securities.getDOMNode().value = "";
-	    this.refs.fields.getDOMNode().value = "";
-	    this.refs.startDate.getDOMNode().value = "";
-	    this.refs.endDate.getDOMNode().value = "";
+			console.log([service, type, securities, fields]);
+			AppActions.submitReferenceQuery([service, type, securities, fields]);
 
-	    this.setState({hideReqTypes: true});
-	    this.setState({hideSecurities: true});
-	    this.setState({hideFields: true});
-	    this.setState({hideStartDate: true});
-	    this.setState({hideEndDate: true});
-	    this.setState({hideSubmit: true});
+			this.setState({hideReqTypes:true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideSubmit: true});
+
+			this.refs.service.getDOMNode().value = "";
+		    this.refs.type.getDOMNode().value = "";
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		}
+		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
+			var service = this.refs.service.getDOMNode().value.trim();
+			var type = this.refs.type.getDOMNode().value.trim();
+			var securities = this.refs.securities.getDOMNode().value.trim();
+			var fields = this.refs.fields.getDOMNode().value.trim();
+			var startDate = this.refs.startDate.getDOMNode().value.trim();
+			var endDate = this.refs.endDate.getDOMNode().value.trim();
+
+			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate]);
+
+			this.setState({hideReqTypes:true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hideSubmit: true});
+
+			this.refs.service.getDOMNode().value = "";
+		    this.refs.type.getDOMNode().value = "";
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		    this.refs.startDate.getDOMNode().value = "";
+		    this.refs.endDate.getDOMNode().value = "";
+		}
+		else if (this.state.reqTypeChoice === "IntradayTickRequest"){
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
+		}
+		else if (this.state.reqTypeChoice === "IntradayBarRequest"){
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
+		}
+		else if (this.state.reqTypeChoice === "PortfolioDataRequest"){
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
+		}
+		else if (this.state.reqTypeChoice === "BeqsRequest"){
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
+		}
+		else{
+			return;
+		}
+
+	    this.setState({servTypeChoice: ""});
+	    this.setState({reqTypeChoice: ""});
+
 	}
 });
 

@@ -4,9 +4,15 @@ var AppConstants = require('../constants/AppConstants');
 
 var AppActions = {
 
-  submitQuery: function(item){
+  submitReferenceQuery: function(item){
     AppDispatcher.handleViewAction({
-      actionType:AppConstants.SUBMIT_QUERY,
+      actionType:AppConstants.SUBMIT_REFERENCE_QUERY,
+      item: item
+    })
+  },
+   submitHistoricalQuery: function(item){
+    AppDispatcher.handleViewAction({
+      actionType:AppConstants.SUBMIT_HISTORICAL_QUERY,
       item: item
     })
   }
@@ -240,10 +246,9 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		{
 			this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString() });
 			this.setState({hideReqTypes: false});
-			console.log("handleServiceChoice code ran");
+
 			return;
 		}
-		console.log("handleServiceChoice did not run");
 		return;
 	},
 
@@ -256,6 +261,11 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			this.setState({hideEndDate: true});
 			this.setState({hideSubmit: true});
 
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		    this.refs.startDate.getDOMNode().value = "";
+		    this.refs.endDate.getDOMNode().value = "";
+
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString() }, function(){
 				console.log(this.refs.type.getDOMNode().value.toString())
 
@@ -263,7 +273,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					this.setState({hideSecurities: false});
 					this.setState({hideFields: false});
 					this.setState({hideSubmit: false});
-					console.log("handleReqChoice code ran");
 				}
 				else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
 					this.setState({hideSecurities: false});
@@ -285,8 +294,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					this.setState({hideSubmit: false});
 				}
 				else{
-					console.log("handleReqChoice did not run");
-					console.log(this.state.reqTypeChoice)
 					return;
 				}
 			});
@@ -311,7 +318,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 				React.createElement("br", null), 
 
 				React.createElement("input", {type: "text", list: this.state.servTypeChoice, placeholder: "request type", ref: "type", 
-				id: "formbox", disabled: this.state.hideReqTypes, onChange: this.handleRequestChoice}), 
+				id: "formbox", hidden: this.state.hideReqTypes, onChange: this.handleRequestChoice}), 
 
 					React.createElement("datalist", {id: "refdata"}, 
 						React.createElement("option", {value: "ReferenceDataRequest"}, "Reference Data Request"), 
@@ -338,24 +345,23 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "text", placeholder: "securities", ref: "securities", id: "formbox", 
-				disabled: this.state.hideSecurities}), 
+				React.createElement("input", {type: "text", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "text", placeholder: "fields", ref: "fields", id: "formbox", disabled: this.state.hideFields}), 
+				React.createElement("input", {type: "text", placeholder: "fields", ref: "fields", id: "formbox", hidden: this.state.hideFields}), 
 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "text", placeholder: "start date", ref: "startDate", id: "formbox", disabled: this.state.hideStartDate}), 
+				React.createElement("input", {type: "text", placeholder: "start date", ref: "startDate", id: "formbox", hidden: this.state.hideStartDate}), 
 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "text", placeholder: "end date", ref: "endDate", id: "formbox", disabled: this.state.hideEndDate}), 
+				React.createElement("input", {type: "text", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "submit", value: "Submit", id: "submit", disabled: this.state.hideSubmit}), 
+				React.createElement("input", {type: "submit", value: "Submit", id: "submit", hidden: this.state.hideSubmit}), 
 
 				React.createElement("br", null)
 
@@ -367,25 +373,72 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 	_onSubmit: function(e){
 		e.preventDefault();
 
-		var service = this.refs.service.getDOMNode().value.trim();
-		var type = this.refs.type.getDOMNode().value.trim();
-		var securities = this.refs.securities.getDOMNode().value.trim();
-		var fields = this.refs.fields.getDOMNode().value.trim();
-		AppActions.submitQuery([service, type, securities, fields]);
+		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
+			var service = this.refs.service.getDOMNode().value.trim();
+			var type = this.refs.type.getDOMNode().value.trim();
+			var securities = this.refs.securities.getDOMNode().value.trim();
+			var fields = this.refs.fields.getDOMNode().value.trim();
 
-		this.refs.service.getDOMNode().value = "";
-	    this.refs.type.getDOMNode().value = "";
-	    this.refs.securities.getDOMNode().value = "";
-	    this.refs.fields.getDOMNode().value = "";
-	    this.refs.startDate.getDOMNode().value = "";
-	    this.refs.endDate.getDOMNode().value = "";
+			console.log([service, type, securities, fields]);
+			AppActions.submitReferenceQuery([service, type, securities, fields]);
 
-	    this.setState({hideReqTypes: true});
-	    this.setState({hideSecurities: true});
-	    this.setState({hideFields: true});
-	    this.setState({hideStartDate: true});
-	    this.setState({hideEndDate: true});
-	    this.setState({hideSubmit: true});
+			this.setState({hideReqTypes:true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideSubmit: true});
+
+			this.refs.service.getDOMNode().value = "";
+		    this.refs.type.getDOMNode().value = "";
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		}
+		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
+			var service = this.refs.service.getDOMNode().value.trim();
+			var type = this.refs.type.getDOMNode().value.trim();
+			var securities = this.refs.securities.getDOMNode().value.trim();
+			var fields = this.refs.fields.getDOMNode().value.trim();
+			var startDate = this.refs.startDate.getDOMNode().value.trim();
+			var endDate = this.refs.endDate.getDOMNode().value.trim();
+
+			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate]);
+
+			this.setState({hideReqTypes:true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hideSubmit: true});
+
+			this.refs.service.getDOMNode().value = "";
+		    this.refs.type.getDOMNode().value = "";
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		    this.refs.startDate.getDOMNode().value = "";
+		    this.refs.endDate.getDOMNode().value = "";
+		}
+		else if (this.state.reqTypeChoice === "IntradayTickRequest"){
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
+		}
+		else if (this.state.reqTypeChoice === "IntradayBarRequest"){
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
+		}
+		else if (this.state.reqTypeChoice === "PortfolioDataRequest"){
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
+		}
+		else if (this.state.reqTypeChoice === "BeqsRequest"){
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
+		}
+		else{
+			return;
+		}
+
+	    this.setState({servTypeChoice: ""});
+	    this.setState({reqTypeChoice: ""});
+
 	}
 });
 
@@ -427,8 +480,8 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		return (
 			React.createElement("div", {className: "responseList"}, 
 				React.createElement(PostBody, {request: request}), 
-				React.createElement(RawResponse, {data: data}), 
-				React.createElement(PrettyResponse, {data: data})
+				React.createElement(RawResponse, {data: data})
+
 			
 			)
 		)
@@ -478,7 +531,7 @@ var CHANGE_EVENT = 'change';
 var _receivedData = "";
 var _postBody = "";
 
-function submit(data){
+function submitReference(data){
 
     var service = data[0];
     var type = data[1];
@@ -499,6 +552,33 @@ function submit(data){
     })
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
     handleQuerySubmit({securities: securities, fields: fields}, url);       
+   
+}
+
+function submitReference(data){
+
+    var service = data[0];
+    var type = data[1];
+    var securities = data[2];
+    var fields = data[3];
+    var startDate = data[4];
+    var endDate = data[5];
+
+    if(!service || !type || !securities || !fields)
+    {
+      return;
+    }
+    securities = securities.split(",");
+    fields = fields.split(",");
+    securities.forEach(function (sec) {
+      sec = sec.trim();
+    });
+    fields.forEach(function (fld){
+      fld = fld.trim();
+    })
+    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+    handleQuerySubmit({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);
+    console.log({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);       
    
 }
 
@@ -542,10 +622,15 @@ var AppStore = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function(payload){
   var action = payload.action;
   switch(action.actionType) {
-    case AppConstants.SUBMIT_QUERY:
+    case AppConstants.SUBMIT_REFERENCE_QUERY:
       var data = payload.action.item;
-      submit(data);
+      submitReference(data);
       break;
+    case AppConstants.SUBMIT_HISTORICAL_QUERY:
+      var data = payload.action.item;
+      submitHistorical(data);
+      break;
+
 
     default:
       return true;

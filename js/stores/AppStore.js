@@ -8,7 +8,7 @@ var CHANGE_EVENT = 'change';
 var _receivedData = "";
 var _postBody = "";
 
-function submit(data){
+function submitReference(data){
 
     var service = data[0];
     var type = data[1];
@@ -29,6 +29,33 @@ function submit(data){
     })
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
     handleQuerySubmit({securities: securities, fields: fields}, url);       
+   
+}
+
+function submitReference(data){
+
+    var service = data[0];
+    var type = data[1];
+    var securities = data[2];
+    var fields = data[3];
+    var startDate = data[4];
+    var endDate = data[5];
+
+    if(!service || !type || !securities || !fields)
+    {
+      return;
+    }
+    securities = securities.split(",");
+    fields = fields.split(",");
+    securities.forEach(function (sec) {
+      sec = sec.trim();
+    });
+    fields.forEach(function (fld){
+      fld = fld.trim();
+    })
+    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+    handleQuerySubmit({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);
+    console.log({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);       
    
 }
 
@@ -72,10 +99,15 @@ var AppStore = assign({}, EventEmitter.prototype, {
 AppDispatcher.register(function(payload){
   var action = payload.action;
   switch(action.actionType) {
-    case AppConstants.SUBMIT_QUERY:
+    case AppConstants.SUBMIT_REFERENCE_QUERY:
       var data = payload.action.item;
-      submit(data);
+      submitReference(data);
       break;
+    case AppConstants.SUBMIT_HISTORICAL_QUERY:
+      var data = payload.action.item;
+      submitHistorical(data);
+      break;
+
 
     default:
       return true;

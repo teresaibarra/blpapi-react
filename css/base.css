@@ -112,7 +112,7 @@ ul {
   border: none;
   height: 35px;
   text-align: center;
-  margin: .7%;
+  margin: auto;
   color: #4C4C4C;
 }
 #submit:disabled {

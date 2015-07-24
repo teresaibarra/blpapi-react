@@ -12,7 +12,7 @@ var ResponseList = React.createClass({
 			<div className="responseList">
 				<PostBody request={request} />
 				<RawResponse data={data} />
-				<PrettyResponse data={data} />
+
 			
 			</div>
 		)

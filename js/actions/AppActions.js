@@ -3,9 +3,15 @@ var AppConstants = require('../constants/AppConstants');
 
 var AppActions = {
 
-  submitQuery: function(item){
+  submitReferenceQuery: function(item){
     AppDispatcher.handleViewAction({
-      actionType:AppConstants.SUBMIT_QUERY,
+      actionType:AppConstants.SUBMIT_REFERENCE_QUERY,
+      item: item
+    })
+  },
+   submitHistoricalQuery: function(item){
+    AppDispatcher.handleViewAction({
+      actionType:AppConstants.SUBMIT_HISTORICAL_QUERY,
       item: item
     })
   }
