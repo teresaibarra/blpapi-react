@@ -1,6 +1,7 @@
 var React = require('react');
 var PrettyResponse = require('./PrettyResponse.react');
 var RawResponse = require('./RawResponse.react');
+var Chart = require('./Chart.react');
 var PostBody = require('./PostBody.react');
 
 var ResponseList = React.createClass({
@@ -12,6 +13,7 @@ var ResponseList = React.createClass({
 				<PostBody request={request} />
 				<RawResponse data={data} />
 				<PrettyResponse data={data} />
+			
 			</div>
 		)
 	}

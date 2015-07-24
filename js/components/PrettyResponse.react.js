@@ -2,9 +2,11 @@ var React = require('react');
 
 var PrettyResponse = React.createClass({
 	render: function(){
+
 		var data = this.props.data;
 		var responseNodes;
 		var dataTitle;
+
 		if(data) {
 			dataTitle = <h2 id="dataTitle"> Pretty Response: </h2>
 			var secData = data.data[0].securityData;
@@ -32,6 +34,7 @@ var PrettyResponse = React.createClass({
 				{dataTitle}
 				{responseNodes}
 			</p>
+			
 		);
 	}
 });
