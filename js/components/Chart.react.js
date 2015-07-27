@@ -5,46 +5,27 @@ var LineChart = require("react-chartjs").Line;
 var Chart = React.createClass({
 	render: function(){
 		var data = this.props.data;
+		var secName = this.props.secName;
 		var responseNodes;
-		var keyName;
+
 		if(data) {
-			var secData = data.data;
-			console.log(secData)
 			var info = [];
-			responseNodes = secData.map(function (sec) {
-				var secObject = sec.securityData;
-				var red = Math.floor(Math.random() * 255);
-				var green = Math.floor(Math.random() * 255);
-				var blue = Math.floor(Math.random() * 255);
-				var dataArray = [];
-				for (var j in secObject.fieldData){
-					for (var key in secObject.fieldData[j]){
-						if(secObject.fieldData[j].hasOwnProperty(key)){
-							if (key !== "date"){
-								keyName = key;
-								if (keyName.indexOf("_") != -1) {
-									keyName = keyName.replace(/_/g, " ");
-								}
-								keyName = <h3>{keyName.trim().toUpperCase()}</h3>;
-								dataArray.push(secObject.fieldData[j][key]);
-							}
-						}
-					}
-				}	
+			var red = Math.floor(Math.random() * 255);
+			var green = Math.floor(Math.random() * 255);
+			var blue = Math.floor(Math.random() * 255);
 
-				info.push({
-					label: secObject.security.toUpperCase(),
-					fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
-					strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-					pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-					pointStrokeColor: "#fff",
-					pointHighlightFill: "#fff",
-					pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-					data: dataArray
-				});
-				return;
+
+			info.push({
+				label: secName,
+				fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
+				strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+				pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+				data: data
 			});
-
+		
 		}
 
 		var chartData = {
@@ -106,7 +87,6 @@ var Chart = React.createClass({
 		return(
 			<div>
 				<p className="data" id="lineChart">
-					{keyName}
 					<LineChart data={chartData} options={chartOptions} width="600" height="250"/>
 					
 				</p>

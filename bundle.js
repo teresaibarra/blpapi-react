@@ -28,46 +28,27 @@ var LineChart = require("react-chartjs").Line;
 var Chart = React.createClass({displayName: "Chart",
 	render: function(){
 		var data = this.props.data;
+		var secName = this.props.secName;
 		var responseNodes;
-		var keyName;
+
 		if(data) {
-			var secData = data.data;
-			console.log(secData)
 			var info = [];
-			responseNodes = secData.map(function (sec) {
-				var secObject = sec.securityData;
-				var red = Math.floor(Math.random() * 255);
-				var green = Math.floor(Math.random() * 255);
-				var blue = Math.floor(Math.random() * 255);
-				var dataArray = [];
-				for (var j in secObject.fieldData){
-					for (var key in secObject.fieldData[j]){
-						if(secObject.fieldData[j].hasOwnProperty(key)){
-							if (key !== "date"){
-								keyName = key;
-								if (keyName.indexOf("_") != -1) {
-									keyName = keyName.replace(/_/g, " ");
-								}
-								keyName = React.createElement("h3", null, keyName.trim().toUpperCase());
-								dataArray.push(secObject.fieldData[j][key]);
-							}
-						}
-					}
-				}	
+			var red = Math.floor(Math.random() * 255);
+			var green = Math.floor(Math.random() * 255);
+			var blue = Math.floor(Math.random() * 255);
 
-				info.push({
-					label: secObject.security.toUpperCase(),
-					fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
-					strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-					pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-					pointStrokeColor: "#fff",
-					pointHighlightFill: "#fff",
-					pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-					data: dataArray
-				});
-				return;
+
+			info.push({
+				label: secName,
+				fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
+				strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+				pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+				pointStrokeColor: "#fff",
+				pointHighlightFill: "#fff",
+				pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+				data: data
 			});
-
+		
 		}
 
 		var chartData = {
@@ -129,7 +110,6 @@ var Chart = React.createClass({displayName: "Chart",
 		return(
 			React.createElement("div", null, 
 				React.createElement("p", {className: "data", id: "lineChart"}, 
-					keyName, 
 					React.createElement(LineChart, {data: chartData, options: chartOptions, width: "600", height: "250"})
 					
 				)
@@ -222,14 +202,55 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 		var dataTitle;
 		var responseType;
 
+
 		if(data) {
 			dataTitle = React.createElement("h2", {id: "dataTitle"}, " Pretty Response: ");
 			if (type === 'HistoricalDataRequest') {
-				responseType = React.createElement(Chart, {data: data});
+
+			var responseNodes;
+			var secData = data.data;
+			var info = [];
+			var chartData = [];
+
+			responseNodes = secData.map(function (sec) {
+				var secObject = sec.securityData;
+				var result = {};
+				var secName = secObject.security.toUpperCase();
+
+				for (var object in secObject.fieldData){
+					for (var key in secObject.fieldData[object]){
+						if(secObject.fieldData[object].hasOwnProperty(key)){
+								if(!result[key])
+								{
+									result[key] = [];
+									result[key].push(secObject.fieldData[object][key]);
+								}
+								else 
+								{
+									result[key].push(secObject.fieldData[object][key]);
+								}
+						}
+					}
+
+				}
+
+				for (var key in result){
+					if(result.hasOwnProperty(key) && key != "date") {
+						console.log(result[key])
+						chartData.push(React.createElement("h3", null, key.trim().toUpperCase()))
+						chartData.push(React.createElement(Chart, {data: result[key], secName: secName}))
+					}
+				}
+
+			});
+		
+				responseType = chartData;
+
 			} else {
 				responseType = React.createElement(PrettyText, {data: data})
 			}
 		}
+
 		return(
 			React.createElement("p", {className: "data", id: "prettyResponse"}, 
 				dataTitle, 
