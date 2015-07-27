@@ -27,37 +27,49 @@ var LineChart = require("react-chartjs").Line;
 
 var Chart = React.createClass({displayName: "Chart",
 	render: function(){
+		var data = this.props.data;
+		var responseNodes;
+		if(data) {
+			var secData = data.data;
+			var info = [];
+			secData.map(function (sec) {
+				var secObject = sec.securityData;
+				var securityName = secObject.security.toUpperCase();
+				var red = Math.floor(Math.random() * 255);
+				var green = Math.floor(Math.random() * 255);
+				var blue = Math.floor(Math.random() * 255);
+				var dataArray = [];
+				for (var j in secObject.fieldData){
+					for (var key in secObject.fieldData[j]){
+						if(secObject.fieldData[j].hasOwnProperty(key)){
+							if (key !== "date")
+								dataArray.push(secObject.fieldData[j][key]);
+						}
+					}
+				}
 
-		var data = this.props.data
-		console.log(data)
 
+				info.push({
+					label: securityName,
+					fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
+					strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					pointStrokeColor: "#fff",
+					pointHighlightFill: "#fff",
+					pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					data: dataArray
+				})
+				return;
+			});
 
+		}
 
 		var chartData = {
-	    labels: ["January", "February", "March", "April", "May", "June", "July"],
-	    datasets: [
-	        {
-	            label: "My First dataset",
-	            fillColor: "rgba(220,220,220,0.2)",
-	            strokeColor: "rgba(220,220,220,1)",
-	            pointColor: "rgba(220,220,220,1)",
-	            pointStrokeColor: "#fff",
-	            pointHighlightFill: "#fff",
-	            pointHighlightStroke: "rgba(220,220,220,1)",
-	            data: [65, 59, 80, 81, 56, 55, 40]
-	        },
-	        {
-	            label: "My Second dataset",
-	            fillColor: "rgba(151,187,205,0.2)",
-	            strokeColor: "rgba(151,187,205,1)",
-	            pointColor: "rgba(151,187,205,1)",
-	            pointStrokeColor: "#fff",
-	            pointHighlightFill: "#fff",
-	            pointHighlightStroke: "rgba(151,187,205,1)",
-	            data: [28, 48, 40, 19, 86, 27, 90]
-	        }
-	    ]
+		labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+	    datasets: info
 		}
+		console.log(chartData)
+
 		var chartOptions = {
 	    ///Boolean - Whether grid lines are shown across the chart
 	    scaleShowGridLines : true,
@@ -102,8 +114,12 @@ var Chart = React.createClass({displayName: "Chart",
 	    datasetFill : true,
 
 	    //String - A legend template
-	    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+	    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+			
+	    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"
 		}
+
+
 		
 		return(
 			React.createElement("p", {className: "data", id: "lineChart"}, 
@@ -222,16 +238,13 @@ var React = require('react');
 
 var PrettyText = React.createClass({displayName: "PrettyText",
 	render: function(){
-
 		var data = this.props.data;
 		var responseNodes;
-		console.log("Pretty text data");
-		console.log(data);
-
 		if(data) {
-
 			var secData = data.data[0].securityData;
 			responseNodes = secData.map(function (sec) {
+				console.log("sec +")
+				console.log(sec)
 				var info = [];
 				info.push(React.createElement("h3", {id: "security"}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
 				for (var j in sec.fieldData)
@@ -249,6 +262,7 @@ var PrettyText = React.createClass({displayName: "PrettyText",
 				);
 			});
 		}
+
 		return(
 			React.createElement("div", null, 
 			React.createElement("p", {className: "data"}, 
@@ -396,13 +410,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				React.createElement("input", {type: "text", list: "startD", placeholder: "start date", ref: "startDate", id: "formbox", hidden: this.state.hideStartDate}), 
 				React.createElement("datalist", {id: "startD"}, 
-					React.createElement("option", {value: "20100101"}, "Security Lookup Request")
+					React.createElement("option", {value: "20140101"}, "Security Lookup Request")
 				), 
 				React.createElement("br", null), 
 
 				React.createElement("input", {type: "text", list: "endD", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
 				React.createElement("datalist", {id: "endD"}, 
-					React.createElement("option", {value: "20101231"}, "Security Lookup Request")
+					React.createElement("option", {value: "20141231"}, "Security Lookup Request")
 				), 
 				React.createElement("br", null), 
 
@@ -610,10 +624,8 @@ function submitHistorical(data){
     var type = data[1];
     var securities = data[2];
     var fields = data[3];
-    var startDate = data[4];
-    var endDate = data[5];
 
-    if(!service || !type || !securities || !fields || !startDate || !endDate)
+    if(!service || !type || !securities || !fields)
     {
       return;
     }
@@ -626,10 +638,10 @@ function submitHistorical(data){
       fld = fld.trim();
     })
 
-
     _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-    handleQuerySubmit({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);
+    handleQuerySubmit({securities: securities, fields: fields, "startDate": "20140101", "endDate": "20141231", 
+      "periodicitySelection": "MONTHLY"}, url);
    
 }
 
@@ -676,12 +688,10 @@ AppDispatcher.register(function(payload){
     case AppConstants.SUBMIT_REFERENCE_QUERY:
       var data = payload.action.item;
       submitReference(data);
-      console.log("reference called.")
       break;
     case AppConstants.SUBMIT_HISTORICAL_QUERY:
       var data = payload.action.item;
       submitHistorical(data);
-      console.log("historical called.")
       break;
 
 

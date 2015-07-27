@@ -54,7 +54,6 @@ function submitHistorical(data){
       fld = fld.trim();
     })
 
-
     _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
     handleQuerySubmit({securities: securities, fields: fields, "startDate": "20140101", "endDate": "20141231", 

@@ -2,14 +2,13 @@ var React = require('react');
 
 var PrettyText = React.createClass({
 	render: function(){
-
 		var data = this.props.data;
 		var responseNodes;
-
 		if(data) {
-
 			var secData = data.data[0].securityData;
 			responseNodes = secData.map(function (sec) {
+				console.log("sec +")
+				console.log(sec)
 				var info = [];
 				info.push(<h3 id="security"> {"SECURITY: " + sec.security.toUpperCase()} </h3>);
 				for (var j in sec.fieldData)
@@ -27,6 +26,7 @@ var PrettyText = React.createClass({
 				);
 			});
 		}
+
 		return(
 			<div>
 			<p className="data">

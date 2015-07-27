@@ -4,38 +4,48 @@ var LineChart = require("react-chartjs").Line;
 
 var Chart = React.createClass({
 	render: function(){
-
 		var data = this.props.data;
+		var responseNodes;
+		if(data) {
+			var secData = data.data;
+			var info = [];
+			secData.map(function (sec) {
+				var secObject = sec.securityData;
+				var securityName = secObject.security.toUpperCase();
+				var red = Math.floor(Math.random() * 255);
+				var green = Math.floor(Math.random() * 255);
+				var blue = Math.floor(Math.random() * 255);
+				var dataArray = [];
+				for (var j in secObject.fieldData){
+					for (var key in secObject.fieldData[j]){
+						if(secObject.fieldData[j].hasOwnProperty(key)){
+							if (key !== "date")
+								dataArray.push(secObject.fieldData[j][key]);
+						}
+					}
+				}
 
 
+				info.push({
+					label: securityName,
+					fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
+					strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					pointStrokeColor: "#fff",
+					pointHighlightFill: "#fff",
+					pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					data: dataArray
+				})
+				return;
+			});
 
-
-		var chartData = {
-	    labels: ["January", "February", "March", "April", "May", "June", "July"],
-	    datasets: [
-	        {
-	            label: "My First dataset",
-	            fillColor: "rgba(220,220,220,0.2)",
-	            strokeColor: "rgba(220,220,220,1)",
-	            pointColor: "rgba(220,220,220,1)",
-	            pointStrokeColor: "#fff",
-	            pointHighlightFill: "#fff",
-	            pointHighlightStroke: "rgba(220,220,220,1)",
-	            data: [65, 59, 80, 81, 56, 55, 40]
-	        },
-	        {
-	            label: "My Second dataset",
-	            fillColor: "rgba(151,187,205,0.2)",
-	            strokeColor: "rgba(151,187,205,1)",
-	            pointColor: "rgba(151,187,205,1)",
-	            pointStrokeColor: "#fff",
-	            pointHighlightFill: "#fff",
-	            pointHighlightStroke: "rgba(151,187,205,1)",
-	            data: [28, 48, 40, 19, 86, 27, 90]
-	        }
-	    ]
 		}
 
+		var chartData = {
+		labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+	    datasets: info
+		}
+		console.log(chartData)
 
 		var chartOptions = {
 	    ///Boolean - Whether grid lines are shown across the chart
@@ -81,10 +91,12 @@ var Chart = React.createClass({
 	    datasetFill : true,
 
 	    //String - A legend template
-	    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-		},
+	    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+			
+	    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"
+		}
 
-		multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"
+
 		
 		return(
 			<p className="data" id="lineChart">
