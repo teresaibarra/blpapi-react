@@ -6,12 +6,13 @@ var Chart = React.createClass({
 	render: function(){
 		var data = this.props.data;
 		var responseNodes;
+		var keyName;
 		if(data) {
 			var secData = data.data;
+			console.log(secData)
 			var info = [];
-			secData.map(function (sec) {
+			responseNodes = secData.map(function (sec) {
 				var secObject = sec.securityData;
-				var securityName = secObject.security.toUpperCase();
 				var red = Math.floor(Math.random() * 255);
 				var green = Math.floor(Math.random() * 255);
 				var blue = Math.floor(Math.random() * 255);
@@ -19,15 +20,20 @@ var Chart = React.createClass({
 				for (var j in secObject.fieldData){
 					for (var key in secObject.fieldData[j]){
 						if(secObject.fieldData[j].hasOwnProperty(key)){
-							if (key !== "date")
+							if (key !== "date"){
+								keyName = key;
+								if (keyName.indexOf("_") != -1) {
+									keyName = keyName.replace(/_/g, " ");
+								}
+								keyName = <h3>{keyName.trim().toUpperCase()}</h3>;
 								dataArray.push(secObject.fieldData[j][key]);
+							}
 						}
 					}
-				}
-
+				}	
 
 				info.push({
-					label: securityName,
+					label: secObject.security.toUpperCase(),
 					fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
 					strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
 					pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
@@ -35,7 +41,7 @@ var Chart = React.createClass({
 					pointHighlightFill: "#fff",
 					pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
 					data: dataArray
-				})
+				});
 				return;
 			});
 
@@ -45,7 +51,6 @@ var Chart = React.createClass({
 		labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
 	    datasets: info
 		}
-		console.log(chartData)
 
 		var chartOptions = {
 	    ///Boolean - Whether grid lines are shown across the chart
@@ -99,10 +104,13 @@ var Chart = React.createClass({
 
 		
 		return(
-			<p className="data" id="lineChart">
-				<LineChart data={chartData} options={chartOptions} width="600" height="250"/>
-			</p>
-			
+			<div>
+				<p className="data" id="lineChart">
+					{keyName}
+					<LineChart data={chartData} options={chartOptions} width="600" height="250"/>
+					
+				</p>
+			</div>
 		);
 	}
 });
