@@ -40,10 +40,8 @@ function submitHistorical(data){
     var type = data[1];
     var securities = data[2];
     var fields = data[3];
-    var startDate = data[4];
-    var endDate = data[5];
 
-    if(!service || !type || !securities || !fields || !startDate || !endDate)
+    if(!service || !type || !securities || !fields)
     {
       return;
     }
@@ -59,8 +57,8 @@ function submitHistorical(data){
 
     _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-    handleQuerySubmit({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);
-    console.log({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);       
+    handleQuerySubmit({securities: securities, fields: fields, "startDate": "20140101", "endDate": "20141231", 
+      "periodicitySelection": "MONTHLY"}, url);
    
 }
 
@@ -107,12 +105,10 @@ AppDispatcher.register(function(payload){
     case AppConstants.SUBMIT_REFERENCE_QUERY:
       var data = payload.action.item;
       submitReference(data);
-      console.log("reference called.")
       break;
     case AppConstants.SUBMIT_HISTORICAL_QUERY:
       var data = payload.action.item;
       submitHistorical(data);
-      console.log("historical called.")
       break;
 
 

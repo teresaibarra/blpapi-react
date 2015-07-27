@@ -134,13 +134,13 @@ var QueryForm = React.createClass({
 
 				<input type="text" list="startD" placeholder="start date" ref="startDate" id="formbox" hidden={this.state.hideStartDate}  />
 				<datalist id="startD">
-					<option value="20100101">Security Lookup Request</option>
+					<option value="20140101">Security Lookup Request</option>
 				</datalist>
 				<br />
 
 				<input type="text" list="endD" placeholder="end date" ref="endDate" id="formbox" hidden={this.state.hideEndDate}  />
 				<datalist id="endD">
-					<option value="20101231">Security Lookup Request</option>
+					<option value="20141231">Security Lookup Request</option>
 				</datalist>
 				<br />
 

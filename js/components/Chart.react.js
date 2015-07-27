@@ -5,8 +5,8 @@ var LineChart = require("react-chartjs").Line;
 var Chart = React.createClass({
 	render: function(){
 
-		var data = this.props.data
-		console.log(data)
+		var data = this.props.data;
+
 
 
 
@@ -35,6 +35,8 @@ var Chart = React.createClass({
 	        }
 	    ]
 		}
+
+
 		var chartOptions = {
 	    ///Boolean - Whether grid lines are shown across the chart
 	    scaleShowGridLines : true,
@@ -80,7 +82,9 @@ var Chart = React.createClass({
 
 	    //String - A legend template
 	    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-		}
+		},
+
+		multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"
 		
 		return(
 			<p className="data" id="lineChart">

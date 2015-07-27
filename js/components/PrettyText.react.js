@@ -5,7 +5,6 @@ var PrettyText = React.createClass({
 
 		var data = this.props.data;
 		var responseNodes;
-		console.log(data)
 
 		if(data) {
 
