@@ -7,6 +7,7 @@ var CHANGE_EVENT = 'change';
 
 var _receivedData = "";
 var _postBody = "";
+var _requestType = "";
 
 function submitReference(data){
 
@@ -27,12 +28,13 @@ function submitReference(data){
     fields.forEach(function (fld){
       fld = fld.trim();
     })
+    _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
     handleQuerySubmit({securities: securities, fields: fields}, url);       
    
 }
 
-function submitReference(data){
+function submitHistorical(data){
 
     var service = data[0];
     var type = data[1];
@@ -41,7 +43,7 @@ function submitReference(data){
     var startDate = data[4];
     var endDate = data[5];
 
-    if(!service || !type || !securities || !fields)
+    if(!service || !type || !securities || !fields || !startDate || !endDate)
     {
       return;
     }
@@ -53,6 +55,9 @@ function submitReference(data){
     fields.forEach(function (fld){
       fld = fld.trim();
     })
+
+
+    _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
     handleQuerySubmit({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);
     console.log({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);       
@@ -79,7 +84,7 @@ function handleQuerySubmit(query, url) {
 
 var AppStore = assign({}, EventEmitter.prototype, {
   getAll: function() {
-    return [_receivedData, _postBody];
+    return [_receivedData, _postBody, _requestType];
   },
 
   emitChange: function() {
@@ -102,10 +107,12 @@ AppDispatcher.register(function(payload){
     case AppConstants.SUBMIT_REFERENCE_QUERY:
       var data = payload.action.item;
       submitReference(data);
+      console.log("reference called.")
       break;
     case AppConstants.SUBMIT_HISTORICAL_QUERY:
       var data = payload.action.item;
       submitHistorical(data);
+      console.log("historical called.")
       break;
 
 

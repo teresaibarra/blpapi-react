@@ -42,7 +42,7 @@ var QueryForm = React.createClass({
 		    this.refs.endDate.getDOMNode().value = "";
 
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString() }, function(){
-				console.log(this.refs.type.getDOMNode().value.toString())
+
 
 				if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 					this.setState({hideSecurities: false});
@@ -120,20 +120,28 @@ var QueryForm = React.createClass({
 
 				<br />
 
-				<input type="text" placeholder="securities" ref="securities" id="formbox" hidden={this.state.hideSecurities}  />
-
+				<input type="text" list ="secD" placeholder="securities" ref="securities" id="formbox" hidden={this.state.hideSecurities}  />
+				<datalist id="secD">
+					<option value="AAPL US Equity">Security Lookup Request</option>
+				</datalist>
 				<br />
 
-				<input type="text" placeholder="fields" ref="fields" id="formbox" hidden={this.state.hideFields}  />
-
+				<input type="text" list ="fieldsD" placeholder="fields" ref="fields" id="formbox" hidden={this.state.hideFields}  />
+				<datalist id="fieldsD">
+					<option value="PX_LAST">Security Lookup Request</option>
+				</datalist>
 				<br />
 
-				<input type="text" placeholder="start date" ref="startDate" id="formbox" hidden={this.state.hideStartDate}  />
-
+				<input type="text" list="startD" placeholder="start date" ref="startDate" id="formbox" hidden={this.state.hideStartDate}  />
+				<datalist id="startD">
+					<option value="20100101">Security Lookup Request</option>
+				</datalist>
 				<br />
 
-				<input type="text" placeholder="end date" ref="endDate" id="formbox" hidden={this.state.hideEndDate}  />
-
+				<input type="text" list="endD" placeholder="end date" ref="endDate" id="formbox" hidden={this.state.hideEndDate}  />
+				<datalist id="endD">
+					<option value="20101231">Security Lookup Request</option>
+				</datalist>
 				<br />
 
 				<input type="submit" value="Submit" id="submit" hidden={this.state.hideSubmit} />
@@ -154,7 +162,7 @@ var QueryForm = React.createClass({
 			var securities = this.refs.securities.getDOMNode().value.trim();
 			var fields = this.refs.fields.getDOMNode().value.trim();
 
-			console.log([service, type, securities, fields]);
+
 			AppActions.submitReferenceQuery([service, type, securities, fields]);
 
 			this.setState({hideReqTypes:true});

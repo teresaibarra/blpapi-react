@@ -4,6 +4,12 @@ var LineChart = require("react-chartjs").Line;
 
 var Chart = React.createClass({
 	render: function(){
+
+		var data = this.props.data
+		console.log(data)
+
+
+
 		var chartData = {
 	    labels: ["January", "February", "March", "April", "May", "June", "July"],
 	    datasets: [

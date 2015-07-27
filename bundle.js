@@ -27,6 +27,12 @@ var LineChart = require("react-chartjs").Line;
 
 var Chart = React.createClass({displayName: "Chart",
 	render: function(){
+
+		var data = this.props.data
+		console.log(data)
+
+
+
 		var chartData = {
 	    labels: ["January", "February", "March", "April", "May", "June", "July"],
 	    datasets: [
@@ -267,7 +273,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.endDate.getDOMNode().value = "";
 
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString() }, function(){
-				console.log(this.refs.type.getDOMNode().value.toString())
+
 
 				if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 					this.setState({hideSecurities: false});
@@ -345,20 +351,28 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "text", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
-
+				React.createElement("input", {type: "text", list: "secD", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
+				React.createElement("datalist", {id: "secD"}, 
+					React.createElement("option", {value: "AAPL US Equity"}, "Security Lookup Request")
+				), 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "text", placeholder: "fields", ref: "fields", id: "formbox", hidden: this.state.hideFields}), 
-
+				React.createElement("input", {type: "text", list: "fieldsD", placeholder: "fields", ref: "fields", id: "formbox", hidden: this.state.hideFields}), 
+				React.createElement("datalist", {id: "fieldsD"}, 
+					React.createElement("option", {value: "PX_LAST"}, "Security Lookup Request")
+				), 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "text", placeholder: "start date", ref: "startDate", id: "formbox", hidden: this.state.hideStartDate}), 
-
+				React.createElement("input", {type: "text", list: "startD", placeholder: "start date", ref: "startDate", id: "formbox", hidden: this.state.hideStartDate}), 
+				React.createElement("datalist", {id: "startD"}, 
+					React.createElement("option", {value: "20100101"}, "Security Lookup Request")
+				), 
 				React.createElement("br", null), 
 
-				React.createElement("input", {type: "text", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
-
+				React.createElement("input", {type: "text", list: "endD", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
+				React.createElement("datalist", {id: "endD"}, 
+					React.createElement("option", {value: "20101231"}, "Security Lookup Request")
+				), 
 				React.createElement("br", null), 
 
 				React.createElement("input", {type: "submit", value: "Submit", id: "submit", hidden: this.state.hideSubmit}), 
@@ -379,7 +393,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var securities = this.refs.securities.getDOMNode().value.trim();
 			var fields = this.refs.fields.getDOMNode().value.trim();
 
-			console.log([service, type, securities, fields]);
+
 			AppActions.submitReferenceQuery([service, type, securities, fields]);
 
 			this.setState({hideReqTypes:true});
@@ -480,8 +494,8 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		return (
 			React.createElement("div", {className: "responseList"}, 
 				React.createElement(PostBody, {request: request}), 
-				React.createElement(RawResponse, {data: data})
-
+				React.createElement(RawResponse, {data: data}), 
+				React.createElement(PrettyResponse, {data: data})
 			
 			)
 		)
@@ -491,7 +505,8 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 module.exports = ResponseList;
 },{"./Chart.react":2,"./PostBody.react":4,"./PrettyResponse.react":5,"./RawResponse.react":7,"react":171}],9:[function(require,module,exports){
 module.exports = {
- 	SUBMIT_QUERY: 'SUBMIT_QUERY'
+ 	SUBMIT_REFERENCE_QUERY: 'SUBMIT_REFERENCE_QUERY',
+ 	SUBMIT_HISTORICAL_QUERY: 'SUBMIT_HISTORICAL_QUERY'
 };
 
 },{}],10:[function(require,module,exports){
@@ -530,6 +545,7 @@ var CHANGE_EVENT = 'change';
 
 var _receivedData = "";
 var _postBody = "";
+var _requestType = "";
 
 function submitReference(data){
 
@@ -550,12 +566,13 @@ function submitReference(data){
     fields.forEach(function (fld){
       fld = fld.trim();
     })
+    _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
     handleQuerySubmit({securities: securities, fields: fields}, url);       
    
 }
 
-function submitReference(data){
+function submitHistorical(data){
 
     var service = data[0];
     var type = data[1];
@@ -564,7 +581,7 @@ function submitReference(data){
     var startDate = data[4];
     var endDate = data[5];
 
-    if(!service || !type || !securities || !fields)
+    if(!service || !type || !securities || !fields || !startDate || !endDate)
     {
       return;
     }
@@ -576,6 +593,9 @@ function submitReference(data){
     fields.forEach(function (fld){
       fld = fld.trim();
     })
+
+
+    _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
     handleQuerySubmit({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);
     console.log({securities: securities, fields: fields, startDate: startDate, endDate: endDate, "periodicitySelection": "MONTHLY"}, url);       
@@ -602,7 +622,7 @@ function handleQuerySubmit(query, url) {
 
 var AppStore = assign({}, EventEmitter.prototype, {
   getAll: function() {
-    return [_receivedData, _postBody];
+    return [_receivedData, _postBody, _requestType];
   },
 
   emitChange: function() {
@@ -625,10 +645,12 @@ AppDispatcher.register(function(payload){
     case AppConstants.SUBMIT_REFERENCE_QUERY:
       var data = payload.action.item;
       submitReference(data);
+      console.log("reference called.")
       break;
     case AppConstants.SUBMIT_HISTORICAL_QUERY:
       var data = payload.action.item;
       submitHistorical(data);
+      console.log("historical called.")
       break;
 
 
