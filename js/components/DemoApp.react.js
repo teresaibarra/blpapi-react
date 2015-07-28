@@ -14,6 +14,7 @@ function getAppState() {
 var DemoApp = React.createClass({
 
     getInitialState: function() {
+
       return getAppState();
     },
 
@@ -28,8 +29,8 @@ var DemoApp = React.createClass({
     render: function(){
       return (
         <div>
-        <h1>Bloomberg API Demo</h1>
-        <h2>What would you like to look at?</h2>
+        <h1>Bloomberg API Demonstration</h1>
+        <h2>What would you like to look up?</h2>
         <h5>Pro-Tip: Separate multiple parameters with commas.</h5>
         <QueryForm />
         <ResponseList data={this.state.allData} />

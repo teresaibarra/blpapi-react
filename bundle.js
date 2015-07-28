@@ -136,6 +136,7 @@ function getAppState() {
 var DemoApp = React.createClass({displayName: "DemoApp",
 
     getInitialState: function() {
+
       return getAppState();
     },
 
@@ -150,8 +151,8 @@ var DemoApp = React.createClass({displayName: "DemoApp",
     render: function(){
       return (
         React.createElement("div", null, 
-        React.createElement("h1", null, "Bloomberg API Demo"), 
-        React.createElement("h2", null, "What would you like to look at?"), 
+        React.createElement("h1", null, "Bloomberg API Demonstration"), 
+        React.createElement("h2", null, "What would you like to look up?"), 
         React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
         React.createElement(QueryForm, null), 
         React.createElement(ResponseList, {data: this.state.allData})
@@ -274,8 +275,6 @@ var PrettyText = React.createClass({displayName: "PrettyText",
 		if(data) {
 			var secData = data.data[0].securityData;
 			responseNodes = secData.map(function (sec) {
-				console.log("sec +")
-				console.log(sec)
 				var info = [];
 				info.push(React.createElement("h3", {id: "security"}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
 				for (var j in sec.fieldData)
@@ -311,12 +310,7 @@ var AppActions = require('../actions/AppActions');
 var QueryForm = React.createClass({displayName: "QueryForm",
 
 	getInitialState: function() {
-		$("#responseList")
-		  .css('opacity', 0)
-		  .animate(
-		    { opacity: 1 },
-		    { queue: false, duration: 200 }
-		  );
+		
 		return {
 			hideReqTypes: true,
 			hideSecurities: true,
@@ -392,7 +386,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 	render: function() {
 		return(
-			React.createElement("form", {className: "queryForm", onSubmit: this._onSubmit, id: "queryForm"}, 
+			React.createElement("form", {className: "queryForm", onSubmit: this._onSubmit}, 
 				React.createElement("input", {type: "text", list: "services", placeholder: "service", ref: "service", 
 				id: "formbox", onChange: this.handleServiceChoice}), 
 
