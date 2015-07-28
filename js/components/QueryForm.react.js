@@ -12,6 +12,7 @@ var QueryForm = React.createClass({
 			hideSubmit: true,
 			hideStartDate: true,
 			hideEndDate: true,
+			hidePeriod: true,
 			servTypeChoice: "",
 			reqTypeChoice: ""
 		};
@@ -20,6 +21,12 @@ var QueryForm = React.createClass({
 	handleServiceChoice: function() {
 		if (this.refs.service)
 		{
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		    this.refs.startDate.getDOMNode().value = "";
+		    this.refs.endDate.getDOMNode().value = "";
+		    this.refs.period.getDOMNode().value = "";
+
 			this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString() });
 			this.setState({hideReqTypes: false});
 
@@ -36,11 +43,13 @@ var QueryForm = React.createClass({
 			this.setState({hideStartDate: true});
 			this.setState({hideEndDate: true});
 			this.setState({hideSubmit: true});
+			this.setState({hidePeriod: true});
 
 		    this.refs.securities.getDOMNode().value = "";
 		    this.refs.fields.getDOMNode().value = "";
 		    this.refs.startDate.getDOMNode().value = "";
 		    this.refs.endDate.getDOMNode().value = "";
+		    this.refs.period.getDOMNode().value = "";
 
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString() }, function(){
 
@@ -55,6 +64,7 @@ var QueryForm = React.createClass({
 					this.setState({hideFields: false});
 					this.setState({hideStartDate: false});
 					this.setState({hideEndDate: false});
+					this.setState({hidePeriod: false});
 					this.setState({hideSubmit: false});
 				}
 				else if (this.state.reqTypeChoice === "IntradayTickRequest"){
@@ -123,13 +133,13 @@ var QueryForm = React.createClass({
 
 				<input type="text" list ="secD" placeholder="securities" ref="securities" id="formbox" hidden={this.state.hideSecurities}  />
 				<datalist id="secD">
-					<option value="AAPL US Equity">Security Lookup Request</option>
+					<option value="AAPL US Equity, IBM US EQUITY">Security Lookup Request</option>
 				</datalist>
 				<br />
 
 				<input type="text" list ="fieldsD" placeholder="fields" ref="fields" id="formbox" hidden={this.state.hideFields}  />
 				<datalist id="fieldsD">
-					<option value="PX_LAST">Security Lookup Request</option>
+					<option value="PX_LAST, OPEN">Security Lookup Request</option>
 				</datalist>
 				<br />
 
@@ -142,6 +152,12 @@ var QueryForm = React.createClass({
 				<input type="text" list="endD" placeholder="end date" ref="endDate" id="formbox" hidden={this.state.hideEndDate}  />
 				<datalist id="endD">
 					<option value="20141231">Security Lookup Request</option>
+				</datalist>
+				<br />
+
+				<input type="text" list="period" placeholder="periodicity" ref="period" id="formbox" hidden={this.state.hidePeriod}  />
+				<datalist id="period">
+					<option value="MONTHLY">Security Lookup Request</option>
 				</datalist>
 				<br />
 
@@ -183,14 +199,16 @@ var QueryForm = React.createClass({
 			var fields = this.refs.fields.getDOMNode().value.trim();
 			var startDate = this.refs.startDate.getDOMNode().value.trim();
 			var endDate = this.refs.endDate.getDOMNode().value.trim();
+			var period = this.refs.period.getDOMNode().value.trim();
 
-			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate]);
+			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate, period]);
 
 			this.setState({hideReqTypes:true});
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
 			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
 			this.setState({hideSubmit: true});
 
 			this.refs.service.getDOMNode().value = "";
@@ -199,6 +217,7 @@ var QueryForm = React.createClass({
 		    this.refs.fields.getDOMNode().value = "";
 		    this.refs.startDate.getDOMNode().value = "";
 		    this.refs.endDate.getDOMNode().value = "";
+		    this.refs.period.getDOMNode().value = "";
 		}
 		else if (this.state.reqTypeChoice === "IntradayTickRequest"){
 			this.setState({hideReqTypes:true});

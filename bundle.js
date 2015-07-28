@@ -28,81 +28,127 @@ var LineChart = require("react-chartjs").Line;
 var Chart = React.createClass({displayName: "Chart",
 	render: function(){
 		var data = this.props.data;
-		var secName = this.props.secName;
+		var dateList = this.props.dateList;
+		var formattedDateList = [];
 		var responseNodes;
+		var info = [];
 
 		if(data) {
-			var info = [];
-			var red = Math.floor(Math.random() * 255);
-			var green = Math.floor(Math.random() * 255);
-			var blue = Math.floor(Math.random() * 255);
+			for (var array in data) {
+				var red = Math.floor(Math.random() * 255);
+				var green = Math.floor(Math.random() * 255);
+				var blue = Math.floor(Math.random() * 255);
 
 
-			info.push({
-				label: secName,
-				fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
-				strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-				pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-				pointStrokeColor: "#fff",
-				pointHighlightFill: "#fff",
-				pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
-				data: data
-			});
-		
+				info.push({
+					label: data[array][0],
+					fillColor: "rgba(" + red + "," + green + "," + blue + "," + 0.2 + ")" ,
+					strokeColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					pointColor: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					pointStrokeColor: "#fff",
+					pointHighlightFill: "#fff",
+					pointHighlightStroke: "rgba(" + red + "," + green + "," + blue + "," + 1 + ")" ,
+					data: data[array][1]
+				});
+			}
+
+			for (date in dateList) {
+				var rawMonth = dateList[date].getMonth() + 1;
+				var formattedMonth;
+
+				if (rawMonth == 1){
+					formattedMonth = "Jan";
+				}else if (rawMonth == 2){
+					formattedMonth = "Feb";
+				}else if (rawMonth == 3){
+					formattedMonth = "Mar";					
+				}else if (rawMonth == 4){
+					formattedMonth = "Apr";					
+				}else if (rawMonth == 5){
+					formattedMonth = "May";					
+				}else if (rawMonth == 6){
+					formattedMonth = "Jun";					
+				}else if (rawMonth == 7){
+					formattedMonth = "Jul";					
+				}else if (rawMonth == 8){
+					formattedMonth = "Aug";					
+				}else if (rawMonth == 9){
+					formattedMonth = "Sept";					
+				}else if (rawMonth == 10){
+					formattedMonth = "Oct";					
+				}else if (rawMonth == 11){
+					formattedMonth = "Nov";					
+				}else if (rawMonth == 12){
+					formattedMonth = "Dec";					
+				}else {
+					return;
+				}
+
+
+
+
+
+
+
+				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
+				formattedDateList.push(temp);
+			}
 		}
 
+
+
 		var chartData = {
-		labels: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-	    datasets: info
+			labels: formattedDateList,
+		    datasets: info
 		}
 
 		var chartOptions = {
-	    ///Boolean - Whether grid lines are shown across the chart
-	    scaleShowGridLines : true,
+		    ///Boolean - Whether grid lines are shown across the chart
+		    scaleShowGridLines : true,
 
-	    //String - Colour of the grid lines
-	    scaleGridLineColor : "rgba(0,0,0,.05)",
+		    //String - Colour of the grid lines
+		    scaleGridLineColor : "rgba(0,0,0,.05)",
 
-	    //Number - Width of the grid lines
-	    scaleGridLineWidth : 1,
+		    //Number - Width of the grid lines
+		    scaleGridLineWidth : 1,
 
-	    //Boolean - Whether to show horizontal lines (except X axis)
-	    scaleShowHorizontalLines: true,
+		    //Boolean - Whether to show horizontal lines (except X axis)
+		    scaleShowHorizontalLines: true,
 
-	    //Boolean - Whether to show vertical lines (except Y axis)
-	    scaleShowVerticalLines: true,
+		    //Boolean - Whether to show vertical lines (except Y axis)
+		    scaleShowVerticalLines: true,
 
-	    //Boolean - Whether the line is curved between points
-	    bezierCurve : true,
+		    //Boolean - Whether the line is curved between points
+		    bezierCurve : true,
 
-	    //Number - Tension of the bezier curve between points
-	    bezierCurveTension : 0.4,
+		    //Number - Tension of the bezier curve between points
+		    bezierCurveTension : 0.4,
 
-	    //Boolean - Whether to show a dot for each point
-	    pointDot : true,
+		    //Boolean - Whether to show a dot for each point
+		    pointDot : true,
 
-	    //Number - Radius of each point dot in pixels
-	    pointDotRadius : 4,
+		    //Number - Radius of each point dot in pixels
+		    pointDotRadius : 4,
 
-	    //Number - Pixel width of point dot stroke
-	    pointDotStrokeWidth : 1,
+		    //Number - Pixel width of point dot stroke
+		    pointDotStrokeWidth : 1,
 
-	    //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
-	    pointHitDetectionRadius : 20,
+		    //Number - amount extra to add to the radius to cater for hit detection outside the drawn point
+		    pointHitDetectionRadius : 20,
 
-	    //Boolean - Whether to show a stroke for datasets
-	    datasetStroke : true,
+		    //Boolean - Whether to show a stroke for datasets
+		    datasetStroke : true,
 
-	    //Number - Pixel width of dataset stroke
-	    datasetStrokeWidth : 2,
+		    //Number - Pixel width of dataset stroke
+		    datasetStrokeWidth : 2,
 
-	    //Boolean - Whether to fill the dataset with a colour
-	    datasetFill : true,
+		    //Boolean - Whether to fill the dataset with a colour
+		    datasetFill : true,
 
-	    //String - A legend template
-	    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
-			
-	    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"
+		    //String - A legend template
+		    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>",
+				
+		    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"
 		}
 
 
@@ -110,7 +156,7 @@ var Chart = React.createClass({displayName: "Chart",
 		return(
 			React.createElement("div", null, 
 				React.createElement("p", {className: "data", id: "lineChart"}, 
-					React.createElement(LineChart, {data: chartData, options: chartOptions, width: "600", height: "250"})
+					React.createElement(LineChart, {data: chartData, options: chartOptions, width: "500", height: "300"})
 					
 				)
 			)
@@ -204,55 +250,95 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 		var type = this.props.type;
 		var dataTitle;
 		var responseType;
-
+		var matchedData = [];
+		var dateList = [];
 
 		if(data) {
 			dataTitle = React.createElement("h2", {id: "dataTitle"}, " Pretty Response: ");
 			if (type === 'HistoricalDataRequest') {
 
-			var responseNodes;
-			var secData = data.data;
-			var info = [];
-			var chartData = [];
+				var responseNodes;
+				var secData = data.data;
+				var info = [];
+				var chartData = [];
+				var keyList = [];
 
-			responseNodes = secData.map(function (sec) {
-				var secObject = sec.securityData;
-				var result = {};
-				var secName = secObject.security.toUpperCase();
+				responseNodes = secData.map(function (sec) {
+					var secObject = sec.securityData;
+					var result = {};
+					var secName = secObject.security.toUpperCase();
 
-				for (var object in secObject.fieldData){
-					for (var key in secObject.fieldData[object]){
-						if(secObject.fieldData[object].hasOwnProperty(key)){
-								if(!result[key])
-								{
-									result[key] = [];
-									result[key].push(secObject.fieldData[object][key]);
+					for (var object in secObject.fieldData){
+						for (var key in secObject.fieldData[object]){
+							if(secObject.fieldData[object].hasOwnProperty(key)){
+									if(!result[key])
+									{
+										result[key] = [];
+										result[key].push(secObject.fieldData[object][key]);
+										if ($.inArray(key, keyList) == -1 && key != "date")
+										{
+											keyList.push(key);
+										}
+									}
+									else 
+									{
+										result[key].push(secObject.fieldData[object][key]);
+									}
+							}
+						}
+
+					}
+
+					for (date in result.date){
+						var dt = new Date(result.date[date]);
+						dateList.push(dt);
+					}
+					
+					for (var key in result){
+						if(result.hasOwnProperty(key) && key != "date") {
+							for (var keyName in keyList){
+								if (key === keyList[keyName] && result[key].length != 0){
+									if (!matchedData[key])
+									{
+										matchedData[key] = [];
+										matchedData[key].push([secName, result[key]]);
+									}else 
+									{
+										matchedData[key].push([])
+										matchedData[key].push([secName, result[key]]);
+									}
 								}
-								else 
-								{
-									result[key].push(secObject.fieldData[object][key]);
-								}
+
+							}
 						}
 					}
 
-				}
+				});
+				
+				dateList = dateList.slice(0,12);
 
-				for (var key in result){
-					if(result.hasOwnProperty(key) && key != "date") {
-						console.log(result[key])
-						chartData.push(React.createElement("h3", null, key.trim().toUpperCase()))
-						chartData.push(React.createElement(Chart, {data: result[key], secName: secName}))
+
+				for(var array in matchedData) {
+					for (var data in matchedData[array]) {
+						if (matchedData[array][data].length == 0) {
+							matchedData[array].splice(data, 1);
+						}
 					}
 				}
 
-			});
-		
+				for (var array in matchedData)
+				{
+					chartData.push(React.createElement("h3", null, array.trim().toUpperCase()));
+					chartData.push(React.createElement(Chart, {data: matchedData[array], dateList: dateList}))
+				}
 				responseType = chartData;
 
 			} else {
 				responseType = React.createElement(PrettyText, {data: data})
 			}
 		}
+
+
 
 		return(
 			React.createElement("p", {className: "data", id: "prettyResponse"}, 
@@ -318,6 +404,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			hideSubmit: true,
 			hideStartDate: true,
 			hideEndDate: true,
+			hidePeriod: true,
 			servTypeChoice: "",
 			reqTypeChoice: ""
 		};
@@ -326,6 +413,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 	handleServiceChoice: function() {
 		if (this.refs.service)
 		{
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		    this.refs.startDate.getDOMNode().value = "";
+		    this.refs.endDate.getDOMNode().value = "";
+		    this.refs.period.getDOMNode().value = "";
+
 			this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString() });
 			this.setState({hideReqTypes: false});
 
@@ -342,11 +435,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			this.setState({hideStartDate: true});
 			this.setState({hideEndDate: true});
 			this.setState({hideSubmit: true});
+			this.setState({hidePeriod: true});
 
 		    this.refs.securities.getDOMNode().value = "";
 		    this.refs.fields.getDOMNode().value = "";
 		    this.refs.startDate.getDOMNode().value = "";
 		    this.refs.endDate.getDOMNode().value = "";
+		    this.refs.period.getDOMNode().value = "";
 
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString() }, function(){
 
@@ -361,6 +456,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					this.setState({hideFields: false});
 					this.setState({hideStartDate: false});
 					this.setState({hideEndDate: false});
+					this.setState({hidePeriod: false});
 					this.setState({hideSubmit: false});
 				}
 				else if (this.state.reqTypeChoice === "IntradayTickRequest"){
@@ -429,13 +525,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				React.createElement("input", {type: "text", list: "secD", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
 				React.createElement("datalist", {id: "secD"}, 
-					React.createElement("option", {value: "AAPL US Equity"}, "Security Lookup Request")
+					React.createElement("option", {value: "AAPL US Equity, IBM US EQUITY"}, "Security Lookup Request")
 				), 
 				React.createElement("br", null), 
 
 				React.createElement("input", {type: "text", list: "fieldsD", placeholder: "fields", ref: "fields", id: "formbox", hidden: this.state.hideFields}), 
 				React.createElement("datalist", {id: "fieldsD"}, 
-					React.createElement("option", {value: "PX_LAST"}, "Security Lookup Request")
+					React.createElement("option", {value: "PX_LAST, OPEN"}, "Security Lookup Request")
 				), 
 				React.createElement("br", null), 
 
@@ -448,6 +544,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 				React.createElement("input", {type: "text", list: "endD", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
 				React.createElement("datalist", {id: "endD"}, 
 					React.createElement("option", {value: "20141231"}, "Security Lookup Request")
+				), 
+				React.createElement("br", null), 
+
+				React.createElement("input", {type: "text", list: "period", placeholder: "periodicity", ref: "period", id: "formbox", hidden: this.state.hidePeriod}), 
+				React.createElement("datalist", {id: "period"}, 
+					React.createElement("option", {value: "MONTHLY"}, "Security Lookup Request")
 				), 
 				React.createElement("br", null), 
 
@@ -489,14 +591,16 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var fields = this.refs.fields.getDOMNode().value.trim();
 			var startDate = this.refs.startDate.getDOMNode().value.trim();
 			var endDate = this.refs.endDate.getDOMNode().value.trim();
+			var period = this.refs.period.getDOMNode().value.trim();
 
-			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate]);
+			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate, period]);
 
 			this.setState({hideReqTypes:true});
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
 			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
 			this.setState({hideSubmit: true});
 
 			this.refs.service.getDOMNode().value = "";
@@ -505,6 +609,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.fields.getDOMNode().value = "";
 		    this.refs.startDate.getDOMNode().value = "";
 		    this.refs.endDate.getDOMNode().value = "";
+		    this.refs.period.getDOMNode().value = "";
 		}
 		else if (this.state.reqTypeChoice === "IntradayTickRequest"){
 			this.setState({hideReqTypes:true});
@@ -635,6 +740,8 @@ function submitReference(data){
     var type = data[1];
     var securities = data[2];
     var fields = data[3];
+    var cleanSecurities = [];
+    var cleanFields = [];
 
     if(!service || !type || !securities || !fields)
     {
@@ -644,13 +751,15 @@ function submitReference(data){
     fields = fields.split(",");
     securities.forEach(function (sec) {
       sec = sec.trim();
+      cleanSecurities.push(sec);
     });
     fields.forEach(function (fld){
       fld = fld.trim();
+      cleanFields.push(fld);
     })
     _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-    handleQuerySubmit({securities: securities, fields: fields}, url);       
+    handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);       
    
 }
 
@@ -660,6 +769,11 @@ function submitHistorical(data){
     var type = data[1];
     var securities = data[2];
     var fields = data[3];
+    var startDate = data[4];
+    var endDate = data[5];
+    var period = data[6];
+    var cleanSecurities = [];
+    var cleanFields = [];
 
     if(!service || !type || !securities || !fields)
     {
@@ -669,15 +783,16 @@ function submitHistorical(data){
     fields = fields.split(",");
     securities.forEach(function (sec) {
       sec = sec.trim();
+      cleanSecurities.push(sec);
     });
     fields.forEach(function (fld){
       fld = fld.trim();
+      cleanFields.push(fld);
     })
-
     _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-    handleQuerySubmit({securities: securities, fields: fields, "startDate": "20140101", "endDate": "20141231", 
-      "periodicitySelection": "MONTHLY"}, url);
+    handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
+      "periodicitySelection": period}, url);
    
 }
 

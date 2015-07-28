@@ -15,6 +15,8 @@ function submitReference(data){
     var type = data[1];
     var securities = data[2];
     var fields = data[3];
+    var cleanSecurities = [];
+    var cleanFields = [];
 
     if(!service || !type || !securities || !fields)
     {
@@ -24,13 +26,15 @@ function submitReference(data){
     fields = fields.split(",");
     securities.forEach(function (sec) {
       sec = sec.trim();
+      cleanSecurities.push(sec);
     });
     fields.forEach(function (fld){
       fld = fld.trim();
+      cleanFields.push(fld);
     })
     _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-    handleQuerySubmit({securities: securities, fields: fields}, url);       
+    handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);       
    
 }
 
@@ -40,6 +44,11 @@ function submitHistorical(data){
     var type = data[1];
     var securities = data[2];
     var fields = data[3];
+    var startDate = data[4];
+    var endDate = data[5];
+    var period = data[6];
+    var cleanSecurities = [];
+    var cleanFields = [];
 
     if(!service || !type || !securities || !fields)
     {
@@ -49,15 +58,16 @@ function submitHistorical(data){
     fields = fields.split(",");
     securities.forEach(function (sec) {
       sec = sec.trim();
+      cleanSecurities.push(sec);
     });
     fields.forEach(function (fld){
       fld = fld.trim();
+      cleanFields.push(fld);
     })
-
     _requestType = type;
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-    handleQuerySubmit({securities: securities, fields: fields, "startDate": "20140101", "endDate": "20141231", 
-      "periodicitySelection": "MONTHLY"}, url);
+    handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
+      "periodicitySelection": period}, url);
    
 }
 
