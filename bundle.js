@@ -175,7 +175,6 @@ function getAppState() {
 var DemoApp = React.createClass({displayName: "DemoApp",
 
     getInitialState: function() {
-
       return getAppState();
     },
 
@@ -194,7 +193,7 @@ var DemoApp = React.createClass({displayName: "DemoApp",
         React.createElement("h2", null, "What would you like to look up?"), 
         React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
         React.createElement(QueryForm, null), 
-        React.createElement(ResponseList, {data: this.state.allData})
+        React.createElement(ResponseList, {id: "response", data: this.state.allData})
         )
       )
     },
@@ -664,22 +663,16 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		var data = this.props.data[0];
 		var request = this.props.data[1];
 		var type = this.props.data[2];
+
 		$("#responseList")
-		  .animate(
-		    { opacity: 0 },
-		    { queue: true, duration: 200 }
-		  )
-		  .animate(
-		    { opacity: 1 },
-		    { queue: false, duration: 200 }
-		);
-		console.log("Rendered.")
+			.css('opacity', 0)
+			.fadeTo("fast", 1);
+
 		return (
 			React.createElement("div", {className: "responseList", id: "responseList"}, 
 				React.createElement(PostBody, {request: request}), 
 				React.createElement(RawResponse, {data: data}), 
 				React.createElement(PrettyResponse, {data: data, type: type})
-			
 			)
 		)
 	}
