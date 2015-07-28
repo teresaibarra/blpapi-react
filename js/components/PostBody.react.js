@@ -8,6 +8,7 @@ var PostBody = React.createClass({
 		{
 			title = "POST Request Body:";
 			data = JSON.stringify(this.props.request, null, 3);
+
 			
 		}
 		return(

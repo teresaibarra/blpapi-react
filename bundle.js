@@ -155,6 +155,7 @@ var DemoApp = React.createClass({displayName: "DemoApp",
         React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
         React.createElement(QueryForm, null), 
         React.createElement(ResponseList, {data: this.state.allData})
+        
         )
       )
     },
@@ -177,6 +178,7 @@ var PostBody = React.createClass({displayName: "PostBody",
 		{
 			title = "POST Request Body:";
 			data = JSON.stringify(this.props.request, null, 3);
+
 			
 		}
 		return(
@@ -309,6 +311,12 @@ var AppActions = require('../actions/AppActions');
 var QueryForm = React.createClass({displayName: "QueryForm",
 
 	getInitialState: function() {
+		$("#responseList")
+		  .css('opacity', 0)
+		  .animate(
+		    { opacity: 1 },
+		    { queue: false, duration: 200 }
+		  );
 		return {
 			hideReqTypes: true,
 			hideSecurities: true,
@@ -384,7 +392,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 	render: function() {
 		return(
-			React.createElement("form", {className: "queryForm", onSubmit: this._onSubmit}, 
+			React.createElement("form", {className: "queryForm", onSubmit: this._onSubmit, id: "queryForm"}, 
 				React.createElement("input", {type: "text", list: "services", placeholder: "service", ref: "service", 
 				id: "formbox", onChange: this.handleServiceChoice}), 
 
@@ -565,9 +573,14 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		var data = this.props.data[0];
 		var request = this.props.data[1];
 		var type = this.props.data[2];
-
+		$("#responseList")
+		  .css('opacity', 0)
+		  .animate(
+		    { opacity: 1 },
+		    { queue: false, duration: 200 }
+		  );
 		return (
-			React.createElement("div", {className: "responseList"}, 
+			React.createElement("div", {className: "responseList", id: "responseList"}, 
 				React.createElement(PostBody, {request: request}), 
 				React.createElement(RawResponse, {data: data}), 
 				React.createElement(PrettyResponse, {data: data, type: type})

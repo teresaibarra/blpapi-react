@@ -4,6 +4,7 @@ var AppActions = require('../actions/AppActions');
 var QueryForm = React.createClass({
 
 	getInitialState: function() {
+		
 		return {
 			hideReqTypes: true,
 			hideSecurities: true,

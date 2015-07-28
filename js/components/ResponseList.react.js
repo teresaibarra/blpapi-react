@@ -8,9 +8,14 @@ var ResponseList = React.createClass({
 		var data = this.props.data[0];
 		var request = this.props.data[1];
 		var type = this.props.data[2];
-
+		$("#responseList")
+		  .css('opacity', 0)
+		  .animate(
+		    { opacity: 1 },
+		    { queue: false, duration: 200 }
+		  );
 		return (
-			<div className="responseList">
+			<div className="responseList" id="responseList" >
 				<PostBody request={request} />
 				<RawResponse data={data} />
 				<PrettyResponse data={data} type={type} />
