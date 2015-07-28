@@ -87,8 +87,8 @@ var PrettyResponse = React.createClass({
 
 				for (var array in matchedData)
 				{
-					chartData.push(<h3>{array.trim().toUpperCase()}</h3>);
-					chartData.push(<Chart data={matchedData[array]} dateList={dateList} />)
+					chartData.push(<h3 key={array.trim() + 1}>{array.trim().toUpperCase()}</h3>);
+					chartData.push(<Chart data={matchedData[array]} dateList={dateList} dataName={array.trim()} key={array.trim() + 2} />)
 				}
 				responseType = chartData;
 

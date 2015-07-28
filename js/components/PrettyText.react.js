@@ -8,7 +8,7 @@ var PrettyText = React.createClass({
 			var secData = data.data[0].securityData;
 			responseNodes = secData.map(function (sec) {
 				var info = [];
-				info.push(<h3 id="security"> {"SECURITY: " + sec.security.toUpperCase()} </h3>);
+				info.push(<h3 id="security" key={sec.security} > {"SECURITY: " + sec.security.toUpperCase()} </h3>);
 				for (var j in sec.fieldData)
 				{
 					var value = j;
@@ -16,7 +16,7 @@ var PrettyText = React.createClass({
 					{
 						value = value.replace(/_/g, " ");
 					}
-					info.push(<h4 id="fieldData"> {value.trim().charAt(0).toUpperCase() + 
+					info.push(<h4 id="fieldData" key={value.trim()}> {value.trim().charAt(0).toUpperCase() + 
 						value.trim().slice(1).toLowerCase() + ": " + sec.fieldData[j]} </h4>)
 				}
 				return(

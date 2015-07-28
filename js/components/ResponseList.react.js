@@ -9,11 +9,15 @@ var ResponseList = React.createClass({
 		var request = this.props.data[1];
 		var type = this.props.data[2];
 		$("#responseList")
-		  .css('opacity', 0)
+		  .animate(
+		    { opacity: 0 },
+		    { queue: true, duration: 200 }
+		  )
 		  .animate(
 		    { opacity: 1 },
 		    { queue: false, duration: 200 }
-		  );
+		);
+		console.log("Rendered.")
 		return (
 			<div className="responseList" id="responseList" >
 				<PostBody request={request} />

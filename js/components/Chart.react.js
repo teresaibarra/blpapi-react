@@ -6,9 +6,11 @@ var Chart = React.createClass({
 	render: function(){
 		var data = this.props.data;
 		var dateList = this.props.dateList;
+		var dataName = this.props.dateName;
 		var formattedDateList = [];
 		var responseNodes;
 		var info = [];
+
 
 		if(data) {
 			for (var array in data) {
@@ -61,18 +63,10 @@ var Chart = React.createClass({
 					return;
 				}
 
-
-
-
-
-
-
 				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
 				formattedDateList.push(temp);
 			}
 		}
-
-
 
 		var chartData = {
 			labels: formattedDateList,
@@ -133,8 +127,7 @@ var Chart = React.createClass({
 		return(
 			<div>
 				<p className="data" id="lineChart">
-					<LineChart data={chartData} options={chartOptions} width="500" height="300"/>
-					
+					<LineChart data={chartData} options={chartOptions} key={dataName} width="500" height="300"/>
 				</p>
 			</div>
 		);

@@ -29,9 +29,11 @@ var Chart = React.createClass({displayName: "Chart",
 	render: function(){
 		var data = this.props.data;
 		var dateList = this.props.dateList;
+		var dataName = this.props.dateName;
 		var formattedDateList = [];
 		var responseNodes;
 		var info = [];
+
 
 		if(data) {
 			for (var array in data) {
@@ -84,18 +86,10 @@ var Chart = React.createClass({displayName: "Chart",
 					return;
 				}
 
-
-
-
-
-
-
 				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
 				formattedDateList.push(temp);
 			}
 		}
-
-
 
 		var chartData = {
 			labels: formattedDateList,
@@ -156,8 +150,7 @@ var Chart = React.createClass({displayName: "Chart",
 		return(
 			React.createElement("div", null, 
 				React.createElement("p", {className: "data", id: "lineChart"}, 
-					React.createElement(LineChart, {data: chartData, options: chartOptions, width: "500", height: "300"})
-					
+					React.createElement(LineChart, {data: chartData, options: chartOptions, key: dataName, width: "500", height: "300"})
 				)
 			)
 		);
@@ -202,7 +195,6 @@ var DemoApp = React.createClass({displayName: "DemoApp",
         React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
         React.createElement(QueryForm, null), 
         React.createElement(ResponseList, {data: this.state.allData})
-        
         )
       )
     },
@@ -328,8 +320,8 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 
 				for (var array in matchedData)
 				{
-					chartData.push(React.createElement("h3", null, array.trim().toUpperCase()));
-					chartData.push(React.createElement(Chart, {data: matchedData[array], dateList: dateList}))
+					chartData.push(React.createElement("h3", {key: array.trim() + 1}, array.trim().toUpperCase()));
+					chartData.push(React.createElement(Chart, {data: matchedData[array], dateList: dateList, dataName: array.trim(), key: array.trim() + 2}))
 				}
 				responseType = chartData;
 
@@ -362,7 +354,7 @@ var PrettyText = React.createClass({displayName: "PrettyText",
 			var secData = data.data[0].securityData;
 			responseNodes = secData.map(function (sec) {
 				var info = [];
-				info.push(React.createElement("h3", {id: "security"}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
+				info.push(React.createElement("h3", {id: "security", key: sec.security}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
 				for (var j in sec.fieldData)
 				{
 					var value = j;
@@ -370,7 +362,7 @@ var PrettyText = React.createClass({displayName: "PrettyText",
 					{
 						value = value.replace(/_/g, " ");
 					}
-					info.push(React.createElement("h4", {id: "fieldData"}, " ", value.trim().charAt(0).toUpperCase() + 
+					info.push(React.createElement("h4", {id: "fieldData", key: value.trim()}, " ", value.trim().charAt(0).toUpperCase() + 
 						value.trim().slice(1).toLowerCase() + ": " + sec.fieldData[j], " "))
 				}
 				return(
@@ -673,11 +665,15 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		var request = this.props.data[1];
 		var type = this.props.data[2];
 		$("#responseList")
-		  .css('opacity', 0)
+		  .animate(
+		    { opacity: 0 },
+		    { queue: true, duration: 200 }
+		  )
 		  .animate(
 		    { opacity: 1 },
 		    { queue: false, duration: 200 }
-		  );
+		);
+		console.log("Rendered.")
 		return (
 			React.createElement("div", {className: "responseList", id: "responseList"}, 
 				React.createElement(PostBody, {request: request}), 

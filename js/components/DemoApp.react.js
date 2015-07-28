@@ -34,7 +34,6 @@ var DemoApp = React.createClass({
         <h5>Pro-Tip: Separate multiple parameters with commas.</h5>
         <QueryForm />
         <ResponseList data={this.state.allData} />
-        
         </div>
       )
     },
