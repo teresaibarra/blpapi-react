@@ -101,7 +101,8 @@ var QueryForm = React.createClass({
 
 	render: function() {
 		return(
-			<form className="queryForm" onSubmit={this._onSubmit}>
+			<div id="queryDiv">
+			<form className="queryForm" id="queryForm" onSubmit={this._onSubmit}>
 				<input type="text" list="services" placeholder="service" ref="service" 
 				id="formbox" onChange={this.handleServiceChoice} />
 
@@ -111,8 +112,6 @@ var QueryForm = React.createClass({
 						<option value="tasvc">Technical Analysis Service</option>
 						<option value="instruments">Instruments Service</option>
 					</datalist>
-
-				<br />
 
 				<input type="text" list={this.state.servTypeChoice} placeholder="request type" ref="type" 
 				id="formbox" hidden={this.state.hideReqTypes} onChange={this.handleRequestChoice}/>
@@ -140,46 +139,42 @@ var QueryForm = React.createClass({
 					<option value="InstrumentListRequest">Security Lookup Request</option>
 				</datalist>
 
-				<br />
-
 				<input type="text" list ="secD" placeholder="securities" ref="securities" id="formbox" hidden={this.state.hideSecurities}  />
 				<datalist id="secD">
 					<option value="AAPL US Equity, IBM US EQUITY">Security Lookup Request</option>
 				</datalist>
-				<br />
+
 
 				<input type="text" list ="fieldsD" placeholder="fields" ref="fields" id="formbox" hidden={this.state.hideFields}  />
 				<datalist id="fieldsD">
 					<option value="PX_LAST, OPEN">Security Lookup Request</option>
 				</datalist>
-				<br />
+
 
 				<input type="text" list="startD" placeholder="start date" ref="startDate" id="formbox" hidden={this.state.hideStartDate}  />
 				<datalist id="startD">
 					<option value="20140101">Security Lookup Request</option>
 				</datalist>
-				<br />
+
 
 				<input type="text" list="endD" placeholder="end date" ref="endDate" id="formbox" hidden={this.state.hideEndDate}  />
 				<datalist id="endD">
 					<option value="20141231">Security Lookup Request</option>
 				</datalist>
-				<br />
+
 
 				<input type="text" list="period" placeholder="periodicity" ref="period" id="formbox" hidden={this.state.hidePeriod}  />
 				<datalist id="period">
 					<option value="MONTHLY">Security Lookup Request</option>
 				</datalist>
-				<br />
+
 
 				<textarea rows="4" cols="50" placeholder="Enter post body here." ref="postTextArea" hidden={this.state.hidePostTextArea} />
-				<br />
 
+				<br />
 				<input type="submit" value="Submit" id="submit" hidden={this.state.hideSubmit} />
-
-				<br />
-
 			</form>
+			</div>
 		);
 		
 	},
