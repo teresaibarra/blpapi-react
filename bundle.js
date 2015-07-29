@@ -44,10 +44,10 @@ var Chart = React.createClass({displayName: "Chart",
 
 		if(data) {
 			for (var array in data) {
+
 				var red = Math.floor(Math.random() * 255);
 				var green = Math.floor(Math.random() * 255);
 				var blue = Math.floor(Math.random() * 255);
-
 
 				info.push({
 					label: data[array][0],
@@ -92,10 +92,11 @@ var Chart = React.createClass({displayName: "Chart",
 				}else {
 					return;
 				}
-
 				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
 				formattedDateList.push(temp);
-			}
+
+			}console.log(formattedDateList)
+			console.log(info)
 		}
 
 		var chartData = {
@@ -157,7 +158,7 @@ var Chart = React.createClass({displayName: "Chart",
 		return(
 			React.createElement("div", null, 
 				React.createElement("p", {className: "data", id: "lineChart"}, 
-					React.createElement(LineChart, {data: chartData, options: chartOptions, key: dataName, width: "500", height: "300"})
+					React.createElement(LineChart, {data: chartData, options: chartOptions, key: dataName, width: "500", height: "300", redraw: true})
 				)
 			)
 		);
@@ -341,7 +342,7 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 
 				});
 				
-				dateList = dateList.slice(0,12);
+				dateList = dateList.slice(0,dateList.length/2);
 
 
 				for(var array in matchedData) {
@@ -576,13 +577,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				React.createElement("input", {type: "text", list: "endD", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
 				React.createElement("datalist", {id: "endD"}, 
-					React.createElement("option", {value: "20141231"}, "Security Lookup Request")
+					React.createElement("option", {value: "20140115"}, "Security Lookup Request")
 				), 
 
 
 				React.createElement("input", {type: "text", list: "period", placeholder: "periodicity", ref: "period", id: "formbox", hidden: this.state.hidePeriod}), 
 				React.createElement("datalist", {id: "period"}, 
-					React.createElement("option", {value: "MONTHLY"}, "Security Lookup Request")
+					React.createElement("option", {value: "DAILY"}, "Security Lookup Request")
 				), 
 
 
@@ -605,7 +606,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var securities = this.refs.securities.getDOMNode().value.trim();
 			var fields = this.refs.fields.getDOMNode().value.trim();
 
-			console.log("reference")
 			AppActions.submitReferenceQuery([service, type, securities, fields]);
 
 			this.setState({hideReqTypes:true});
@@ -627,7 +627,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var endDate = this.refs.endDate.getDOMNode().value.trim();
 			var period = this.refs.period.getDOMNode().value.trim();
 
-			console.log("Historical")
 			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate, period]);
 
 			this.setState({hideReqTypes:true});
@@ -667,7 +666,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var type = this.refs.type.getDOMNode().value.trim();
 			var postTextArea = this.refs.postTextArea.getDOMNode().value.trim();
 
-			console.log("text area")
 			AppActions.submitTextAreaQuery([service, type, postTextArea]);
 
 			this.setState({hideReqTypes:true});

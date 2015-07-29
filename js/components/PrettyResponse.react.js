@@ -74,7 +74,7 @@ var PrettyResponse = React.createClass({
 
 				});
 				
-				dateList = dateList.slice(0,12);
+				dateList = dateList.slice(0,dateList.length/2);
 
 
 				for(var array in matchedData) {

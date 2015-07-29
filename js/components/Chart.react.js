@@ -14,10 +14,10 @@ var Chart = React.createClass({
 
 		if(data) {
 			for (var array in data) {
+
 				var red = Math.floor(Math.random() * 255);
 				var green = Math.floor(Math.random() * 255);
 				var blue = Math.floor(Math.random() * 255);
-
 
 				info.push({
 					label: data[array][0],
@@ -62,10 +62,11 @@ var Chart = React.createClass({
 				}else {
 					return;
 				}
-
 				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
 				formattedDateList.push(temp);
-			}
+
+			}console.log(formattedDateList)
+			console.log(info)
 		}
 
 		var chartData = {
@@ -127,7 +128,7 @@ var Chart = React.createClass({
 		return(
 			<div>
 				<p className="data" id="lineChart">
-					<LineChart data={chartData} options={chartOptions} key={dataName} width="500" height="300"/>
+					<LineChart data={chartData} options={chartOptions} key={dataName} width="500" height="300" redraw/>
 				</p>
 			</div>
 		);
