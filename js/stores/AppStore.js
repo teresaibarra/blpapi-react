@@ -8,6 +8,7 @@ var CHANGE_EVENT = 'change';
 var _receivedData = "";
 var _postBody = "";
 var _requestType = "";
+var _error = "";
 
 function submitReference(data){
 
@@ -17,6 +18,8 @@ function submitReference(data){
     var fields = data[3];
     var cleanSecurities = [];
     var cleanFields = [];
+
+    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
     securities = securities.split(",");
     fields = fields.split(",");
@@ -29,7 +32,7 @@ function submitReference(data){
       cleanFields.push(fld);
     })
     _requestType = type;
-    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+
     handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);       
    
 }
@@ -46,6 +49,8 @@ function submitHistorical(data){
     var cleanSecurities = [];
     var cleanFields = [];
 
+    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+
     securities = securities.split(",");
     fields = fields.split(",");
     securities.forEach(function (sec) {
@@ -57,9 +62,21 @@ function submitHistorical(data){
       cleanFields.push(fld);
     })
     _requestType = type;
-    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+
     handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
       "periodicitySelection": period}, url);
+   
+}
+
+function submitTextArea(data){
+
+    var service = data[0];
+    var type = data[1];
+    var body = data[2];
+
+    _requestType = type;
+    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+    handleQuerySubmit(body, url);
    
 }
 
@@ -71,10 +88,12 @@ function handleQuerySubmit(query, url) {
    success: function(data) {
     _postBody = query;
     _receivedData = data;   
+    _error = "";
     AppStore.emitChange();
     }.bind(this),
    error: function(xhr, status, err) {
      console.error(url, status, err.toString());
+     _error = [url, status, err + "."];
      AppStore.emitChange();
      }.bind(this)
    })
@@ -83,7 +102,7 @@ function handleQuerySubmit(query, url) {
 
 var AppStore = assign({}, EventEmitter.prototype, {
   getAll: function() {
-    return [_receivedData, _postBody, _requestType];
+    return [_receivedData, _postBody, _requestType, _error];
   },
 
   emitChange: function() {
@@ -111,7 +130,10 @@ AppDispatcher.register(function(payload){
       var data = payload.action.item;
       submitHistorical(data);
       break;
-
+    case AppConstants.SUBMIT_TEXT_AREA_QUERY:
+      var data = payload.action.item;
+      submitTextArea(data);
+      break;
 
     default:
       return true;

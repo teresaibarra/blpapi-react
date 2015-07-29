@@ -14,7 +14,14 @@ var AppActions = {
       actionType:AppConstants.SUBMIT_HISTORICAL_QUERY,
       item: item
     })
+  },
+  submitTextAreaQuery: function(item){
+    AppDispatcher.handleViewAction({
+      actionType:AppConstants.SUBMIT_TEXT_AREA_QUERY,
+      item: item
+    })
   }
+
 }
 
 module.exports = AppActions;

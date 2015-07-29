@@ -70,6 +70,16 @@ ul {
   padding-left: 30px;
 }
 
+textarea {
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  font-family: "Bitstream Vera Sans Mono", Consolas, Courier, monospace;
+  font-size: 12px;
+  margin: 0 2px;
+  padding: 0px 5px;
+}
+
 #formbox {
   width: 250px;
   height: 30px;
@@ -85,6 +95,8 @@ ul {
   border: #FFFFFF;
   color: #FFFFFF;
   opacity: 0;
+  margin: 0;
+  padding: 0;
 
 }
 #formbox:disabled::-webkit-input-placeholder { /* WebKit browsers */
@@ -149,11 +161,15 @@ pre {
     display:inline-block;
     margin: 5em;
     vertical-align: top;
-    width: 500px;
+    width: 550px;
     height: 600px;
 }
 #rawResponseInfo {
     overflow-y: auto;
     width: 100%;
     height: 100%;
+}
+#error {
+  color: red;
+
 }

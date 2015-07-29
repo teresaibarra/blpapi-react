@@ -4,6 +4,7 @@ var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
 var ResponseList = require('./ResponseList.react');
 var QueryForm = require('./QueryForm.react');
+var ErrorMessage = require('./ErrorMessage.react');
 
 function getAppState() {
   return {
@@ -32,7 +33,8 @@ var DemoApp = React.createClass({
         <h2>What would you like to look up?</h2>
         <h5>Pro-Tip: Separate multiple parameters with commas.</h5>
         <QueryForm />
-        <ResponseList id="response" data={this.state.allData} />
+        <ErrorMessage error={this.state.allData[3]} />
+        <ResponseList data={this.state.allData} />
         </div>
       )
     },

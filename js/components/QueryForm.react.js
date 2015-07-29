@@ -13,6 +13,7 @@ var QueryForm = React.createClass({
 			hideStartDate: true,
 			hideEndDate: true,
 			hidePeriod: true,
+			hidePostTextArea: true,
 			servTypeChoice: "",
 			reqTypeChoice: ""
 		};
@@ -27,8 +28,17 @@ var QueryForm = React.createClass({
 		    this.refs.endDate.getDOMNode().value = "";
 		    this.refs.period.getDOMNode().value = "";
 
-			this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString() });
-			this.setState({hideReqTypes: false});
+			this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
+				if(this.state.servTypeChoice === "refdata" || this.state.servTypeChoice === "apiflds" || this.state.servTypeChoice === "tasvc" || this.state.servTypeChoice === "instruments") {
+					this.setState({hidePostTextArea: true});
+					this.setState({hideReqTypes: false});
+					this.setState({hideSubmit: true});
+				}else {
+					this.setState({hidePostTextArea: false});
+					this.setState({hideReqTypes: false});
+					this.setState({hideSubmit: false});
+				}
+			});
 
 			return;
 		}
@@ -80,6 +90,7 @@ var QueryForm = React.createClass({
 					this.setState({hideSubmit: false});
 				}
 				else{
+					this.setState({hideSubmit: false});
 					return;
 				}
 			});
@@ -161,6 +172,9 @@ var QueryForm = React.createClass({
 				</datalist>
 				<br />
 
+				<textarea rows="4" cols="50" placeholder="Enter post body here." ref="postTextArea" hidden={this.state.hidePostTextArea} />
+				<br />
+
 				<input type="submit" value="Submit" id="submit" hidden={this.state.hideSubmit} />
 
 				<br />
@@ -236,7 +250,19 @@ var QueryForm = React.createClass({
 			this.setState({hideSubmit: true});
 		}
 		else{
-			return;
+			var service = this.refs.service.getDOMNode().value.trim();
+			var type = this.refs.type.getDOMNode().value.trim();
+			var postTextArea = this.refs.postTextArea.getDOMNode().value.trim();
+
+			AppActions.submitTextAreaQuery([service, type, postTextArea]);
+
+			this.setState({hideReqTypes:true});
+			this.setState({hidePostTextArea: true});
+			this.setState({hideSubmit: true});
+
+			this.refs.service.getDOMNode().value = "";
+		    this.refs.type.getDOMNode().value = "";
+		    this.refs.postTextArea.getDOMNode().value = "";
 		}
 
 	    this.setState({servTypeChoice: ""});
