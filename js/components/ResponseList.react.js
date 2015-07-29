@@ -10,13 +10,14 @@ var ResponseList = React.createClass({
 		var type = this.props.data[2];
 		var error = this.props.data[3];
 
+		
 		if (!error) {
-		$("#responseList")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);			
+			$("#responseList")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);			
 		}else {
-		$("#responseList")
-			.fadeTo("fast", 0);	
+			$("#responseList")
+				.fadeTo("fast", 0);	
 		}
 
 

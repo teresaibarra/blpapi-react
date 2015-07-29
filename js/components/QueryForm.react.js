@@ -188,7 +188,6 @@ var QueryForm = React.createClass({
 			var securities = this.refs.securities.getDOMNode().value.trim();
 			var fields = this.refs.fields.getDOMNode().value.trim();
 
-
 			AppActions.submitReferenceQuery([service, type, securities, fields]);
 
 			this.setState({hideReqTypes:true});

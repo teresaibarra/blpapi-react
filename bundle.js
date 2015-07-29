@@ -605,7 +605,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var securities = this.refs.securities.getDOMNode().value.trim();
 			var fields = this.refs.fields.getDOMNode().value.trim();
 
-
+			console.log("reference")
 			AppActions.submitReferenceQuery([service, type, securities, fields]);
 
 			this.setState({hideReqTypes:true});
@@ -627,6 +627,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var endDate = this.refs.endDate.getDOMNode().value.trim();
 			var period = this.refs.period.getDOMNode().value.trim();
 
+			console.log("Historical")
 			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate, period]);
 
 			this.setState({hideReqTypes:true});
@@ -666,6 +667,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var type = this.refs.type.getDOMNode().value.trim();
 			var postTextArea = this.refs.postTextArea.getDOMNode().value.trim();
 
+			console.log("text area")
 			AppActions.submitTextAreaQuery([service, type, postTextArea]);
 
 			this.setState({hideReqTypes:true});
@@ -722,13 +724,14 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		var type = this.props.data[2];
 		var error = this.props.data[3];
 
+		
 		if (!error) {
-		$("#responseList")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);			
+			$("#responseList")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);			
 		}else {
-		$("#responseList")
-			.fadeTo("fast", 0);	
+			$("#responseList")
+				.fadeTo("fast", 0);	
 		}
 
 
@@ -871,7 +874,8 @@ function handleQuerySubmit(query, url) {
     AppStore.emitChange();
     }.bind(this),
    error: function(xhr, status, err) {
-     console.error(url, status, err.toString());
+     _postBody = "";
+     _receivedData = "";
      _error = [url, status, err + "."];
      AppStore.emitChange();
      }.bind(this)

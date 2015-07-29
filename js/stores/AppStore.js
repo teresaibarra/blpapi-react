@@ -92,7 +92,8 @@ function handleQuerySubmit(query, url) {
     AppStore.emitChange();
     }.bind(this),
    error: function(xhr, status, err) {
-     console.error(url, status, err.toString());
+     _postBody = "";
+     _receivedData = "";
      _error = [url, status, err + "."];
      AppStore.emitChange();
      }.bind(this)
