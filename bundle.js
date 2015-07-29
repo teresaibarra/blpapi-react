@@ -361,8 +361,7 @@ var PrettyText = React.createClass({displayName: "PrettyText",
 					{
 						value = value.replace(/_/g, " ");
 					}
-					info.push(React.createElement("h4", {id: "fieldData", key: value.trim()}, " ", value.trim().charAt(0).toUpperCase() + 
-						value.trim().slice(1).toLowerCase() + ": " + sec.fieldData[j], " "))
+					info.push(React.createElement("h4", {id: "fieldData", key: value.trim()}, " ", value.trim().toUpperCase() + ": " + sec.fieldData[j], " "))
 				}
 				return(
 					{info}
