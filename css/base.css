@@ -149,4 +149,11 @@ pre {
     display:inline-block;
     margin: 5em;
     vertical-align: top;
+    width: 500px;
+    height: 600px;
+}
+#rawResponseInfo {
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
 }

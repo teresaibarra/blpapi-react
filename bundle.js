@@ -639,13 +639,15 @@ var RawResponse = React.createClass({displayName: "RawResponse",
 		{
 			title = "Raw Response:";
 			data = JSON.stringify(this.props.data, null, 3);
-
 		}
 		return(
 			React.createElement("div", {className: "rawResponse", id: "rawResponse"}, 
 				React.createElement("h2", {id: "dataTitle"}, title), 
+				React.createElement("div", {id: "rawResponseInfo"}, 
 				React.createElement("pre", {className: "rawResponseInfo"}, data)
+				)
 			)
+
 		);
 	}
 });
@@ -731,10 +733,6 @@ function submitReference(data){
     var cleanSecurities = [];
     var cleanFields = [];
 
-    if(!service || !type || !securities || !fields)
-    {
-      return;
-    }
     securities = securities.split(",");
     fields = fields.split(",");
     securities.forEach(function (sec) {
@@ -763,10 +761,6 @@ function submitHistorical(data){
     var cleanSecurities = [];
     var cleanFields = [];
 
-    if(!service || !type || !securities || !fields)
-    {
-      return;
-    }
     securities = securities.split(",");
     fields = fields.split(",");
     securities.forEach(function (sec) {

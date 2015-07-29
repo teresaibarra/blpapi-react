@@ -18,10 +18,6 @@ function submitReference(data){
     var cleanSecurities = [];
     var cleanFields = [];
 
-    if(!service || !type || !securities || !fields)
-    {
-      return;
-    }
     securities = securities.split(",");
     fields = fields.split(",");
     securities.forEach(function (sec) {
@@ -50,10 +46,6 @@ function submitHistorical(data){
     var cleanSecurities = [];
     var cleanFields = [];
 
-    if(!service || !type || !securities || !fields)
-    {
-      return;
-    }
     securities = securities.split(",");
     fields = fields.split(",");
     securities.forEach(function (sec) {
