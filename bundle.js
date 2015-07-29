@@ -226,8 +226,8 @@ var ErrorMessage = React.createClass({displayName: "ErrorMessage",
 		if(error){
 			var type = error[2];
 			var url = error[0];
-			message.push(React.createElement("h4", {id: "error"}, "ERROR! ", type));
-			message.push(React.createElement("h4", {id: "error"}, "URL: ", url));
+			message.push(React.createElement("h4", {id: "error", key: type}, "ERROR! ", type));
+			message.push(React.createElement("h4", {id: "error", key: url}, "URL: ", url));
 		}else {
 			message = [];
 		}
