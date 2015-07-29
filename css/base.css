@@ -82,6 +82,10 @@ textarea {
   resize: none;
 }
 
+pre {
+  text-align: left;
+}
+
 #queryDiv {
   width: 800px;
   height: auto;
@@ -99,59 +103,54 @@ textarea {
 #formbox {
   width: 250px;
   height: 30px;
-
   font-size: 15px;
-
   text-align: center;
-
   word-spacing: 2px;
   letter-spacing: 1.5px;
   padding: 8px;
   margin: 0 auto;
   margin-top: 8px;
 }
-#submit {
 
+#submit {
   width: 100px;
   height: 35px;
-
   border: none;
-
   font-size: 17px;
   font-weight: bold;
   letter-spacing: 2px;
-
   text-align: center;
   margin: 0 auto;
   margin-top: 10px;
   color: #4C4C4C;
-
 }
+
 #dataTitle {
   text-decoration: underline;
 }
+
 #security {
   color: #666666;
   margin-bottom: 5px;
 }
+
 #fieldData {
   color: #808080;
   margin: 5px;
 }
-pre {
-  text-align: left;
-}
+
 #prettyResponse {
     display:inline-block;
     margin: 5em;
     vertical-align: top;
-
 }
+
 #postBody {
     display:inline-block;
     margin: 5em;
     vertical-align: top;
 }
+
 #rawResponse {
     display:inline-block;
     margin: 5em;
@@ -159,12 +158,13 @@ pre {
     width: 550px;
     height: 600px;
 }
+
 #rawResponseInfo {
     overflow-y: auto;
     width: 100%;
     height: 100%;
 }
+
 #error {
   color: red;
-
 }

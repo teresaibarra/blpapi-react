@@ -4,7 +4,6 @@ var Chart = require('./Chart.react');
 
 var PrettyResponse = React.createClass({
 	render: function(){
-
 		var data = this.props.data;
 		var type = this.props.type;
 		var dataTitle;
@@ -14,8 +13,8 @@ var PrettyResponse = React.createClass({
 
 		if(data) {
 			dataTitle = <h2 id="dataTitle"> Pretty Response: </h2>;
-			if (type === 'HistoricalDataRequest') {
 
+			if (type === 'HistoricalDataRequest') {
 				var responseNodes;
 				var secData = data.data;
 				var info = [];
@@ -30,22 +29,21 @@ var PrettyResponse = React.createClass({
 					for (var object in secObject.fieldData){
 						for (var key in secObject.fieldData[object]){
 							if(secObject.fieldData[object].hasOwnProperty(key)){
-									if(!result[key])
+								if(!result[key])
+								{
+									result[key] = [];
+									result[key].push(secObject.fieldData[object][key]);
+									if ($.inArray(key, keyList) == -1 && key != "date")
 									{
-										result[key] = [];
-										result[key].push(secObject.fieldData[object][key]);
-										if ($.inArray(key, keyList) == -1 && key != "date")
-										{
-											keyList.push(key);
-										}
+										keyList.push(key);
 									}
-									else 
-									{
-										result[key].push(secObject.fieldData[object][key]);
-									}
+								}
+								else 
+								{
+									result[key].push(secObject.fieldData[object][key]);
+								}
 							}
 						}
-
 					}
 
 					for (date in result.date){
@@ -67,15 +65,12 @@ var PrettyResponse = React.createClass({
 										matchedData[key].push([secName, result[key]]);
 									}
 								}
-
 							}
 						}
 					}
-
 				});
-				
-				dateList = dateList.slice(0,dateList.length/2);
 
+				dateList = dateList.slice(0,dateList.length/2);
 
 				for(var array in matchedData) {
 					for (var data in matchedData[array]) {
@@ -90,21 +85,18 @@ var PrettyResponse = React.createClass({
 					chartData.push(<h3 key={array.trim() + 1}>{array.trim().toUpperCase()}</h3>);
 					chartData.push(<Chart data={matchedData[array]} dateList={dateList} dataName={array.trim()} key={array.trim() + 2} />)
 				}
-				responseType = chartData;
 
+				responseType = chartData;
 			} else {
 				responseType = <PrettyText data={data} />
 			}
 		}
-
-
-
+		
 		return(
 			<p className="data" id="prettyResponse">
 				{dataTitle}
 				{responseType}
 			</p>
-			
 		);
 	}
 });

@@ -10,7 +10,6 @@ var ResponseList = React.createClass({
 		var type = this.props.data[2];
 		var error = this.props.data[3];
 
-		
 		if (!error) {
 			$("#responseList")
 				.css('opacity', 0)
@@ -19,8 +18,7 @@ var ResponseList = React.createClass({
 			$("#responseList")
 				.fadeTo("fast", 0);	
 		}
-
-
+		
 		return (
 			<div className="responseList" id="responseList" >
 				<PostBody request={request} />

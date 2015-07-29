@@ -8,13 +8,12 @@ var Chart = React.createClass({
 		var dateList = this.props.dateList;
 		var dataName = this.props.dateName;
 		var formattedDateList = [];
-		var responseNodes;
 		var info = [];
+		var responseNodes;
 
 
 		if(data) {
 			for (var array in data) {
-
 				var red = Math.floor(Math.random() * 255);
 				var green = Math.floor(Math.random() * 255);
 				var blue = Math.floor(Math.random() * 255);
@@ -64,9 +63,7 @@ var Chart = React.createClass({
 				}
 				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
 				formattedDateList.push(temp);
-
-			}console.log(formattedDateList)
-			console.log(info)
+			}
 		}
 
 		var chartData = {
@@ -100,7 +97,7 @@ var Chart = React.createClass({
 		    pointDot : true,
 
 		    //Number - Radius of each point dot in pixels
-		    pointDotRadius : 4,
+		    pointDotRadius : 3,
 
 		    //Number - Pixel width of point dot stroke
 		    pointDotStrokeWidth : 1,
@@ -123,8 +120,6 @@ var Chart = React.createClass({
 		    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"
 		}
 
-
-		
 		return(
 			<div>
 				<p className="data" id="lineChart">

@@ -11,7 +11,6 @@ var _requestType = "";
 var _error = "";
 
 function submitReference(data){
-
     var service = data[0];
     var type = data[1];
     var securities = data[2];
@@ -23,6 +22,7 @@ function submitReference(data){
 
     securities = securities.split(",");
     fields = fields.split(",");
+
     securities.forEach(function (sec) {
       sec = sec.trim();
       cleanSecurities.push(sec);
@@ -31,14 +31,13 @@ function submitReference(data){
       fld = fld.trim();
       cleanFields.push(fld);
     })
+
     _requestType = type;
 
     handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);       
-   
 }
 
 function submitHistorical(data){
-
     var service = data[0];
     var type = data[1];
     var securities = data[2];
@@ -53,6 +52,7 @@ function submitHistorical(data){
 
     securities = securities.split(",");
     fields = fields.split(",");
+
     securities.forEach(function (sec) {
       sec = sec.trim();
       cleanSecurities.push(sec);
@@ -61,11 +61,11 @@ function submitHistorical(data){
       fld = fld.trim();
       cleanFields.push(fld);
     })
+
     _requestType = type;
 
     handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
       "periodicitySelection": period}, url);
-   
 }
 
 function submitTextArea(data){
@@ -75,14 +75,16 @@ function submitTextArea(data){
     var body = data[2];
 
     _requestType = type;
+
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+
     handleQuerySubmit(body, url);
    
 }
 
 function handleQuerySubmit(query, url) {
   $.ajax({
-   url: url, //URL to hit
+   url: url,
    type: 'POST', 
    data: JSON.stringify(query),
    success: function(data) {
@@ -98,7 +100,6 @@ function handleQuerySubmit(query, url) {
      AppStore.emitChange();
      }.bind(this)
    })
-
 } 
 
 var AppStore = assign({}, EventEmitter.prototype, {
@@ -122,15 +123,18 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
 AppDispatcher.register(function(payload){
   var action = payload.action;
+
   switch(action.actionType) {
     case AppConstants.SUBMIT_REFERENCE_QUERY:
       var data = payload.action.item;
       submitReference(data);
       break;
+
     case AppConstants.SUBMIT_HISTORICAL_QUERY:
       var data = payload.action.item;
       submitHistorical(data);
       break;
+
     case AppConstants.SUBMIT_TEXT_AREA_QUERY:
       var data = payload.action.item;
       submitTextArea(data);
@@ -139,7 +143,6 @@ AppDispatcher.register(function(payload){
     default:
       return true;
   }
-
 });
 
 module.exports = AppStore;

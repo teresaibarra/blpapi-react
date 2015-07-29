@@ -3,7 +3,6 @@ var React = require('react');
 var ErrorMessage = React.createClass({
 	render: function(){
 		var error = this.props.error;
-
 		var message = [];
 
 		if(error){

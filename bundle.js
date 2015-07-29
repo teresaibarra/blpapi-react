@@ -38,13 +38,12 @@ var Chart = React.createClass({displayName: "Chart",
 		var dateList = this.props.dateList;
 		var dataName = this.props.dateName;
 		var formattedDateList = [];
-		var responseNodes;
 		var info = [];
+		var responseNodes;
 
 
 		if(data) {
 			for (var array in data) {
-
 				var red = Math.floor(Math.random() * 255);
 				var green = Math.floor(Math.random() * 255);
 				var blue = Math.floor(Math.random() * 255);
@@ -94,9 +93,7 @@ var Chart = React.createClass({displayName: "Chart",
 				}
 				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
 				formattedDateList.push(temp);
-
-			}console.log(formattedDateList)
-			console.log(info)
+			}
 		}
 
 		var chartData = {
@@ -130,7 +127,7 @@ var Chart = React.createClass({displayName: "Chart",
 		    pointDot : true,
 
 		    //Number - Radius of each point dot in pixels
-		    pointDotRadius : 4,
+		    pointDotRadius : 3,
 
 		    //Number - Pixel width of point dot stroke
 		    pointDotStrokeWidth : 1,
@@ -153,8 +150,6 @@ var Chart = React.createClass({displayName: "Chart",
 		    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>"
 		}
 
-
-		
 		return(
 			React.createElement("div", null, 
 				React.createElement("p", {className: "data", id: "lineChart"}, 
@@ -182,7 +177,6 @@ function getAppState() {
 }
 
 var DemoApp = React.createClass({displayName: "DemoApp",
-
     getInitialState: function() {
       return getAppState();
     },
@@ -198,12 +192,12 @@ var DemoApp = React.createClass({displayName: "DemoApp",
     render: function(){
       return (
         React.createElement("div", null, 
-        React.createElement("h1", null, "Bloomberg API Demonstration"), 
-        React.createElement("h2", null, "What would you like to look up?"), 
-        React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
-        React.createElement(QueryForm, null), 
-        React.createElement(ErrorMessage, {error: this.state.allData[3]}), 
-        React.createElement(ResponseList, {data: this.state.allData})
+          React.createElement("h1", null, "Bloomberg API Demonstration"), 
+          React.createElement("h2", null, "What would you like to look up?"), 
+          React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
+          React.createElement(QueryForm, null), 
+          React.createElement(ErrorMessage, {error: this.state.allData[3]}), 
+          React.createElement(ResponseList, {data: this.state.allData})
         )
       )
     },
@@ -211,7 +205,6 @@ var DemoApp = React.createClass({displayName: "DemoApp",
     _onChange: function() {
       this.setState(getAppState());
     }
-
   });
 
 module.exports = DemoApp;
@@ -221,7 +214,6 @@ var React = require('react');
 var ErrorMessage = React.createClass({displayName: "ErrorMessage",
 	render: function(){
 		var error = this.props.error;
-
 		var message = [];
 
 		if(error){
@@ -248,13 +240,12 @@ var PostBody = React.createClass({displayName: "PostBody",
 	render: function(){
 		var title = "";
 		var data = "";
-		if (this.props.request)
-		{
+
+		if (this.props.request){
 			title = "POST Request Body:";
 			data = JSON.stringify(this.props.request, null, 3);
-
-			
 		}
+
 		return(
 			React.createElement("div", {className: "postBody", id: "postBody"}, 
 				React.createElement("h2", {id: "dataTitle"}, title), 
@@ -272,7 +263,6 @@ var Chart = require('./Chart.react');
 
 var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 	render: function(){
-
 		var data = this.props.data;
 		var type = this.props.type;
 		var dataTitle;
@@ -282,8 +272,8 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 
 		if(data) {
 			dataTitle = React.createElement("h2", {id: "dataTitle"}, " Pretty Response: ");
-			if (type === 'HistoricalDataRequest') {
 
+			if (type === 'HistoricalDataRequest') {
 				var responseNodes;
 				var secData = data.data;
 				var info = [];
@@ -298,22 +288,21 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 					for (var object in secObject.fieldData){
 						for (var key in secObject.fieldData[object]){
 							if(secObject.fieldData[object].hasOwnProperty(key)){
-									if(!result[key])
+								if(!result[key])
+								{
+									result[key] = [];
+									result[key].push(secObject.fieldData[object][key]);
+									if ($.inArray(key, keyList) == -1 && key != "date")
 									{
-										result[key] = [];
-										result[key].push(secObject.fieldData[object][key]);
-										if ($.inArray(key, keyList) == -1 && key != "date")
-										{
-											keyList.push(key);
-										}
+										keyList.push(key);
 									}
-									else 
-									{
-										result[key].push(secObject.fieldData[object][key]);
-									}
+								}
+								else 
+								{
+									result[key].push(secObject.fieldData[object][key]);
+								}
 							}
 						}
-
 					}
 
 					for (date in result.date){
@@ -335,15 +324,12 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 										matchedData[key].push([secName, result[key]]);
 									}
 								}
-
 							}
 						}
 					}
-
 				});
-				
-				dateList = dateList.slice(0,dateList.length/2);
 
+				dateList = dateList.slice(0,dateList.length/2);
 
 				for(var array in matchedData) {
 					for (var data in matchedData[array]) {
@@ -358,21 +344,18 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 					chartData.push(React.createElement("h3", {key: array.trim() + 1}, array.trim().toUpperCase()));
 					chartData.push(React.createElement(Chart, {data: matchedData[array], dateList: dateList, dataName: array.trim(), key: array.trim() + 2}))
 				}
-				responseType = chartData;
 
+				responseType = chartData;
 			} else {
 				responseType = React.createElement(PrettyText, {data: data})
 			}
 		}
-
-
-
+		
 		return(
 			React.createElement("p", {className: "data", id: "prettyResponse"}, 
 				dataTitle, 
 				responseType
 			)
-			
 		);
 	}
 });
@@ -385,44 +368,49 @@ var PrettyText = React.createClass({displayName: "PrettyText",
 	render: function(){
 		var data = this.props.data;
 		var responseNodes;
+
 		if(data) {
 			var secData = data.data[0].securityData;
+
 			responseNodes = secData.map(function (sec) {
 				var info = [];
 				info.push(React.createElement("h3", {id: "security", key: sec.security}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
+				
 				for (var j in sec.fieldData)
 				{
 					var value = j;
+
 					if (value.indexOf("_") != -1)
 					{
 						value = value.replace(/_/g, " ");
 					}
+					
 					info.push(React.createElement("h4", {id: "fieldData", key: value.trim()}, " ", value.trim().toUpperCase() + ": " + sec.fieldData[j], " "))
 				}
+
 				return(
 					{info}
 				);
 			});
 		}
-
+		
 		return(
 			React.createElement("div", null, 
-			React.createElement("p", {className: "data"}, 
-				responseNodes
-			)
+				React.createElement("p", {className: "data"}, 
+					responseNodes
+				)
 			)
 		);
 	}
 });
+
 module.exports = PrettyText;
 },{"react":173}],8:[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/AppActions');
 
 var QueryForm = React.createClass({displayName: "QueryForm",
-
 	getInitialState: function() {
-		
 		return {
 			hideReqTypes: true,
 			hideSecurities: true,
@@ -457,15 +445,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					this.setState({hideSubmit: false});
 				}
 			});
-
 			return;
 		}
 		return;
 	},
-
+	
 	handleRequestChoice: function() {
 		if (this.refs.type){
-
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -480,7 +466,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.period.getDOMNode().value = "";
 
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString() }, function(){
-
 
 				if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 					this.setState({hideSecurities: false});
@@ -512,94 +497,95 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					return;
 				}
 			});
-			
-			
 		}
 	},
 
 	render: function() {
 		return(
 			React.createElement("div", {id: "queryDiv"}, 
-			React.createElement("form", {className: "queryForm", id: "queryForm", onSubmit: this._onSubmit}, 
-				React.createElement("input", {type: "text", list: "services", placeholder: "service", ref: "service", 
-				id: "formbox", onChange: this.handleServiceChoice}), 
+				React.createElement("form", {className: "queryForm", id: "queryForm", onSubmit: this._onSubmit}, 
 
-					React.createElement("datalist", {id: "services"}, 
-						React.createElement("option", {value: "refdata"}, "Reference Data Service"), 
-						React.createElement("option", {value: "apiflds"}, "API Field Information Service"), 
-						React.createElement("option", {value: "tasvc"}, "Technical Analysis Service"), 
-						React.createElement("option", {value: "instruments"}, "Instruments Service")
+					React.createElement("input", {type: "text", list: "services", placeholder: "service", ref: "service", 
+					id: "formbox", onChange: this.handleServiceChoice}), 
+
+						React.createElement("datalist", {id: "services"}, 
+							React.createElement("option", {value: "refdata"}, "Reference Data Service"), 
+							React.createElement("option", {value: "apiflds"}, "API Field Information Service"), 
+							React.createElement("option", {value: "tasvc"}, "Technical Analysis Service"), 
+							React.createElement("option", {value: "instruments"}, "Instruments Service")
+						), 
+
+					React.createElement("input", {type: "text", list: this.state.servTypeChoice, placeholder: "request type", ref: "type", 
+					id: "formbox", hidden: this.state.hideReqTypes, onChange: this.handleRequestChoice}), 
+
+						React.createElement("datalist", {id: "refdata"}, 
+							React.createElement("option", {value: "ReferenceDataRequest"}, "Reference Data Request"), 
+							React.createElement("option", {value: "HistoricalDataRequest"}, "Historical Data Request"), 
+							React.createElement("option", {value: "IntradayTickRequest"}, "Intraday Tick Request"), 
+							React.createElement("option", {value: "IntradayBarRequest"}, "Intraday Bar Request"), 
+							React.createElement("option", {value: "PortfolioDataRequest"}, "Portfolio Data Request"), 
+							React.createElement("option", {value: "BeqsRequest"}, "Beqs Request")
+						), 
+
+					React.createElement("datalist", {id: "apiflds"}, 
+							React.createElement("option", {value: "FieldInfoRequest"}, "Field Info Request"), 
+							React.createElement("option", {value: "FieldSearchRequest"}, "Field Search Request"), 
+							React.createElement("option", {value: "categorizedFieldSearchRequest"}, "Categorized Field Search Request")
 					), 
 
-				React.createElement("input", {type: "text", list: this.state.servTypeChoice, placeholder: "request type", ref: "type", 
-				id: "formbox", hidden: this.state.hideReqTypes, onChange: this.handleRequestChoice}), 
-
-					React.createElement("datalist", {id: "refdata"}, 
-						React.createElement("option", {value: "ReferenceDataRequest"}, "Reference Data Request"), 
-						React.createElement("option", {value: "HistoricalDataRequest"}, "Historical Data Request"), 
-						React.createElement("option", {value: "IntradayTickRequest"}, "Intraday Tick Request"), 
-						React.createElement("option", {value: "IntradayBarRequest"}, "Intraday Bar Request"), 
-						React.createElement("option", {value: "PortfolioDataRequest"}, "Portfolio Data Request"), 
-						React.createElement("option", {value: "BeqsRequest"}, "Beqs Request")
+					React.createElement("datalist", {id: "tasvc"}, 
+						React.createElement("option", {value: "studyRequest"}, "Study Request")
 					), 
 
-				React.createElement("datalist", {id: "apiflds"}, 
-						React.createElement("option", {value: "FieldInfoRequest"}, "Field Info Request"), 
-						React.createElement("option", {value: "FieldSearchRequest"}, "Field Search Request"), 
-						React.createElement("option", {value: "categorizedFieldSearchRequest"}, "Categorized Field Search Request")
-				), 
+					React.createElement("datalist", {id: "instruments"}, 
+						React.createElement("option", {value: "InstrumentListRequest"}, "Security Lookup Request")
+					), 
 
-				React.createElement("datalist", {id: "tasvc"}, 
-					React.createElement("option", {value: "studyRequest"}, "Study Request")
-				), 
+					React.createElement("input", {type: "text", list: "secD", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
 
-				React.createElement("datalist", {id: "instruments"}, 
-					React.createElement("option", {value: "InstrumentListRequest"}, "Security Lookup Request")
-				), 
-
-				React.createElement("input", {type: "text", list: "secD", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
-				React.createElement("datalist", {id: "secD"}, 
-					React.createElement("option", {value: "AAPL US Equity, IBM US EQUITY"}, "Security Lookup Request")
-				), 
+					React.createElement("datalist", {id: "secD"}, 
+						React.createElement("option", {value: "AAPL US Equity, IBM US EQUITY"}, "Security Lookup Request")
+					), 
 
 
-				React.createElement("input", {type: "text", list: "fieldsD", placeholder: "fields", ref: "fields", id: "formbox", hidden: this.state.hideFields}), 
-				React.createElement("datalist", {id: "fieldsD"}, 
-					React.createElement("option", {value: "PX_LAST, OPEN"}, "Security Lookup Request")
-				), 
+					React.createElement("input", {type: "text", list: "fieldsD", placeholder: "fields", ref: "fields", id: "formbox", hidden: this.state.hideFields}), 
+					
+					React.createElement("datalist", {id: "fieldsD"}, 
+						React.createElement("option", {value: "PX_LAST, OPEN"}, "Security Lookup Request")
+					), 
 
 
-				React.createElement("input", {type: "text", list: "startD", placeholder: "start date", ref: "startDate", id: "formbox", hidden: this.state.hideStartDate}), 
-				React.createElement("datalist", {id: "startD"}, 
-					React.createElement("option", {value: "20140101"}, "Security Lookup Request")
-				), 
+					React.createElement("input", {type: "text", list: "startD", placeholder: "start date", ref: "startDate", id: "formbox", hidden: this.state.hideStartDate}), 
+					
+					React.createElement("datalist", {id: "startD"}, 
+						React.createElement("option", {value: "20140101"}, "Security Lookup Request")
+					), 
 
 
-				React.createElement("input", {type: "text", list: "endD", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
-				React.createElement("datalist", {id: "endD"}, 
-					React.createElement("option", {value: "20140115"}, "Security Lookup Request")
-				), 
+					React.createElement("input", {type: "text", list: "endD", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
+					
+					React.createElement("datalist", {id: "endD"}, 
+						React.createElement("option", {value: "20141230"}, "Security Lookup Request")
+					), 
 
 
-				React.createElement("input", {type: "text", list: "period", placeholder: "periodicity", ref: "period", id: "formbox", hidden: this.state.hidePeriod}), 
-				React.createElement("datalist", {id: "period"}, 
-					React.createElement("option", {value: "DAILY"}, "Security Lookup Request")
-				), 
+					React.createElement("input", {type: "text", list: "period", placeholder: "periodicity", ref: "period", id: "formbox", hidden: this.state.hidePeriod}), 
+					
+					React.createElement("datalist", {id: "period"}, 
+						React.createElement("option", {value: "MONTHLY"}, "Security Lookup Request")
+					), 
 
 
-				React.createElement("textarea", {rows: "4", cols: "50", placeholder: "Enter post body here.", ref: "postTextArea", hidden: this.state.hidePostTextArea}), 
+					React.createElement("textarea", {rows: "4", cols: "50", placeholder: "Enter post body here.", ref: "postTextArea", hidden: this.state.hidePostTextArea}), 
 
-				React.createElement("br", null), 
-				React.createElement("input", {type: "submit", value: "Submit", id: "submit", hidden: this.state.hideSubmit})
-			)
+					React.createElement("br", null), 
+					React.createElement("input", {type: "submit", value: "Submit", id: "submit", hidden: this.state.hideSubmit})
+				)
 			)
 		);
-		
 	},
-
 	_onSubmit: function(e){
 		e.preventDefault();
-
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 			var service = this.refs.service.getDOMNode().value.trim();
 			var type = this.refs.type.getDOMNode().value.trim();
@@ -676,10 +662,8 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.type.getDOMNode().value = "";
 		    this.refs.postTextArea.getDOMNode().value = "";
 		}
-
 	    this.setState({servTypeChoice: ""});
 	    this.setState({reqTypeChoice: ""});
-
 	}
 });
 
@@ -691,6 +675,7 @@ var RawResponse = React.createClass({displayName: "RawResponse",
 	render: function(){
 		var title = "";
 		var data = "";
+		
 		if (this.props.data)
 		{
 			title = "Raw Response:";
@@ -700,10 +685,9 @@ var RawResponse = React.createClass({displayName: "RawResponse",
 			React.createElement("div", {className: "rawResponse", id: "rawResponse"}, 
 				React.createElement("h2", {id: "dataTitle"}, title), 
 				React.createElement("div", {id: "rawResponseInfo"}, 
-				React.createElement("pre", {className: "rawResponseInfo"}, data)
+					React.createElement("pre", {className: "rawResponseInfo"}, data)
 				)
 			)
-
 		);
 	}
 });
@@ -722,7 +706,6 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		var type = this.props.data[2];
 		var error = this.props.data[3];
 
-		
 		if (!error) {
 			$("#responseList")
 				.css('opacity', 0)
@@ -731,8 +714,7 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 			$("#responseList")
 				.fadeTo("fast", 0);	
 		}
-
-
+		
 		return (
 			React.createElement("div", {className: "responseList", id: "responseList"}, 
 				React.createElement(PostBody, {request: request}), 
@@ -769,7 +751,6 @@ module.exports = AppDispatcher;
 },{"flux":16,"object-assign":19}],13:[function(require,module,exports){
 /** @jsx React.DOM */
 var React = require('react');
-
 var DemoApp = require('./components/DemoApp.react');
 
 React.render(
@@ -791,7 +772,6 @@ var _requestType = "";
 var _error = "";
 
 function submitReference(data){
-
     var service = data[0];
     var type = data[1];
     var securities = data[2];
@@ -803,6 +783,7 @@ function submitReference(data){
 
     securities = securities.split(",");
     fields = fields.split(",");
+
     securities.forEach(function (sec) {
       sec = sec.trim();
       cleanSecurities.push(sec);
@@ -811,14 +792,13 @@ function submitReference(data){
       fld = fld.trim();
       cleanFields.push(fld);
     })
+
     _requestType = type;
 
     handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);       
-   
 }
 
 function submitHistorical(data){
-
     var service = data[0];
     var type = data[1];
     var securities = data[2];
@@ -833,6 +813,7 @@ function submitHistorical(data){
 
     securities = securities.split(",");
     fields = fields.split(",");
+
     securities.forEach(function (sec) {
       sec = sec.trim();
       cleanSecurities.push(sec);
@@ -841,11 +822,11 @@ function submitHistorical(data){
       fld = fld.trim();
       cleanFields.push(fld);
     })
+
     _requestType = type;
 
     handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
       "periodicitySelection": period}, url);
-   
 }
 
 function submitTextArea(data){
@@ -855,14 +836,16 @@ function submitTextArea(data){
     var body = data[2];
 
     _requestType = type;
+
     var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+
     handleQuerySubmit(body, url);
    
 }
 
 function handleQuerySubmit(query, url) {
   $.ajax({
-   url: url, //URL to hit
+   url: url,
    type: 'POST', 
    data: JSON.stringify(query),
    success: function(data) {
@@ -878,7 +861,6 @@ function handleQuerySubmit(query, url) {
      AppStore.emitChange();
      }.bind(this)
    })
-
 } 
 
 var AppStore = assign({}, EventEmitter.prototype, {
@@ -902,15 +884,18 @@ var AppStore = assign({}, EventEmitter.prototype, {
 
 AppDispatcher.register(function(payload){
   var action = payload.action;
+
   switch(action.actionType) {
     case AppConstants.SUBMIT_REFERENCE_QUERY:
       var data = payload.action.item;
       submitReference(data);
       break;
+
     case AppConstants.SUBMIT_HISTORICAL_QUERY:
       var data = payload.action.item;
       submitHistorical(data);
       break;
+
     case AppConstants.SUBMIT_TEXT_AREA_QUERY:
       var data = payload.action.item;
       submitTextArea(data);
@@ -919,7 +904,6 @@ AppDispatcher.register(function(payload){
     default:
       return true;
   }
-
 });
 
 module.exports = AppStore;
