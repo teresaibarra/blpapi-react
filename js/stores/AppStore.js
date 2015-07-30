@@ -11,75 +11,145 @@ var _requestType = "";
 var _error = "";
 
 function submitReference(data){
-    var service = data[0];
-    var type = data[1];
-    var securities = data[2];
-    var fields = data[3];
-    var cleanSecurities = [];
-    var cleanFields = [];
+  var service = data[0];
+  var type = data[1];
+  var securities = data[2];
+  var fields = data[3];
+  var cleanSecurities = [];
+  var cleanFields = [];
 
-    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+  var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
-    securities = securities.split(",");
-    fields = fields.split(",");
+	if(!service){
+		_postBody = "";
+		_receivedData = "";
+		_error = ["Missing URL.", "undefined"];
+		AppStore.emitChange();
+	}else if (!type){
+		_postBody = "";
+		_receivedData = "";
+		_error = ["Missing request type.", "undefined"];
+		AppStore.emitChange();
+	}else if (!securities){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing securities.", url];
+	AppStore.emitChange();
+	}else if (!fields){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing fields.", url];
+	AppStore.emitChange();
+	}
+	else {
+	  securities = securities.split(",");
+	  fields = fields.split(",");
 
-    securities.forEach(function (sec) {
-      sec = sec.trim();
-      cleanSecurities.push(sec);
-    });
-    fields.forEach(function (fld){
-      fld = fld.trim();
-      cleanFields.push(fld);
-    })
+	  securities.forEach(function (sec) {
+	    sec = sec.trim();
+	    cleanSecurities.push(sec);
+	  });
+	  fields.forEach(function (fld){
+	    fld = fld.trim();
+	    cleanFields.push(fld);
+	  })
 
-    _requestType = type;
+	  _requestType = type;
 
-    handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);       
+	  handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);  
+	}
 }
 
 function submitHistorical(data){
-    var service = data[0];
-    var type = data[1];
-    var securities = data[2];
-    var fields = data[3];
-    var startDate = data[4];
-    var endDate = data[5];
-    var period = data[6];
-    var cleanSecurities = [];
-    var cleanFields = [];
+  var service = data[0];
+  var type = data[1];
+  var securities = data[2];
+  var fields = data[3];
+  var startDate = data[4];
+  var endDate = data[5];
+  var period = data[6];
+  var cleanSecurities = [];
+  var cleanFields = [];
 
-    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+  var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
-    securities = securities.split(",");
-    fields = fields.split(",");
+	if(!service){
+		_postBody = "";
+		_receivedData = "";
+		_error = ["Missing URL.", "undefined"];
+		AppStore.emitChange();
+	}else if (!type){
+		_postBody = "";
+		_receivedData = "";
+		_error = ["Missing request type.", "undefined"];
+		AppStore.emitChange();
+	}else if (!securities){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing securities.", url];
+	AppStore.emitChange();
+	}else if (!fields){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing fields.", url];
+	AppStore.emitChange();
+	}else if (!startDate){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing start date.", url];
+	AppStore.emitChange();
+	}else if (!endDate){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing end date.", url];
+	AppStore.emitChange();
+	}else if (!period){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing periodicity selection.", url];
+	AppStore.emitChange();
+	}
+	else {
+	  securities = securities.split(",");
+	  fields = fields.split(",");
 
-    securities.forEach(function (sec) {
-      sec = sec.trim();
-      cleanSecurities.push(sec);
-    });
-    fields.forEach(function (fld){
-      fld = fld.trim();
-      cleanFields.push(fld);
-    })
+	  securities.forEach(function (sec) {
+	    sec = sec.trim();
+	    cleanSecurities.push(sec);
+	  });
+	  fields.forEach(function (fld){
+	    fld = fld.trim();
+	    cleanFields.push(fld);
+	  })
 
-    _requestType = type;
+	  _requestType = type;
 
-    handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
-      "periodicitySelection": period}, url);
+	  handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
+	    "periodicitySelection": period}, url);
+	}
 }
 
 function submitTextArea(data){
 
-    var service = data[0];
-    var type = data[1];
-    var body = data[2];
+    var url = data[0];
+    var body = JSON.parse(data[1]);
 
-    _requestType = type;
+    if(!url){
+	 _postBody = "";
+	 _receivedData = "";
+	 _error = ["Missing URL.", "undefined"];
+	 AppStore.emitChange();
+    }else if (!body){
+     _postBody = "";
+     _receivedData = "";
+     _error = ["Missing POST Body.", url];
+     AppStore.emitChange();
+    }else {
+	    var index = url.indexOf("type=") + 5;
+	    _requestType = url.substring(index);
 
-    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-
-    handleQuerySubmit(body, url);
-   
+	    handleQuerySubmit(body, url);
+    }
 }
 
 function handleQuerySubmit(query, url) {
@@ -96,7 +166,7 @@ function handleQuerySubmit(query, url) {
    error: function(xhr, status, err) {
      _postBody = "";
      _receivedData = "";
-     _error = [url, status, err + "."];
+     _error = [err + ".", url];
      AppStore.emitChange();
      }.bind(this)
    })

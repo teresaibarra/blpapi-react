@@ -217,10 +217,9 @@ var ErrorMessage = React.createClass({displayName: "ErrorMessage",
 		var message = [];
 
 		if(error){
-			var type = error[2];
-			var url = error[0];
-			message.push(React.createElement("h4", {id: "error", key: type}, "ERROR! ", type));
-			message.push(React.createElement("h4", {id: "error", key: url}, "URL: ", url));
+			var type = error[0];
+			var url = error[1];
+			message.push(React.createElement("h3", {id: "error", key: type}, "ERROR! ", type));
 		}else {
 			message = [];
 		}
@@ -412,6 +411,8 @@ var AppActions = require('../actions/AppActions');
 var QueryForm = React.createClass({displayName: "QueryForm",
 	getInitialState: function() {
 		return {
+			hideUrl: true,
+			hideSecurities: false,
 			hideReqTypes: true,
 			hideSecurities: true,
 			hideFields: true,
@@ -435,15 +436,8 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.period.getDOMNode().value = "";
 
 			this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
-				if(this.state.servTypeChoice === "refdata" || this.state.servTypeChoice === "apiflds" || this.state.servTypeChoice === "tasvc" || this.state.servTypeChoice === "instruments") {
-					this.setState({hidePostTextArea: true});
 					this.setState({hideReqTypes: false});
 					this.setState({hideSubmit: true});
-				}else {
-					this.setState({hidePostTextArea: false});
-					this.setState({hideReqTypes: false});
-					this.setState({hideSubmit: false});
-				}
 			});
 			return;
 		}
@@ -456,8 +450,8 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
 			this.setState({hideEndDate: true});
-			this.setState({hideSubmit: true});
 			this.setState({hidePeriod: true});
+			this.setState({hideSubmit: true});
 
 		    this.refs.securities.getDOMNode().value = "";
 		    this.refs.fields.getDOMNode().value = "";
@@ -500,13 +494,60 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		}
 	},
 
+	handleCheckBox: function() {
+		if (checkBox.checked){
+			this.setState({hideService: true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
+
+			this.setState({hideUrl: false});
+			this.setState({hidePostTextArea: false});
+			this.setState({hideSubmit: false});
+
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		    this.refs.startDate.getDOMNode().value = "";
+		    this.refs.endDate.getDOMNode().value = "";
+		    this.refs.period.getDOMNode().value = "";
+
+		} else {
+			this.setState({hideUrl: true});
+			this.setState({hidePostTextArea: true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
+			this.setState({hideSubmit: true});
+
+			this.setState({hideService: false});
+
+			this.refs.url.getDOMNode().value = "";
+		    this.refs.postTextArea.getDOMNode().value = "";
+		    this.refs.securities.getDOMNode().value = "";
+		    this.refs.fields.getDOMNode().value = "";
+		    this.refs.startDate.getDOMNode().value = "";
+		    this.refs.endDate.getDOMNode().value = "";
+		    this.refs.period.getDOMNode().value = "";
+		}
+		return;
+	},
 	render: function() {
 		return(
 			React.createElement("div", {id: "queryDiv"}, 
 				React.createElement("form", {className: "queryForm", id: "queryForm", onSubmit: this._onSubmit}, 
 
+					"Raw: ", React.createElement("input", {type: "checkbox", id: "checkBox", onClick: this.handleCheckBox}), 
+
+					React.createElement("br", null), 
+
+					React.createElement("input", {type: "text", placeholder: "url", ref: "url", id: "formbox", hidden: this.state.hideUrl}), 
+
 					React.createElement("input", {type: "text", list: "services", placeholder: "service", ref: "service", 
-					id: "formbox", onChange: this.handleServiceChoice}), 
+					id: "formbox", hidden: this.state.hideService, onChange: this.handleServiceChoice}), 
 
 						React.createElement("datalist", {id: "services"}, 
 							React.createElement("option", {value: "refdata"}, "Reference Data Service"), 
@@ -579,6 +620,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					React.createElement("textarea", {rows: "4", cols: "50", placeholder: "Enter post body here.", ref: "postTextArea", hidden: this.state.hidePostTextArea}), 
 
 					React.createElement("br", null), 
+
 					React.createElement("input", {type: "submit", value: "Submit", id: "submit", hidden: this.state.hideSubmit})
 				)
 			)
@@ -648,18 +690,19 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			this.setState({hideSubmit: true});
 		}
 		else{
-			var service = this.refs.service.getDOMNode().value.trim();
-			var type = this.refs.type.getDOMNode().value.trim();
+			var url = this.refs.url.getDOMNode().value.trim();
 			var postTextArea = this.refs.postTextArea.getDOMNode().value.trim();
 
-			AppActions.submitTextAreaQuery([service, type, postTextArea]);
+			AppActions.submitTextAreaQuery([url, postTextArea]);
 
+			checkBox.checked = false;
 			this.setState({hideReqTypes:true});
+			this.setState({hideUrl: true});
 			this.setState({hidePostTextArea: true});
 			this.setState({hideSubmit: true});
+			this.setState({hideService:false});
 
-			this.refs.service.getDOMNode().value = "";
-		    this.refs.type.getDOMNode().value = "";
+			this.refs.url.getDOMNode().value = "";
 		    this.refs.postTextArea.getDOMNode().value = "";
 		}
 	    this.setState({servTypeChoice: ""});
@@ -772,75 +815,145 @@ var _requestType = "";
 var _error = "";
 
 function submitReference(data){
-    var service = data[0];
-    var type = data[1];
-    var securities = data[2];
-    var fields = data[3];
-    var cleanSecurities = [];
-    var cleanFields = [];
+  var service = data[0];
+  var type = data[1];
+  var securities = data[2];
+  var fields = data[3];
+  var cleanSecurities = [];
+  var cleanFields = [];
 
-    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+  var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
-    securities = securities.split(",");
-    fields = fields.split(",");
+	if(!service){
+		_postBody = "";
+		_receivedData = "";
+		_error = ["Missing URL.", "undefined"];
+		AppStore.emitChange();
+	}else if (!type){
+		_postBody = "";
+		_receivedData = "";
+		_error = ["Missing request type.", "undefined"];
+		AppStore.emitChange();
+	}else if (!securities){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing securities.", url];
+	AppStore.emitChange();
+	}else if (!fields){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing fields.", url];
+	AppStore.emitChange();
+	}
+	else {
+	  securities = securities.split(",");
+	  fields = fields.split(",");
 
-    securities.forEach(function (sec) {
-      sec = sec.trim();
-      cleanSecurities.push(sec);
-    });
-    fields.forEach(function (fld){
-      fld = fld.trim();
-      cleanFields.push(fld);
-    })
+	  securities.forEach(function (sec) {
+	    sec = sec.trim();
+	    cleanSecurities.push(sec);
+	  });
+	  fields.forEach(function (fld){
+	    fld = fld.trim();
+	    cleanFields.push(fld);
+	  })
 
-    _requestType = type;
+	  _requestType = type;
 
-    handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);       
+	  handleQuerySubmit({securities: cleanSecurities, fields: cleanFields}, url);  
+	}
 }
 
 function submitHistorical(data){
-    var service = data[0];
-    var type = data[1];
-    var securities = data[2];
-    var fields = data[3];
-    var startDate = data[4];
-    var endDate = data[5];
-    var period = data[6];
-    var cleanSecurities = [];
-    var cleanFields = [];
+  var service = data[0];
+  var type = data[1];
+  var securities = data[2];
+  var fields = data[3];
+  var startDate = data[4];
+  var endDate = data[5];
+  var period = data[6];
+  var cleanSecurities = [];
+  var cleanFields = [];
 
-    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+  var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
-    securities = securities.split(",");
-    fields = fields.split(",");
+	if(!service){
+		_postBody = "";
+		_receivedData = "";
+		_error = ["Missing URL.", "undefined"];
+		AppStore.emitChange();
+	}else if (!type){
+		_postBody = "";
+		_receivedData = "";
+		_error = ["Missing request type.", "undefined"];
+		AppStore.emitChange();
+	}else if (!securities){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing securities.", url];
+	AppStore.emitChange();
+	}else if (!fields){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing fields.", url];
+	AppStore.emitChange();
+	}else if (!startDate){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing start date.", url];
+	AppStore.emitChange();
+	}else if (!endDate){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing end date.", url];
+	AppStore.emitChange();
+	}else if (!period){
+	_postBody = "";
+	_receivedData = "";
+	_error = ["Missing periodicity selection.", url];
+	AppStore.emitChange();
+	}
+	else {
+	  securities = securities.split(",");
+	  fields = fields.split(",");
 
-    securities.forEach(function (sec) {
-      sec = sec.trim();
-      cleanSecurities.push(sec);
-    });
-    fields.forEach(function (fld){
-      fld = fld.trim();
-      cleanFields.push(fld);
-    })
+	  securities.forEach(function (sec) {
+	    sec = sec.trim();
+	    cleanSecurities.push(sec);
+	  });
+	  fields.forEach(function (fld){
+	    fld = fld.trim();
+	    cleanFields.push(fld);
+	  })
 
-    _requestType = type;
+	  _requestType = type;
 
-    handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
-      "periodicitySelection": period}, url);
+	  handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
+	    "periodicitySelection": period}, url);
+	}
 }
 
 function submitTextArea(data){
 
-    var service = data[0];
-    var type = data[1];
-    var body = data[2];
+    var url = data[0];
+    var body = JSON.parse(data[1]);
 
-    _requestType = type;
+    if(!url){
+	 _postBody = "";
+	 _receivedData = "";
+	 _error = ["Missing URL.", "undefined"];
+	 AppStore.emitChange();
+    }else if (!body){
+     _postBody = "";
+     _receivedData = "";
+     _error = ["Missing POST Body.", url];
+     AppStore.emitChange();
+    }else {
+	    var index = url.indexOf("type=") + 5;
+	    _requestType = url.substring(index);
 
-    var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-
-    handleQuerySubmit(body, url);
-   
+	    handleQuerySubmit(body, url);
+    }
 }
 
 function handleQuerySubmit(query, url) {
@@ -857,7 +970,7 @@ function handleQuerySubmit(query, url) {
    error: function(xhr, status, err) {
      _postBody = "";
      _receivedData = "";
-     _error = [url, status, err + "."];
+     _error = [err + ".", url];
      AppStore.emitChange();
      }.bind(this)
    })

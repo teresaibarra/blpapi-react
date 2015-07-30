@@ -6,10 +6,9 @@ var ErrorMessage = React.createClass({
 		var message = [];
 
 		if(error){
-			var type = error[2];
-			var url = error[0];
-			message.push(<h4 id="error" key={type} >ERROR! {type}</h4>);
-			message.push(<h4 id="error" key={url}>URL: {url}</h4>);
+			var type = error[0];
+			var url = error[1];
+			message.push(<h3 id="error" key={type} >ERROR! {type}</h3>);
 		}else {
 			message = [];
 		}
