@@ -3,24 +3,24 @@ var AppConstants = require('../constants/AppConstants');
 
 var AppActions = {
 
-  submitReferenceQuery: function(item){
-    AppDispatcher.handleViewAction({
-      actionType:AppConstants.SUBMIT_REFERENCE_QUERY,
-      item: item
-    })
-  },
-   submitHistoricalQuery: function(item){
-    AppDispatcher.handleViewAction({
-      actionType:AppConstants.SUBMIT_HISTORICAL_QUERY,
-      item: item
-    })
-  },
-  submitTextAreaQuery: function(item){
-    AppDispatcher.handleViewAction({
-      actionType:AppConstants.SUBMIT_TEXT_AREA_QUERY,
-      item: item
-    })
-  }
+	submitReferenceQuery: function(item){
+		AppDispatcher.handleViewAction({
+			actionType:AppConstants.SUBMIT_REFERENCE_QUERY,
+			item: item
+		})
+	},
+	submitHistoricalQuery: function(item){
+		AppDispatcher.handleViewAction({
+			actionType:AppConstants.SUBMIT_HISTORICAL_QUERY,
+			item: item
+		})
+	},
+	submitTextAreaQuery: function(item){
+		AppDispatcher.handleViewAction({
+			actionType:AppConstants.SUBMIT_TEXT_AREA_QUERY,
+			item: item
+		})
+	}
 
 }
 

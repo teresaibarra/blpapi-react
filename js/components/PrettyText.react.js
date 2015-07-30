@@ -12,12 +12,10 @@ var PrettyText = React.createClass({
 				var info = [];
 				info.push(<h3 id="security" key={sec.security} > {"SECURITY: " + sec.security.toUpperCase()} </h3>);
 				
-				for (var j in sec.fieldData)
-				{
+				for (var j in sec.fieldData){
 					var value = j;
 
-					if (value.indexOf("_") != -1)
-					{
+					if (value.indexOf("_") != -1){
 						value = value.replace(/_/g, " ");
 					}
 					

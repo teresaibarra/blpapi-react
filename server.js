@@ -11,17 +11,17 @@ app.use('/', express.static(path.join('.')));
 
 // GET method route
 app.get('/', function (req, res) {
-  res.send('GET request to the homepage');
-  console.log("get");
+	res.send('GET request to the homepage');
+	console.log("get");
 });
 
 // POST method route
 app.post('/', function (req, res) {
-  res.send('POST request to the homepage');
-  console.log("set");
+	res.send('POST request to the homepage');
+	console.log("set");
 });
 
 app.listen(app.get('port'), function() {
-  console.log('Server started: http://localhost:' + app.get('port') + '/');
+	console.log('Server started: http://localhost:' + app.get('port') + '/');
 });
 
