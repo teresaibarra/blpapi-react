@@ -10,6 +10,7 @@ var PrettyResponse = React.createClass({
 		var responseType;
 		var matchedData = [];
 		var dateList = [];
+		var secAmt = 0;
 
 		if(data) {
 			dataTitle = <h2 id="dataTitle"> Pretty Response: </h2>;
@@ -68,9 +69,10 @@ var PrettyResponse = React.createClass({
 							}
 						}
 					}
+					secAmt++;
 				});
 
-				dateList = dateList.slice(0,dateList.length/2);
+				dateList = dateList.slice(0,(dateList.length)/secAmt);
 
 				for(var array in matchedData) {
 					for (var data in matchedData[array]) {
@@ -79,6 +81,7 @@ var PrettyResponse = React.createClass({
 						}
 					}
 				}
+				console.log(matchedData)
 
 				for (var array in matchedData)
 				{

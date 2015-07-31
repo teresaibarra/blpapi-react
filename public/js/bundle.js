@@ -22887,6 +22887,7 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 		var responseType;
 		var matchedData = [];
 		var dateList = [];
+		var secAmt = 0;
 
 		if(data) {
 			dataTitle = React.createElement("h2", {id: "dataTitle"}, " Pretty Response: ");
@@ -22945,9 +22946,10 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 							}
 						}
 					}
+					secAmt++;
 				});
 
-				dateList = dateList.slice(0,dateList.length/2);
+				dateList = dateList.slice(0,(dateList.length)/secAmt);
 
 				for(var array in matchedData) {
 					for (var data in matchedData[array]) {
@@ -22956,6 +22958,7 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 						}
 					}
 				}
+				console.log(matchedData)
 
 				for (var array in matchedData)
 				{
@@ -22989,7 +22992,6 @@ var PrettyText = React.createClass({displayName: "PrettyText",
 
 		if(data) {
 			var secData = data.data[0].securityData;
-			console.log(secData)
 			responseNodes = secData.map(function (sec) {
 				var info = [];
 				info.push(React.createElement("h3", {id: "security", key: sec.security}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
@@ -23003,7 +23005,6 @@ var PrettyText = React.createClass({displayName: "PrettyText",
 					
 					info.push(React.createElement("h4", {id: "fieldData", key: value.trim()}, " ", value.trim().toUpperCase() + ": " + sec.fieldData[j], " "))
 				}
-				console.log(info)
 
 				return(
 					{info}
@@ -23211,7 +23212,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					React.createElement("input", {type: "text", list: "endD", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
 					
 					React.createElement("datalist", {id: "endD"}, 
-						React.createElement("option", {value: "20141230"}, "Security Lookup Request")
+						React.createElement("option", {value: "20141231"}, "Security Lookup Request")
 					), 
 
 
