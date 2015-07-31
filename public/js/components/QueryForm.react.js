@@ -135,10 +135,10 @@ var QueryForm = React.createClass({
 			if(masterList.hasOwnProperty(property)) {
 				var options = [];
 				for (var i = 0; i < masterList[property].serviceName.length; i++) {
-					options.push(<option value={masterList[property].serviceValue[i]}>{masterList[property].serviceName[i]}</option>);
+					options.push(<option value={masterList[property].serviceValue[i]} key={masterList[property].serviceValue[i]}>{masterList[property].serviceName[i]}</option>);
 				}
 				datalists.push(
-					<datalist id={property}>
+					<datalist id={property} key={property}>
 						{options}
 					</datalist>	);
 			}

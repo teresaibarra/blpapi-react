@@ -23160,10 +23160,10 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			if(masterList.hasOwnProperty(property)) {
 				var options = [];
 				for (var i = 0; i < masterList[property].serviceName.length; i++) {
-					options.push(React.createElement("option", {value: masterList[property].serviceValue[i]}, masterList[property].serviceName[i]));
+					options.push(React.createElement("option", {value: masterList[property].serviceValue[i], key: masterList[property].serviceValue[i]}, masterList[property].serviceName[i]));
 				}
 				datalists.push(
-					React.createElement("datalist", {id: property}, 
+					React.createElement("datalist", {id: property, key: property}, 
 						options
 					)	);
 			}
@@ -23641,8 +23641,7 @@ function getDatalist(){
 	    dataType: 'json',
 	    success: function (data) {
 	        _data = data;
-	       console.log(data)
-	    },
+	    }.bind(this),
 	    async: false
 	});
 }

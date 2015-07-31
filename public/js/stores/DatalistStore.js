@@ -14,8 +14,7 @@ function getDatalist(){
 	    dataType: 'json',
 	    success: function (data) {
 	        _data = data;
-	       console.log(data)
-	    },
+	    }.bind(this),
 	    async: false
 	});
 }
