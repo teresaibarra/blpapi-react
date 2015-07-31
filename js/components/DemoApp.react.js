@@ -2,13 +2,15 @@
 var React = require('react');
 var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
+var DatalistStore = require('../stores/DatalistStore');
 var ResponseList = require('./ResponseList.react');
 var QueryForm = require('./QueryForm.react');
 var ErrorMessage = require('./ErrorMessage.react');
 
 function getAppState() {
 	return {
-	allData: AppStore.getAll()
+	appData: AppStore.getAll(),
+	listData: DatalistStore.getAll()
 	};
 }
 
@@ -19,10 +21,12 @@ var DemoApp = React.createClass({
 
 	componentDidMount: function() {
 		AppStore.addChangeListener(this._onChange);
+		DatalistStore.addChangeListener(this._onChange);
 	},
 
 	componentWillUnmount: function() {
 		AppStore.removeChangeListener(this._onChange);
+		DatalistStore.addChangeListener(this._onChange);
 	},
 
 	render: function(){
@@ -31,15 +35,16 @@ var DemoApp = React.createClass({
 			<h1>Bloomberg API Demonstration</h1>
 			<h2>What would you like to look up?</h2>
 			<h5>Pro-Tip: Separate multiple parameters with commas.</h5>
-			<QueryForm />
-			<ErrorMessage error={this.state.allData[3]} />
-			<ResponseList data={this.state.allData} />
+			<QueryForm list={this.state.listData} />
+			<ErrorMessage error={this.state.appData[3]} />
+			<ResponseList data={this.state.appData} />
 		</div>
 		)
 	},
 
 	_onChange: function() {
 		this.setState(getAppState());
+
 	}
 });
 

@@ -20,6 +20,12 @@ var AppActions = {
 			actionType:AppConstants.SUBMIT_TEXT_AREA_QUERY,
 			item: item
 		})
+	},
+	updateDatalist: function(item){
+		AppDispatcher.handleViewAction({
+			actionType:AppConstants.UPDATE_DATALIST,
+			item: item
+		})		
 	}
 
 }

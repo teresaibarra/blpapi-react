@@ -1,0 +1,27 @@
+{
+	"services": 
+	{
+		"serviceValue": ["refdata", "apiflds", "tasvc", "instruments"],
+		"serviceName": ["Reference Data Service", "API Field Information Service", "Technical Analysis Service", "Instruments Service"]
+	},
+	"refdata": 
+	{
+		"serviceValue": ["ReferenceDataRequest", "HistoricalDataRequest", "IntradayTickRequest", "IntradayBarRequest", "PortfolioDataRequest", "BeqsRequest"],
+		"serviceName": ["Reference Data Request", "Historical Data Request", "Intraday Tick Request", "Intraday Bar Request", "Portfolio Data Request", "Beqs Request"]
+	},
+	"apiflds": 
+	{
+		"serviceValue": ["FieldInfoRequest", "FieldSearchRequest", "categorizedFieldSearchRequest"],
+		"serviceName": ["Field Info Request", "Field Search Request", "Categorized Field Search Request"]
+	},
+	"tasvc": 	
+	{
+		"serviceValue": ["studyRequest"],
+		"serviceName": ["Study Request"]
+	},
+	"instruments": 	
+	{
+		"serviceValue": ["InstrumentListRequest"],
+		"serviceName": ["Security Lookup Request"]
+	}
+}
