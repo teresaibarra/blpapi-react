@@ -22741,7 +22741,7 @@ var Chart = React.createClass({displayName: "Chart",
 		    pointDot : true,
 
 		    //Number - Radius of each point dot in pixels
-		    pointDotRadius : 3,
+		    pointDotRadius : 4,
 
 		    //Number - Pixel width of point dot stroke
 		    pointDotStrokeWidth : 1,
@@ -22858,15 +22858,24 @@ var PostBody = React.createClass({displayName: "PostBody",
 	render: function(){
 		var title = "";
 		var data = "";
+		var url = "";
+		var dataTitle = "";
+		var urlTitle = "";
 
 		if (this.props.request){
-			title = "POST Request Body:";
+			title = "POST Request";
+			urlTitle = "URL: ";
+			url = this.props.url;
+			dataTitle = "BODY:";
 			data = JSON.stringify(this.props.request, null, 3);
 		}
 
 		return(
 			React.createElement("div", {className: "postBody", id: "postBody"}, 
 				React.createElement("h2", {id: "dataTitle"}, title), 
+				React.createElement("h3", null, urlTitle), 
+				React.createElement("h5", {id: "url"}, url), 
+				React.createElement("h3", null, dataTitle), 
 				React.createElement("pre", {className: "postBodyInfo"}, data)
 			)
 		);
@@ -22890,7 +22899,7 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 		var secAmt = 0;
 
 		if(data) {
-			dataTitle = React.createElement("h2", {id: "dataTitle"}, " Pretty Response: ");
+			dataTitle = React.createElement("h2", {id: "dataTitle"}, " Pretty Response ");
 
 			if (type === 'HistoricalDataRequest') {
 				var responseNodes;
@@ -23115,6 +23124,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 	handleCheckBox: function() {
 		if (checkBox.checked){
 			this.setState({hideService: true});
+			this.setState({hideReqTypes:true});
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -23125,6 +23135,8 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			this.setState({hidePostTextArea: false});
 			this.setState({hideSubmit: false});
 
+			this.refs.service.getDOMNode().value = "";
+			this.refs.type.getDOMNode().value = "";
 		    this.refs.securities.getDOMNode().value = "";
 		    this.refs.fields.getDOMNode().value = "";
 		    this.refs.startDate.getDOMNode().value = "";
@@ -23327,7 +23339,7 @@ var RawResponse = React.createClass({displayName: "RawResponse",
 		
 		if (this.props.data)
 		{
-			title = "Raw Response:";
+			title = "Raw Response";
 			data = JSON.stringify(this.props.data, null, 3);
 		}
 		return(
@@ -23354,6 +23366,7 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		var request = this.props.data[1];
 		var type = this.props.data[2];
 		var error = this.props.data[3];
+		var url = this.props.data[4];
 
 		if (!error) {
 			$("#responseList")
@@ -23366,7 +23379,7 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		
 		return (
 			React.createElement("div", {className: "responseList", id: "responseList"}, 
-				React.createElement(PostBody, {request: request}), 
+				React.createElement(PostBody, {request: request, url: url}), 
 				React.createElement(RawResponse, {data: data}), 
 				React.createElement(PrettyResponse, {data: data, type: type})
 			)
@@ -23420,6 +23433,7 @@ var _receivedData = "";
 var _postBody = "";
 var _requestType = "";
 var _error = "";
+var _url = "";
 
 function submitReference(data){
 	var service = data[0];
@@ -23570,12 +23584,14 @@ function handleQuerySubmit(query, url) {
 		_postBody = query;
 		_receivedData = data;   
 		_error = "";
+		_url = url;
 		AppStore.emitChange();
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
 		_receivedData = "";
 		_error = [err + ".", url];
+		_url = ""
 		AppStore.emitChange();
 	}.bind(this)
 	})
@@ -23583,7 +23599,7 @@ function handleQuerySubmit(query, url) {
 
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_receivedData, _postBody, _requestType, _error];
+		return [_receivedData, _postBody, _requestType, _error, _url];
 	},
 
 	emitChange: function() {

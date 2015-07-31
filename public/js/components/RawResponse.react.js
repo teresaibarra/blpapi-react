@@ -7,7 +7,7 @@ var RawResponse = React.createClass({
 		
 		if (this.props.data)
 		{
-			title = "Raw Response:";
+			title = "Raw Response";
 			data = JSON.stringify(this.props.data, null, 3);
 		}
 		return(

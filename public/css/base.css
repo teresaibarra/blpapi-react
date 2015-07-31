@@ -149,6 +149,7 @@ pre {
 	display:inline-block;
 	margin: 5em;
 	vertical-align: top;
+	width: 400px;
 }
 
 #rawResponse {

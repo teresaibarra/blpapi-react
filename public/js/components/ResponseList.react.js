@@ -9,6 +9,7 @@ var ResponseList = React.createClass({
 		var request = this.props.data[1];
 		var type = this.props.data[2];
 		var error = this.props.data[3];
+		var url = this.props.data[4];
 
 		if (!error) {
 			$("#responseList")
@@ -21,7 +22,7 @@ var ResponseList = React.createClass({
 		
 		return (
 			<div className="responseList" id="responseList" >
-				<PostBody request={request} />
+				<PostBody request={request} url ={url} />
 				<RawResponse data={data} />
 				<PrettyResponse data={data} type={type} />
 			</div>

@@ -9,6 +9,7 @@ var _receivedData = "";
 var _postBody = "";
 var _requestType = "";
 var _error = "";
+var _url = "";
 
 function submitReference(data){
 	var service = data[0];
@@ -159,12 +160,14 @@ function handleQuerySubmit(query, url) {
 		_postBody = query;
 		_receivedData = data;   
 		_error = "";
+		_url = url;
 		AppStore.emitChange();
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
 		_receivedData = "";
 		_error = [err + ".", url];
+		_url = ""
 		AppStore.emitChange();
 	}.bind(this)
 	})
@@ -172,7 +175,7 @@ function handleQuerySubmit(query, url) {
 
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_receivedData, _postBody, _requestType, _error];
+		return [_receivedData, _postBody, _requestType, _error, _url];
 	},
 
 	emitChange: function() {

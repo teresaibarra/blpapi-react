@@ -13,7 +13,7 @@ var PrettyResponse = React.createClass({
 		var secAmt = 0;
 
 		if(data) {
-			dataTitle = <h2 id="dataTitle"> Pretty Response: </h2>;
+			dataTitle = <h2 id="dataTitle"> Pretty Response </h2>;
 
 			if (type === 'HistoricalDataRequest') {
 				var responseNodes;

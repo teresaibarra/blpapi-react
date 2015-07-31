@@ -89,6 +89,7 @@ var QueryForm = React.createClass({
 	handleCheckBox: function() {
 		if (checkBox.checked){
 			this.setState({hideService: true});
+			this.setState({hideReqTypes:true});
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -99,6 +100,8 @@ var QueryForm = React.createClass({
 			this.setState({hidePostTextArea: false});
 			this.setState({hideSubmit: false});
 
+			this.refs.service.getDOMNode().value = "";
+			this.refs.type.getDOMNode().value = "";
 		    this.refs.securities.getDOMNode().value = "";
 		    this.refs.fields.getDOMNode().value = "";
 		    this.refs.startDate.getDOMNode().value = "";
