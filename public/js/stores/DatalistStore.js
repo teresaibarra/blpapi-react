@@ -7,22 +7,14 @@ var assign = require('object-assign');
 var CHANGE_EVENT = 'change';
 var _data = "";
 
-function escapeHtml(text) {
-  return text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-}
-
 function getDatalist(){
 	$.ajax({
 	    type: 'GET',
-	    url: '/services.json',
+	    url: '/services',
 	    dataType: 'json',
 	    success: function (data) {
 	        _data = data;
+	       console.log(data)
 	    },
 	    async: false
 	});

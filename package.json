@@ -20,8 +20,8 @@
     "object-assign": "^1.0.0"
   },
   "scripts": {
-    "start": "watchify -o js/bundle.js -v -d .",
-    "build": "browserify . | uglifyjs -cm > js/bundle.min.js"
+    "start": "watchify public/js/main.js -o public/js/bundle.js -v",
+    "build": "browserify public/js/main.js -o public/js/bundle.js"
   },
   "author": "Teresa Ibarra",
   "browserify": {
