@@ -22967,7 +22967,6 @@ var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 						}
 					}
 				}
-				console.log(matchedData)
 
 				for (var array in matchedData)
 				{
@@ -23200,41 +23199,16 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					id: "formbox", hidden: this.state.hideReqTypes, onChange: this.handleRequestChoice}), 
 
 
-					React.createElement("input", {type: "text", list: "secD", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
+					React.createElement("input", {type: "text", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
 
-					React.createElement("datalist", {id: "secD"}, 
-						React.createElement("option", {value: "AAPL US Equity, IBM US EQUITY"}, "Security Lookup Request")
-					), 
+					React.createElement("input", {type: "text", placeholder: "fields", ref: "fields", id: "formbox", hidden: this.state.hideFields}), 
 
+					React.createElement("input", {type: "text", placeholder: "start date", ref: "startDate", id: "formbox", hidden: this.state.hideStartDate}), 
+			
+					React.createElement("input", {type: "text", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
 
-					React.createElement("input", {type: "text", list: "fieldsD", placeholder: "fields", ref: "fields", id: "formbox", hidden: this.state.hideFields}), 
-					
-					React.createElement("datalist", {id: "fieldsD"}, 
-						React.createElement("option", {value: "PX_LAST, OPEN"}, "Security Lookup Request")
-					), 
-
-
-					React.createElement("input", {type: "text", list: "startD", placeholder: "start date", ref: "startDate", id: "formbox", hidden: this.state.hideStartDate}), 
-					
-					React.createElement("datalist", {id: "startD"}, 
-						React.createElement("option", {value: "20140101"}, "Security Lookup Request")
-					), 
-
-
-					React.createElement("input", {type: "text", list: "endD", placeholder: "end date", ref: "endDate", id: "formbox", hidden: this.state.hideEndDate}), 
-					
-					React.createElement("datalist", {id: "endD"}, 
-						React.createElement("option", {value: "20141231"}, "Security Lookup Request")
-					), 
-
-
-					React.createElement("input", {type: "text", list: "period", placeholder: "periodicity", ref: "period", id: "formbox", hidden: this.state.hidePeriod}), 
-					
-					React.createElement("datalist", {id: "period"}, 
-						React.createElement("option", {value: "MONTHLY"}, "Security Lookup Request")
-					), 
-
-
+					React.createElement("input", {type: "text", placeholder: "periodicity", ref: "period", id: "formbox", hidden: this.state.hidePeriod}), 
+				
 					React.createElement("textarea", {rows: "4", cols: "50", placeholder: "Enter post body here.", ref: "postTextArea", hidden: this.state.hidePostTextArea}), 
 
 					React.createElement("br", null), 
@@ -23546,6 +23520,7 @@ function submitHistorical(data){
 			cleanFields.push(fld);
 		})
 
+		period = period.toUpperCase();
 		_requestType = type;
 
 		handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 

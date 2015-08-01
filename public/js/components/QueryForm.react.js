@@ -165,41 +165,16 @@ var QueryForm = React.createClass({
 					id="formbox" hidden={this.state.hideReqTypes} onChange={this.handleRequestChoice}/>
 
 
-					<input type="text" list ="secD" placeholder="securities" ref="securities" id="formbox" hidden={this.state.hideSecurities}  />
+					<input type="text" placeholder="securities" ref="securities" id="formbox" hidden={this.state.hideSecurities}  />
 
-					<datalist id="secD">
-						<option value="AAPL US Equity, IBM US EQUITY">Security Lookup Request</option>
-					</datalist>
+					<input type="text" placeholder="fields" ref="fields" id="formbox" hidden={this.state.hideFields}  />
 
+					<input type="text" placeholder="start date" ref="startDate" id="formbox" hidden={this.state.hideStartDate}  />
+			
+					<input type="text" placeholder="end date" ref="endDate" id="formbox" hidden={this.state.hideEndDate}  />
 
-					<input type="text" list ="fieldsD" placeholder="fields" ref="fields" id="formbox" hidden={this.state.hideFields}  />
-					
-					<datalist id="fieldsD">
-						<option value="PX_LAST, OPEN">Security Lookup Request</option>
-					</datalist>
-
-
-					<input type="text" list="startD" placeholder="start date" ref="startDate" id="formbox" hidden={this.state.hideStartDate}  />
-					
-					<datalist id="startD">
-						<option value="20140101">Security Lookup Request</option>
-					</datalist>
-
-
-					<input type="text" list="endD" placeholder="end date" ref="endDate" id="formbox" hidden={this.state.hideEndDate}  />
-					
-					<datalist id="endD">
-						<option value="20141231">Security Lookup Request</option>
-					</datalist>
-
-
-					<input type="text" list="period" placeholder="periodicity" ref="period" id="formbox" hidden={this.state.hidePeriod}  />
-					
-					<datalist id="period">
-						<option value="MONTHLY">Security Lookup Request</option>
-					</datalist>
-
-
+					<input type="text" placeholder="periodicity" ref="period" id="formbox" hidden={this.state.hidePeriod}  />
+				
 					<textarea rows="4" cols="50" placeholder="Enter post body here." ref="postTextArea" hidden={this.state.hidePostTextArea} />
 
 					<br />

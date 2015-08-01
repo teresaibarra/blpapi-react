@@ -81,7 +81,6 @@ var PrettyResponse = React.createClass({
 						}
 					}
 				}
-				console.log(matchedData)
 
 				for (var array in matchedData)
 				{

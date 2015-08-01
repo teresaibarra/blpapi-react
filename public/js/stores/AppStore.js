@@ -122,6 +122,7 @@ function submitHistorical(data){
 			cleanFields.push(fld);
 		})
 
+		period = period.toUpperCase();
 		_requestType = type;
 
 		handleQuerySubmit({securities: cleanSecurities, fields: cleanFields, startDate: startDate, endDate: endDate, 
