@@ -39,10 +39,13 @@ function submitQuery(data) {
 	})
 } 
 
-function handleError(url, err) {
+function handleError(data) {
+	var field = data[0];
+	var url = data[1];
+
 	_postBody = "";
 	_receivedData = "";
-	_error = ["Missing URL.", "undefined"];
+	_error = ["Missing " + field, url];
 	AppStore.emitChange();
 }
 
@@ -71,6 +74,11 @@ AppDispatcher.register(function(payload){
 		case AppConstants.SUBMIT_QUERY:
 			var data = payload.action.item;
 			submitQuery(data);
+			break;
+
+		case AppConstants.HANDLE_ERROR:
+			var data = payload.action.item;
+			handleError(data);
 			break;
 
 		default:

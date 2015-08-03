@@ -22617,21 +22617,9 @@ var AppActions = {
 			item: item
 		})
 	},
-	submitReferenceQuery: function(item){
+	handleError: function(item){
 		AppDispatcher.handleViewAction({
-			actionType:AppConstants.SUBMIT_REFERENCE_QUERY,
-			item: item
-		})
-	},
-	submitHistoricalQuery: function(item){
-		AppDispatcher.handleViewAction({
-			actionType:AppConstants.SUBMIT_HISTORICAL_QUERY,
-			item: item
-		})
-	},
-	submitTextAreaQuery: function(item){
-		AppDispatcher.handleViewAction({
-			actionType:AppConstants.SUBMIT_TEXT_AREA_QUERY,
+			actionType:AppConstants.HANDLE_ERROR,
 			item: item
 		})
 	},
@@ -22641,7 +22629,6 @@ var AppActions = {
 			item: item
 		})		
 	}
-
 }
 
 module.exports = AppActions;
@@ -23330,13 +23317,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
 			if(!service){
-
+				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
-
+				AppActions.handleError(["request type.", "undefined"]);
 			}else if (!securities){
-
+				AppActions.handleError(["securities.", url]);
 			}else if (!fields){
-
+				AppActions.handleError(["fields.", url]);
 			}else {
 				securities = securities.split(",");
 				fields = fields.split(",");
@@ -23357,19 +23344,19 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
 			if(!service){
-
+				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
-
+				AppActions.handleError(["request type.", "undefined"]);
 			}else if (!securities){
-
+				AppActions.handleError(["securities.", url]);
 			}else if (!fields){
-
+				AppActions.handleError(["fields.", url]);
 			}else if (!startDate){
-
+				AppActions.handleError(["start date.", url]);
 			}else if (!endDate){
-
+				AppActions.handleError(["end date.", url]);
 			}else if (!period){
-
+				AppActions.handleError(["period.", url]);
 			}
 			else {
 				securities = securities.split(",");
@@ -23393,18 +23380,24 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		else{
 			var url = "";
 
-			if(service && type){
-				url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+			if(service || type){
+				if(!service){
+					AppActions.handleError(["service.", "undefined"]);
+				}
+				else if (!type){
+					AppActions.handleError(["request type.", "undefined"]);
+				}
+				else{
+					url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+				}
 			}else{
 				url = this.refs.url.getDOMNode().value.trim();
 			}
 
 			postTextArea = JSON.parse(postTextArea);
 
-			if(!url){
-
-			}else if (!postTextArea){
-
+			if (!postTextArea){
+				AppActions.handleError(["POST body.", url]);
 			}else {
 				var index = url.indexOf("type=") + 5;
 				type = url.substring(index);
@@ -23505,7 +23498,8 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 module.exports = ResponseList;
 },{"./PostBody.react":"/Users/tibarra1/Documents/http-react/public/js/components/PostBody.react.js","./PrettyResponse.react":"/Users/tibarra1/Documents/http-react/public/js/components/PrettyResponse.react.js","./RawResponse.react":"/Users/tibarra1/Documents/http-react/public/js/components/RawResponse.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/constants/AppConstants.js":[function(require,module,exports){
 module.exports = {
-	SUBMIT_QUERY: 'SUBMIT_QUERY'
+	SUBMIT_QUERY: 'SUBMIT_QUERY',
+	HANDLE_ERROR: 'HANDLE_ERROR'
 };
 
 },{}],"/Users/tibarra1/Documents/http-react/public/js/dispatcher/AppDispatcher.js":[function(require,module,exports){
@@ -23575,10 +23569,13 @@ function submitQuery(data) {
 	})
 } 
 
-function handleError(url, err) {
+function handleError(data) {
+	var field = data[0];
+	var url = data[1];
+
 	_postBody = "";
 	_receivedData = "";
-	_error = ["Missing URL.", "undefined"];
+	_error = ["Missing " + field, url];
 	AppStore.emitChange();
 }
 
@@ -23607,6 +23604,11 @@ AppDispatcher.register(function(payload){
 		case AppConstants.SUBMIT_QUERY:
 			var data = payload.action.item;
 			submitQuery(data);
+			break;
+
+		case AppConstants.HANDLE_ERROR:
+			var data = payload.action.item;
+			handleError(data);
 			break;
 
 		default:

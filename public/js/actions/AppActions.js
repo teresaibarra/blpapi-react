@@ -8,21 +8,9 @@ var AppActions = {
 			item: item
 		})
 	},
-	submitReferenceQuery: function(item){
+	handleError: function(item){
 		AppDispatcher.handleViewAction({
-			actionType:AppConstants.SUBMIT_REFERENCE_QUERY,
-			item: item
-		})
-	},
-	submitHistoricalQuery: function(item){
-		AppDispatcher.handleViewAction({
-			actionType:AppConstants.SUBMIT_HISTORICAL_QUERY,
-			item: item
-		})
-	},
-	submitTextAreaQuery: function(item){
-		AppDispatcher.handleViewAction({
-			actionType:AppConstants.SUBMIT_TEXT_AREA_QUERY,
+			actionType:AppConstants.HANDLE_ERROR,
 			item: item
 		})
 	},
@@ -32,7 +20,6 @@ var AppActions = {
 			item: item
 		})		
 	}
-
 }
 
 module.exports = AppActions;

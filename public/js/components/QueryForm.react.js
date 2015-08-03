@@ -291,13 +291,13 @@ var QueryForm = React.createClass({
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
 			if(!service){
-
+				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
-
+				AppActions.handleError(["request type.", "undefined"]);
 			}else if (!securities){
-
+				AppActions.handleError(["securities.", url]);
 			}else if (!fields){
-
+				AppActions.handleError(["fields.", url]);
 			}else {
 				securities = securities.split(",");
 				fields = fields.split(",");
@@ -318,19 +318,19 @@ var QueryForm = React.createClass({
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
 			if(!service){
-
+				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
-
+				AppActions.handleError(["request type.", "undefined"]);
 			}else if (!securities){
-
+				AppActions.handleError(["securities.", url]);
 			}else if (!fields){
-
+				AppActions.handleError(["fields.", url]);
 			}else if (!startDate){
-
+				AppActions.handleError(["start date.", url]);
 			}else if (!endDate){
-
+				AppActions.handleError(["end date.", url]);
 			}else if (!period){
-
+				AppActions.handleError(["period.", url]);
 			}
 			else {
 				securities = securities.split(",");
@@ -354,18 +354,24 @@ var QueryForm = React.createClass({
 		else{
 			var url = "";
 
-			if(service && type){
-				url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+			if(service || type){
+				if(!service){
+					AppActions.handleError(["service.", "undefined"]);
+				}
+				else if (!type){
+					AppActions.handleError(["request type.", "undefined"]);
+				}
+				else{
+					url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+				}
 			}else{
 				url = this.refs.url.getDOMNode().value.trim();
 			}
 
 			postTextArea = JSON.parse(postTextArea);
 
-			if(!url){
-
-			}else if (!postTextArea){
-
+			if (!postTextArea){
+				AppActions.handleError(["POST body.", url]);
 			}else {
 				var index = url.indexOf("type=") + 5;
 				type = url.substring(index);
