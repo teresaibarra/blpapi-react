@@ -23055,21 +23055,43 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 	},
 
 	handleServiceChoice: function() {
-		if (this.refs.service)
-		{
-		    this.refs.securities.getDOMNode().value = "";
-		    this.refs.fields.getDOMNode().value = "";
-		    this.refs.startDate.getDOMNode().value = "";
-		    this.refs.endDate.getDOMNode().value = "";
-		    this.refs.period.getDOMNode().value = "";
+		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
+			if (this.state.servTypeChoice != "")
+			{
+			    this.refs.securities.getDOMNode().value = "";
+			    this.refs.fields.getDOMNode().value = "";
+			    this.refs.startDate.getDOMNode().value = "";
+			    this.refs.endDate.getDOMNode().value = "";
+			    this.refs.period.getDOMNode().value = "";
 
-			this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
 				this.setState({hideReqTypes: false});
 				this.setState({hideSubmit: true});
-			});
-			return;
-		}
-		return;
+
+				return;
+			}
+			else if (this.state.servTypeChoice === ""){
+				this.refs.type.getDOMNode().value = "";
+			    this.refs.securities.getDOMNode().value = "";
+			    this.refs.fields.getDOMNode().value = "";
+			    this.refs.startDate.getDOMNode().value = "";
+			    this.refs.endDate.getDOMNode().value = "";
+			    this.refs.period.getDOMNode().value = "";
+
+				this.setState({hideReqTypes:true});
+				this.setState({hideSecurities: true});
+				this.setState({hideFields: true});
+				this.setState({hideStartDate: true});
+				this.setState({hideEndDate: true});
+				this.setState({hidePeriod: true});
+
+				this.setState({hideSubmit: true});
+				return;		
+			}
+			else {
+				return;
+			}
+		});
+
 	},
 	
 	handleRequestChoice: function() {
