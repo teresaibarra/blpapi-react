@@ -23058,16 +23058,43 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
 			if (this.state.servTypeChoice != "")
 			{
-			    this.refs.securities.getDOMNode().value = "";
-			    this.refs.fields.getDOMNode().value = "";
-			    this.refs.startDate.getDOMNode().value = "";
-			    this.refs.endDate.getDOMNode().value = "";
-			    this.refs.period.getDOMNode().value = "";
+				if(this.state.servTypeChoice === "refdata" || this.state.servTypeChoice === "apiflds" 
+					|| this.state.servTypeChoice === "tasvc"|| this.state.servTypeChoice === "instruments"){
+				    this.refs.securities.getDOMNode().value = "";
+				    this.refs.fields.getDOMNode().value = "";
+				    this.refs.startDate.getDOMNode().value = "";
+				    this.refs.endDate.getDOMNode().value = "";
+				    this.refs.period.getDOMNode().value = "";
+				    this.refs.postTextArea.getDOMNode().value = "";
 
-				this.setState({hideReqTypes: false});
-				this.setState({hideSubmit: true});
+					this.setState({hideReqTypes: false});
 
-				return;
+					this.setState({hidePostTextArea: true});
+					this.setState({hideSubmit: true});
+
+					return;					
+				}
+				else{
+					this.setState({hideSecurities: true});
+					this.setState({hideFields: true});
+					this.setState({hideStartDate: true});
+					this.setState({hideEndDate: true});
+					this.setState({hidePeriod: true});
+					this.setState({hideUrl: true});
+
+					this.setState({hideService: false});
+					this.setState({hideReqTypes:false});
+					this.setState({hidePostTextArea: false});
+					this.setState({hideSubmit: false});
+
+				    this.refs.securities.getDOMNode().value = "";
+				    this.refs.fields.getDOMNode().value = "";
+				    this.refs.startDate.getDOMNode().value = "";
+				    this.refs.endDate.getDOMNode().value = "";
+				    this.refs.period.getDOMNode().value = "";
+				    this.refs.postTextArea.getDOMNode().value = "";
+					return;
+				}
 			}
 			else if (this.state.servTypeChoice === ""){
 				this.refs.type.getDOMNode().value = "";
@@ -23076,6 +23103,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			    this.refs.startDate.getDOMNode().value = "";
 			    this.refs.endDate.getDOMNode().value = "";
 			    this.refs.period.getDOMNode().value = "";
+			    this.refs.postTextArea.getDOMNode().value = "";
 
 				this.setState({hideReqTypes:true});
 				this.setState({hideSecurities: true});
@@ -23083,8 +23111,10 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 				this.setState({hideStartDate: true});
 				this.setState({hideEndDate: true});
 				this.setState({hidePeriod: true});
-
 				this.setState({hideSubmit: true});
+
+				this.setState({hidePostTextArea: true});
+
 				return;		
 			}
 			else {
@@ -23108,12 +23138,18 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.startDate.getDOMNode().value = "";
 		    this.refs.endDate.getDOMNode().value = "";
 		    this.refs.period.getDOMNode().value = "";
+		    this.refs.postTextArea.getDOMNode().value = "";
 
-			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString() }, function(){
+			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString()}, function(){
+
+			if (this.state.reqTypeChoice != "")
+			{
 				if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 					this.setState({hideSecurities: false});
 					this.setState({hideFields: false});
 					this.setState({hideSubmit: false});
+
+					this.setState({hidePostTextArea: true});
 				}
 				else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
 					this.setState({hideSecurities: false});
@@ -23122,23 +23158,46 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					this.setState({hideEndDate: false});
 					this.setState({hidePeriod: false});
 					this.setState({hideSubmit: false});
-				}
-				else if (this.state.reqTypeChoice === "IntradayTickRequest"){
-					this.setState({hideSubmit: false});
-				}
-				else if (this.state.reqTypeChoice === "IntradayBarRequest"){
-					this.setState({hideSubmit: false});
-				}
-				else if (this.state.reqTypeChoice === "PortfolioDataRequest"){
-					this.setState({hideSubmit: false});
-				}
-				else if (this.state.reqTypeChoice === "BeqsRequest"){
-					this.setState({hideSubmit: false});
+
+					this.setState({hidePostTextArea: true});
 				}
 				else{
+					this.setState({hideSecurities: true});
+					this.setState({hideFields: true});
+					this.setState({hideStartDate: true});
+					this.setState({hideEndDate: true});
+					this.setState({hidePeriod: true});
+					this.setState({hideUrl: true});
+
+					this.setState({hideService: false});
+					this.setState({hideReqTypes:false});
+					this.setState({hidePostTextArea: false});
 					this.setState({hideSubmit: false});
+
 					return;
 				}
+			}
+			else if (this.state.reqTypeChoice === ""){
+			    this.refs.securities.getDOMNode().value = "";
+			    this.refs.fields.getDOMNode().value = "";
+			    this.refs.startDate.getDOMNode().value = "";
+			    this.refs.endDate.getDOMNode().value = "";
+			    this.refs.period.getDOMNode().value = "";
+			    this.refs.postTextArea.getDOMNode().value = "";
+
+				this.setState({hideSecurities: true});
+				this.setState({hideFields: true});
+				this.setState({hideStartDate: true});
+				this.setState({hideEndDate: true});
+				this.setState({hidePeriod: true});
+				this.setState({hideSubmit: true});
+
+				this.setState({hidePostTextArea: true});
+			}
+			else {
+				return;
+			}
+
 			});
 		}
 	},
@@ -23163,6 +23222,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.startDate.getDOMNode().value = "";
 		    this.refs.endDate.getDOMNode().value = "";
 		    this.refs.period.getDOMNode().value = "";
+		    this.refs.postTextArea.getDOMNode().value = "";
 
 		} else {
 			this.setState({hideUrl: true});
@@ -23183,6 +23243,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.startDate.getDOMNode().value = "";
 		    this.refs.endDate.getDOMNode().value = "";
 		    this.refs.period.getDOMNode().value = "";
+		    this.refs.postTextArea.getDOMNode().value = "";
 		}
 		return;
 	},
