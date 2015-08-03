@@ -23383,26 +23383,34 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			if(service || type){
 				if(!service){
 					AppActions.handleError(["service.", "undefined"]);
-				}
-				else if (!type){
+				}else if (!type){
 					AppActions.handleError(["request type.", "undefined"]);
-				}
-				else{
+				}else{
 					url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+					if (!postTextArea){
+						AppActions.handleError(["POST body.", url]);
+					}else {
+						postTextArea = JSON.parse(postTextArea);
+						var index = url.indexOf("type=") + 5;
+						type = url.substring(index);
+						AppActions.submitQuery([postTextArea, url, type]);
+					}
 				}
 			}else{
-				url = this.refs.url.getDOMNode().value.trim();
-			}
-
-			postTextArea = JSON.parse(postTextArea);
-
-			if (!postTextArea){
-				AppActions.handleError(["POST body.", url]);
-			}else {
-				var index = url.indexOf("type=") + 5;
-				type = url.substring(index);
-
-				AppActions.submitQuery([postTextArea, url, type]);
+				if (this.refs.url.getDOMNode().value.trim()){
+					url = this.refs.url.getDOMNode().value.trim();
+					if (!postTextArea){
+						AppActions.handleError(["POST body.", url]);
+					}else {
+						postTextArea = JSON.parse(postTextArea);
+						var index = url.indexOf("type=") + 5;
+						type = url.substring(index);
+						AppActions.submitQuery([postTextArea, url, type]);
+					}
+				}else 
+				{
+					AppActions.handleError(["URL.", "undefined"]);
+				}
 			}
 		}
 		checkBox.checked = false;
