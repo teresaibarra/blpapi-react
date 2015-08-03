@@ -1,27 +1,66 @@
 {
-	"services": 
-	{
-		"serviceValue": ["refdata", "apiflds", "tasvc", "instruments"],
-		"serviceName": ["Reference Data Service", "API Field Information Service", "Technical Analysis Service", "Instruments Service"]
+	"refdata": {
+		"ServiceName": "Reference Data Service",
+		"Requests": [
+			{
+				"RequestType": "ReferenceDataRequest",
+				"RequestName": "Reference Data Request"
+			},
+			{
+				"RequestType": "HistoricalDataRequest",
+				"RequestName": "Historical Data Request"
+			},
+			{
+				"RequestType": "IntradayTickRequest",
+				"RequestName": "Intraday Tick Request"
+			},
+			{
+				"RequestType": "IntradayBarRequest",
+				"RequestName": "Intraday Bar Request"
+			},
+			{
+				"RequestType": "PortfolioDataRequest",
+				"RequestName": "Portfolio Data Request"
+			},
+			{
+				"RequestType": "BeqsRequest",
+				"RequestName": "Beqs Request"
+			}
+		]
 	},
-	"refdata": 
-	{
-		"serviceValue": ["ReferenceDataRequest", "HistoricalDataRequest", "IntradayTickRequest", "IntradayBarRequest", "PortfolioDataRequest", "BeqsRequest"],
-		"serviceName": ["Reference Data Request", "Historical Data Request", "Intraday Tick Request", "Intraday Bar Request", "Portfolio Data Request", "Beqs Request"]
+	"apiflds": {
+		"ServiceName": "API Field Information Service",
+		"Requests": [
+			{
+				"RequestType": "FieldInfoRequest",
+				"RequestName": "Field Information Request"
+			},
+			{
+				"RequestType": "FieldSearchRequest",
+				"RequestName": "Field Search Request"
+			},
+			{
+				"RequestType": "categorizedFieldSearchRequest",
+				"RequestName": "Categorized Field Search Request"
+			}
+		]
 	},
-	"apiflds": 
-	{
-		"serviceValue": ["FieldInfoRequest", "FieldSearchRequest", "categorizedFieldSearchRequest"],
-		"serviceName": ["Field Info Request", "Field Search Request", "Categorized Field Search Request"]
+	"tasvc": {
+		"ServiceName": "Technical Analysis Service",
+		"Requests": [
+			{
+				"RequestType": "studyRequest",
+				"RequestName": "Study Request"
+			}
+		]
 	},
-	"tasvc": 	
-	{
-		"serviceValue": ["studyRequest"],
-		"serviceName": ["Study Request"]
-	},
-	"instruments": 	
-	{
-		"serviceValue": ["InstrumentListRequest"],
-		"serviceName": ["Security Lookup Request"]
+	"instruments": {
+		"ServiceName": "Instruments Service",
+		"Requests": [
+		{
+			"RequestType": "InstrumentListRequest",
+			"RequestName": "Security Lookup Request"
+		}
+		]
 	}
 }

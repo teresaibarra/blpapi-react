@@ -23166,20 +23166,27 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 	},
 	render: function() {
 		var masterList = this.props.list;
-
 		var datalists = [];
+		var services = [];
 		for (var property in masterList) {
 			if(masterList.hasOwnProperty(property)) {
 				var options = [];
-				for (var i = 0; i < masterList[property].serviceName.length; i++) {
-					options.push(React.createElement("option", {value: masterList[property].serviceValue[i], key: masterList[property].serviceValue[i]}, masterList[property].serviceName[i]));
+				for (var i = 0; i < masterList[property].Requests.length; i++) {
+					options.push(React.createElement("option", {value: masterList[property].Requests[i].RequestType, key: masterList[property].Requests[i].RequestType}, 
+						masterList[property].Requests[i].RequestName));
 				}
 				datalists.push(
 					React.createElement("datalist", {id: property, key: property}, 
 						options
-					)	);
+					)	
+				);
+				services.push(React.createElement("option", {value: property, key: property}, masterList[property].ServiceName));
 			}
 		}
+		datalists.push(
+			React.createElement("datalist", {id: "services", key: ""}, 
+				services
+			)	);
 		return(
 			React.createElement("div", {id: "queryDiv"}, 
 				React.createElement("form", {className: "queryForm", id: "queryForm", onSubmit: this._onSubmit}, 
