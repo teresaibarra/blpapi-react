@@ -19,7 +19,6 @@ var QueryForm = React.createClass({
 			reqTypeChoice: ""
 		};
 	},
-
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
 			if (this.state.servTypeChoice != "")
@@ -89,7 +88,6 @@ var QueryForm = React.createClass({
 		});
 
 	},
-	
 	handleRequestChoice: function() {
 		if (this.refs.type){
 			this.setState({hideSecurities: true});
@@ -276,85 +274,133 @@ var QueryForm = React.createClass({
 	},
 	_onSubmit: function(e){
 		e.preventDefault();
+
+		var service = this.refs.service.getDOMNode().value.trim();
+		var type = this.refs.type.getDOMNode().value.trim();
+		var securities = this.refs.securities.getDOMNode().value.trim();
+		var fields = this.refs.fields.getDOMNode().value.trim();
+		var startDate = this.refs.startDate.getDOMNode().value.trim();
+		var endDate = this.refs.endDate.getDOMNode().value.trim();
+		var period = this.refs.period.getDOMNode().value.trim();
+		var postTextArea = this.refs.postTextArea.getDOMNode().value.trim();
+
+		var cleanSecurities = [];
+		var cleanFields = [];
+
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
-			var service = this.refs.service.getDOMNode().value.trim();
-			var type = this.refs.type.getDOMNode().value.trim();
-			var securities = this.refs.securities.getDOMNode().value.trim();
-			var fields = this.refs.fields.getDOMNode().value.trim();
+			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
-			AppActions.submitReferenceQuery([service, type, securities, fields]);
+			if(!service){
 
-			this.setState({hideReqTypes:true});
-			this.setState({hideSecurities: true});
-			this.setState({hideFields: true});
-			this.setState({hideSubmit: true});
+			}else if (!type){
 
-			this.refs.service.getDOMNode().value = "";
-		    this.refs.type.getDOMNode().value = "";
-		    this.refs.securities.getDOMNode().value = "";
-		    this.refs.fields.getDOMNode().value = "";
+			}else if (!securities){
+
+			}else if (!fields){
+
+			}else {
+				securities = securities.split(",");
+				fields = fields.split(",");
+
+				securities.forEach(function (sec) {
+					sec = sec.trim();
+					cleanSecurities.push(sec);
+				});
+				fields.forEach(function (fld){
+					fld = fld.trim();
+					cleanFields.push(fld);
+				})
+
+				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, type]);
+			}
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
-			var service = this.refs.service.getDOMNode().value.trim();
-			var type = this.refs.type.getDOMNode().value.trim();
-			var securities = this.refs.securities.getDOMNode().value.trim();
-			var fields = this.refs.fields.getDOMNode().value.trim();
-			var startDate = this.refs.startDate.getDOMNode().value.trim();
-			var endDate = this.refs.endDate.getDOMNode().value.trim();
-			var period = this.refs.period.getDOMNode().value.trim();
+			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 
-			AppActions.submitHistoricalQuery([service, type, securities, fields, startDate, endDate, period]);
+			if(!service){
 
-			this.setState({hideReqTypes:true});
-			this.setState({hideSecurities: true});
-			this.setState({hideFields: true});
-			this.setState({hideStartDate: true});
-			this.setState({hideEndDate: true});
-			this.setState({hidePeriod: true});
-			this.setState({hideSubmit: true});
+			}else if (!type){
 
-			this.refs.service.getDOMNode().value = "";
-		    this.refs.type.getDOMNode().value = "";
-		    this.refs.securities.getDOMNode().value = "";
-		    this.refs.fields.getDOMNode().value = "";
-		    this.refs.startDate.getDOMNode().value = "";
-		    this.refs.endDate.getDOMNode().value = "";
-		    this.refs.period.getDOMNode().value = "";
-		}
-		else if (this.state.reqTypeChoice === "IntradayTickRequest"){
-			this.setState({hideReqTypes:true});
-			this.setState({hideSubmit: true});
-		}
-		else if (this.state.reqTypeChoice === "IntradayBarRequest"){
-			this.setState({hideReqTypes:true});
-			this.setState({hideSubmit: true});
-		}
-		else if (this.state.reqTypeChoice === "PortfolioDataRequest"){
-			this.setState({hideReqTypes:true});
-			this.setState({hideSubmit: true});
-		}
-		else if (this.state.reqTypeChoice === "BeqsRequest"){
-			this.setState({hideReqTypes:true});
-			this.setState({hideSubmit: true});
+			}else if (!securities){
+
+			}else if (!fields){
+
+			}else if (!startDate){
+
+			}else if (!endDate){
+
+			}else if (!period){
+
+			}
+			else {
+				securities = securities.split(",");
+				fields = fields.split(",");
+
+				securities.forEach(function (sec) {
+					sec = sec.trim();
+					cleanSecurities.push(sec);
+				});
+				fields.forEach(function (fld){
+					fld = fld.trim();
+					cleanFields.push(fld);
+				})
+
+				period = period.toUpperCase();
+
+				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
+					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, type]);
+			}
 		}
 		else{
-			var url = this.refs.url.getDOMNode().value.trim();
-			var postTextArea = this.refs.postTextArea.getDOMNode().value.trim();
+			var url = "";
 
-			AppActions.submitTextAreaQuery([url, postTextArea]);
+			if(service && type){
+				url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+			}else{
+				url = this.refs.url.getDOMNode().value.trim();
+			}
 
-			checkBox.checked = false;
-			this.setState({hideReqTypes:true});
-			this.setState({hideUrl: true});
-			this.setState({hidePostTextArea: true});
-			this.setState({hideSubmit: true});
-			this.setState({hideService:false});
+			postTextArea = JSON.parse(postTextArea);
 
-			this.refs.url.getDOMNode().value = "";
-		    this.refs.postTextArea.getDOMNode().value = "";
+			if(!url){
+
+			}else if (!postTextArea){
+
+			}else {
+				var index = url.indexOf("type=") + 5;
+				type = url.substring(index);
+
+				AppActions.submitQuery([postTextArea, url, type]);
+			}
 		}
-	    this.setState({servTypeChoice: ""});
-	    this.setState({reqTypeChoice: ""});
+		checkBox.checked = false;
+
+		this.setState({hideService:false});
+
+		this.setState({hideReqTypes:true});
+		this.setState({hideSecurities: true});
+		this.setState({hideFields: true});
+		this.setState({hideStartDate: true});
+		this.setState({hideEndDate: true});
+		this.setState({hidePeriod: true});
+		this.setState({hideUrl: true});
+		this.setState({hidePostTextArea: true});
+
+		this.setState({hideSubmit: true});
+
+		this.refs.service.getDOMNode().value = "";
+
+		this.refs.type.getDOMNode().value = "";
+		this.refs.securities.getDOMNode().value = "";
+		this.refs.fields.getDOMNode().value = "";
+		this.refs.startDate.getDOMNode().value = "";
+		this.refs.endDate.getDOMNode().value = "";
+		this.refs.period.getDOMNode().value = "";
+		this.refs.url.getDOMNode().value = "";
+		this.refs.postTextArea.getDOMNode().value = "";
+
+		this.setState({servTypeChoice: ""});
+		this.setState({reqTypeChoice: ""});
 	}
 });
 
