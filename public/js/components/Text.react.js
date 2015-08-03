@@ -1,6 +1,6 @@
 var React = require('react');
 
-var PrettyText = React.createClass({
+var Text = React.createClass({
 	render: function(){
 		var data = this.props.data;
 		var responseNodes;
@@ -37,4 +37,4 @@ var PrettyText = React.createClass({
 	}
 });
 
-module.exports = PrettyText;
+module.exports = Text;

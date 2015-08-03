@@ -17,7 +17,7 @@ var PostBody = React.createClass({
 		}
 
 		return(
-			<div className="postBody" id="postBody">
+			<div className="postBody" id="postBody" >
 				<h2 id="dataTitle">{title}</h2>
 				<h3>{urlTitle}</h3>
 				<h5 id="url">{url}</h5>

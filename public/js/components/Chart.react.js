@@ -123,7 +123,7 @@ var Chart = React.createClass({
 		return(
 			<div>
 				<p className="data" id="lineChart">
-					<LineChart data={chartData} options={chartOptions} key={dataName} width="500" height="300" redraw/>
+					<LineChart data={chartData} options={chartOptions} key={dataName} width="800" height="400" redraw/>
 				</p>
 			</div>
 		);

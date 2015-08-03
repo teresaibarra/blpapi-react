@@ -181,12 +181,12 @@ var QueryForm = React.createClass({
 
 			this.refs.service.getDOMNode().value = "";
 			this.refs.type.getDOMNode().value = "";
-		    this.refs.securities.getDOMNode().value = "";
-		    this.refs.fields.getDOMNode().value = "";
-		    this.refs.startDate.getDOMNode().value = "";
-		    this.refs.endDate.getDOMNode().value = "";
-		    this.refs.period.getDOMNode().value = "";
-		    this.refs.postTextArea.getDOMNode().value = "";
+			this.refs.securities.getDOMNode().value = "";
+			this.refs.fields.getDOMNode().value = "";
+			this.refs.startDate.getDOMNode().value = "";
+			this.refs.endDate.getDOMNode().value = "";
+			this.refs.period.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
 
 		} else {
 			this.setState({hideUrl: true});
@@ -201,13 +201,13 @@ var QueryForm = React.createClass({
 			this.setState({hideService: false});
 
 			this.refs.url.getDOMNode().value = "";
-		    this.refs.postTextArea.getDOMNode().value = "";
-		    this.refs.securities.getDOMNode().value = "";
-		    this.refs.fields.getDOMNode().value = "";
-		    this.refs.startDate.getDOMNode().value = "";
-		    this.refs.endDate.getDOMNode().value = "";
-		    this.refs.period.getDOMNode().value = "";
-		    this.refs.postTextArea.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
+			this.refs.securities.getDOMNode().value = "";
+			this.refs.fields.getDOMNode().value = "";
+			this.refs.startDate.getDOMNode().value = "";
+			this.refs.endDate.getDOMNode().value = "";
+			this.refs.period.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
 		}
 		return;
 	},

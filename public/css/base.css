@@ -36,6 +36,7 @@ h1, h2, h3, h4 {
 h1 {
 	border-bottom: 3px solid #66A3FF;
 	margin: auto;
+	margin-top: 30px;
 	font-size: 2.5em;
 	font-weight: bold;
 	padding: 6px;
@@ -138,34 +139,57 @@ pre {
 	color: #808080;
 	margin: 5px;
 }
-
-#prettyResponse {
-	display:inline-block;
-	margin: 5em;
-	vertical-align: top;
-}
-
 #postBody {
 	display:inline-block;
-	margin: 5em;
 	vertical-align: top;
 	width: 400px;
 }
 
-#rawResponse {
+#responseBody {
 	display:inline-block;
-	margin: 5em;
 	vertical-align: top;
-	width: 550px;
+	width: 700px;
 	height: 600px;
 }
 
-#rawResponseInfo {
+#responseBodyInfo {
+	display:inline-block;
 	overflow-y: auto;
-	width: 100%;
-	height: 100%;
+	width: 600px;
+	height: 600px;
+	text-align: center;
+}
+
+#buttons {
+	margin-top: 100px;
+	text-align: center;
 }
 
 #error {
 	color: red;
+}
+
+.tab {
+	background-color:#e4685d;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:1px solid #ffffff;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-size:15px;
+	padding:6px 15px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #b23e35;
+	margin-left: 10px;
+}
+.tab:hover {
+	background-color:#EC958E;
+	text-decoration: none;
+}
+.tab:active {
+	background-color: #F4C3BE;
+	position:relative;
+	top:1px;
 }

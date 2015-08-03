@@ -22759,7 +22759,7 @@ var Chart = React.createClass({displayName: "Chart",
 		return(
 			React.createElement("div", null, 
 				React.createElement("p", {className: "data", id: "lineChart"}, 
-					React.createElement(LineChart, {data: chartData, options: chartOptions, key: dataName, width: "500", height: "300", redraw: true})
+					React.createElement(LineChart, {data: chartData, options: chartOptions, key: dataName, width: "800", height: "400", redraw: true})
 				)
 			)
 		);
@@ -22877,152 +22877,30 @@ var PostBody = React.createClass({displayName: "PostBody",
 module.exports = PostBody;
 },{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/PrettyResponse.react.js":[function(require,module,exports){
 var React = require('react');
-var PrettyText = require('./PrettyText.react');
-var Chart = require('./Chart.react');
 
 var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 	render: function(){
-		var data = this.props.data;
-		var type = this.props.type;
-		var dataTitle;
-		var responseType;
-		var matchedData = [];
-		var dateList = [];
-		var secAmt = 0;
-
-		if(data) {
-			dataTitle = React.createElement("h2", {id: "dataTitle"}, " Pretty Response ");
-
-			if (type === 'HistoricalDataRequest') {
-				var responseNodes;
-				var secData = data.data;
-				var info = [];
-				var chartData = [];
-				var keyList = [];
-
-				responseNodes = secData.map(function (sec) {
-					var secObject = sec.securityData;
-					var result = {};
-					var secName = secObject.security.toUpperCase();
-
-					for (var object in secObject.fieldData){
-						for (var key in secObject.fieldData[object]){
-							if(secObject.fieldData[object].hasOwnProperty(key)){
-								if(!result[key])
-								{
-									result[key] = [];
-									result[key].push(secObject.fieldData[object][key]);
-									if ($.inArray(key, keyList) == -1 && key != "date")
-									{
-										keyList.push(key);
-									}
-								}
-								else 
-								{
-									result[key].push(secObject.fieldData[object][key]);
-								}
-							}
-						}
-					}
-
-					for (date in result.date){
-						var dt = new Date(result.date[date]);
-						dateList.push(dt);
-					}
-					
-					for (var key in result){
-						if(result.hasOwnProperty(key) && key != "date") {
-							for (var keyName in keyList){
-								if (key === keyList[keyName] && result[key].length != 0){
-									if (!matchedData[key])
-									{
-										matchedData[key] = [];
-										matchedData[key].push([secName, result[key]]);
-									}else 
-									{
-										matchedData[key].push([])
-										matchedData[key].push([secName, result[key]]);
-									}
-								}
-							}
-						}
-					}
-					secAmt++;
-				});
-
-				dateList = dateList.slice(0,(dateList.length)/secAmt);
-
-				for(var array in matchedData) {
-					for (var data in matchedData[array]) {
-						if (matchedData[array][data].length == 0) {
-							matchedData[array].splice(data, 1);
-						}
-					}
-				}
-
-				for (var array in matchedData)
-				{
-					chartData.push(React.createElement("h3", {key: array.trim() + 1}, array.trim().toUpperCase()));
-					chartData.push(React.createElement(Chart, {data: matchedData[array], dateList: dateList, dataName: array.trim(), key: array.trim() + 2}))
-				}
-
-				responseType = chartData;
-			} else {
-				responseType = React.createElement(PrettyText, {data: data})
-			}
-		}
+		var title = "";
+		var data = "";
+		var formatted = this.props.formatted;
 		
-		return(
-			React.createElement("p", {className: "data", id: "prettyResponse"}, 
-				dataTitle, 
-				responseType
-			)
-		);
-	}
-});
-
-module.exports = PrettyResponse;
-},{"./Chart.react":"/Users/tibarra1/Documents/http-react/public/js/components/Chart.react.js","./PrettyText.react":"/Users/tibarra1/Documents/http-react/public/js/components/PrettyText.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/PrettyText.react.js":[function(require,module,exports){
-var React = require('react');
-
-var PrettyText = React.createClass({displayName: "PrettyText",
-	render: function(){
-		var data = this.props.data;
-		var responseNodes;
-
-		if(data) {
-			var secData = data.data[0].securityData;
-			responseNodes = secData.map(function (sec) {
-				var info = [];
-				info.push(React.createElement("h3", {id: "security", key: sec.security}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
-				
-				for (var j in sec.fieldData){
-					var value = j;
-
-					if (value.indexOf("_") != -1){
-						value = value.replace(/_/g, " ");
-					}
-					
-					info.push(React.createElement("h4", {id: "fieldData", key: value.trim()}, " ", value.trim().toUpperCase() + ": " + sec.fieldData[j], " "))
-				}
-
-				return(
-					{info}
-				);
-			});
+		if (this.props.data)
+		{
+				title = "Pretty Response";
+				data = JSON.stringify(this.props.data, null, 3);
 		}
-		
 		return(
-			React.createElement("div", null, 
-				React.createElement("p", {className: "data"}, 
-					responseNodes
+			React.createElement("div", {className: "prettyResponse", id: "prettyResponse"}, 
+				React.createElement("h2", {id: "dataTitle"}, title), 
+				React.createElement("div", {id: "responseBodyInfo"}, 
+					React.createElement("pre", null, data)
 				)
 			)
 		);
 	}
 });
 
-module.exports = PrettyText;
+module.exports = PrettyResponse;
 },{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/QueryForm.react.js":[function(require,module,exports){
 var React = require('react');
 var AppActions = require('../actions/AppActions');
@@ -23207,12 +23085,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 			this.refs.service.getDOMNode().value = "";
 			this.refs.type.getDOMNode().value = "";
-		    this.refs.securities.getDOMNode().value = "";
-		    this.refs.fields.getDOMNode().value = "";
-		    this.refs.startDate.getDOMNode().value = "";
-		    this.refs.endDate.getDOMNode().value = "";
-		    this.refs.period.getDOMNode().value = "";
-		    this.refs.postTextArea.getDOMNode().value = "";
+			this.refs.securities.getDOMNode().value = "";
+			this.refs.fields.getDOMNode().value = "";
+			this.refs.startDate.getDOMNode().value = "";
+			this.refs.endDate.getDOMNode().value = "";
+			this.refs.period.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
 
 		} else {
 			this.setState({hideUrl: true});
@@ -23227,13 +23105,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			this.setState({hideService: false});
 
 			this.refs.url.getDOMNode().value = "";
-		    this.refs.postTextArea.getDOMNode().value = "";
-		    this.refs.securities.getDOMNode().value = "";
-		    this.refs.fields.getDOMNode().value = "";
-		    this.refs.startDate.getDOMNode().value = "";
-		    this.refs.endDate.getDOMNode().value = "";
-		    this.refs.period.getDOMNode().value = "";
-		    this.refs.postTextArea.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
+			this.refs.securities.getDOMNode().value = "";
+			this.refs.fields.getDOMNode().value = "";
+			this.refs.startDate.getDOMNode().value = "";
+			this.refs.endDate.getDOMNode().value = "";
+			this.refs.period.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
 		}
 		return;
 	},
@@ -23452,17 +23330,18 @@ var RawResponse = React.createClass({displayName: "RawResponse",
 	render: function(){
 		var title = "";
 		var data = "";
+		var formatted = this.props.formatted;
 		
 		if (this.props.data)
 		{
-			title = "Raw Response";
-			data = JSON.stringify(this.props.data, null, 3);
+				title = "Raw Response";
+				data = JSON.stringify(this.props.data).replace(/(.{63})/g, "$1\n")
 		}
 		return(
-			React.createElement("div", {className: "rawResponse", id: "rawResponse"}, 
+			React.createElement("div", {className: "RawResponse", id: "RawResponse"}, 
 				React.createElement("h2", {id: "dataTitle"}, title), 
-				React.createElement("div", {id: "rawResponseInfo"}, 
-					React.createElement("pre", {className: "rawResponseInfo"}, data)
+				React.createElement("div", {id: "responseBodyInfo"}, 
+					React.createElement("pre", null, data)
 				)
 			)
 		);
@@ -23470,41 +23349,253 @@ var RawResponse = React.createClass({displayName: "RawResponse",
 });
 
 module.exports = RawResponse;
-},{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/ResponseList.react.js":[function(require,module,exports){
+},{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/ResponseData.react.js":[function(require,module,exports){
 var React = require('react');
-var PrettyResponse = require('./PrettyResponse.react');
+var Text = require('./Text.react');
+var Chart = require('./Chart.react');
+
+var ResponseData = React.createClass({displayName: "ResponseData",
+	render: function(){
+		var data = this.props.data;
+		var type = this.props.type;
+		var dataTitle;
+		var responseType;
+		var matchedData = [];
+		var dateList = [];
+		var secAmt = 0;
+
+		if(data) {
+			dataTitle = React.createElement("h2", {id: "dataTitle"}, " Data ");
+
+			if (type === 'HistoricalDataRequest') {
+				var responseNodes;
+				var secData = data.data;
+				var info = [];
+				var chartData = [];
+				var keyList = [];
+
+				responseNodes = secData.map(function (sec) {
+					var secObject = sec.securityData;
+					var result = {};
+					var secName = secObject.security.toUpperCase();
+
+					for (var object in secObject.fieldData){
+						for (var key in secObject.fieldData[object]){
+							if(secObject.fieldData[object].hasOwnProperty(key)){
+								if(!result[key])
+								{
+									result[key] = [];
+									result[key].push(secObject.fieldData[object][key]);
+									if ($.inArray(key, keyList) == -1 && key != "date")
+									{
+										keyList.push(key);
+									}
+								}
+								else 
+								{
+									result[key].push(secObject.fieldData[object][key]);
+								}
+							}
+						}
+					}
+
+					for (date in result.date){
+						var dt = new Date(result.date[date]);
+						dateList.push(dt);
+					}
+					
+					for (var key in result){
+						if(result.hasOwnProperty(key) && key != "date") {
+							for (var keyName in keyList){
+								if (key === keyList[keyName] && result[key].length != 0){
+									if (!matchedData[key])
+									{
+										matchedData[key] = [];
+										matchedData[key].push([secName, result[key]]);
+									}else 
+									{
+										matchedData[key].push([])
+										matchedData[key].push([secName, result[key]]);
+									}
+								}
+							}
+						}
+					}
+					secAmt++;
+				});
+
+				dateList = dateList.slice(0,(dateList.length)/secAmt);
+
+				for(var array in matchedData) {
+					for (var data in matchedData[array]) {
+						if (matchedData[array][data].length == 0) {
+							matchedData[array].splice(data, 1);
+						}
+					}
+				}
+
+				for (var array in matchedData)
+				{
+					chartData.push(React.createElement("h3", {key: array.trim() + 1}, array.trim().toUpperCase()));
+					chartData.push(React.createElement(Chart, {data: matchedData[array], dateList: dateList, dataName: array.trim(), key: array.trim() + 2}))
+				}
+
+				responseType = chartData;
+			} else {
+				responseType = React.createElement(Text, {data: data})
+			}
+		}
+		
+		return(
+			React.createElement("p", {className: "data", id: "responseData"}, 
+				dataTitle, 
+				responseType
+			)
+		);
+	}
+});
+
+module.exports = ResponseData;
+},{"./Chart.react":"/Users/tibarra1/Documents/http-react/public/js/components/Chart.react.js","./Text.react":"/Users/tibarra1/Documents/http-react/public/js/components/Text.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/ResponseList.react.js":[function(require,module,exports){
+var React = require('react');
+var ResponseData = require('./ResponseData.react');
 var RawResponse = require('./RawResponse.react');
+var PrettyResponse = require('./PrettyResponse.react');
 var PostBody = require('./PostBody.react');
 
 var ResponseList = React.createClass({displayName: "ResponseList",
+	getInitialState: function() {
+		return { formatted: true};
+	},
+	togglePostBody: function(){
+		$('#postBody').show();
+		$('#RawResponse').hide();
+		$('#PrettyResponse').hide();
+		$('#responseData').hide();
+		$("#postBody")
+			.css('opacity', 0)
+			.fadeTo("fast", 1);	
+	},
+	toggleRawResponse: function(){
+		formatted = false;
+		$('#postBody').hide();
+		$('#RawResponse').show();
+		$('#PrettyResponse').hide();
+		$('#responseData').hide();
+		$("#RawResponse")
+			.css('opacity', 0)
+			.fadeTo("fast", 1);	
+	},
+	togglePrettyResponse: function(){
+		formatted = true;
+		$('#postBody').hide();
+		$('#RawResponse').hide();
+		$('#PrettyResponse').show();
+		$('#responseData').hide();
+		$("#PrettyResponse")
+			.css('opacity', 0)
+			.fadeTo("fast", 1);	
+	},
+	toggleResponseData: function(){
+		$('#postBody').hide();
+		$('#RawResponse').hide();
+		$('#PrettyResponse').hide();
+		$('#responseData').show();
+		$("#responseData")
+			.css('opacity', 0)
+			.fadeTo("fast", 1);	
+	},
 	render: function(){
 		var data = this.props.data[0];
 		var request = this.props.data[1];
 		var type = this.props.data[2];
 		var error = this.props.data[3];
 		var url = this.props.data[4];
+		var buttons = [];
 
-		if (!error) {
-			$("#responseList")
-				.css('opacity', 0)
-				.fadeTo("fast", 1);			
+		if (error) {
+			$('#postBody').hide();
+			$('#RawResponse').hide();
+			$('#PrettyResponse').hide();
+			$('#responseData').hide();
+			$("#responseList").hide();
+			buttons = [];
 		}else {
-			$("#responseList")
-				.fadeTo("fast", 0);	
+			$("#responseList").show();
+			$('#postBody').hide();
+			$('#RawResponse').hide();
+			$('#PrettyResponse').hide();
+			$('#responseData').show();
+			$("#responseData")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+			if(data){
+				buttons.push(
+					React.createElement("div", {id: "buttons", key: "buttons"}, 				
+					React.createElement("a", {className: "tab", onClick: this.togglePostBody}, "POST Request"), 
+					React.createElement("a", {className: "tab", onClick: this.toggleRawResponse}, "Raw Response"), 
+					React.createElement("a", {className: "tab", onClick: this.togglePrettyResponse}, "Pretty Response"), 
+					React.createElement("a", {className: "tab", onClick: this.toggleResponseData}, "Response Data")
+					));
+			}
 		}
-		
 		return (
+			React.createElement("div", null, 
+				buttons, 
 			React.createElement("div", {className: "responseList", id: "responseList"}, 
-				React.createElement(PostBody, {request: request, url: url}), 
-				React.createElement(RawResponse, {data: data}), 
-				React.createElement(PrettyResponse, {data: data, type: type})
+				React.createElement("div", {id: "postBody"}, React.createElement(PostBody, {request: request, url: url})), 
+				React.createElement("div", {id: "RawResponse"}, React.createElement(RawResponse, {data: data})), 
+				React.createElement("div", {id: "PrettyResponse"}, React.createElement(PrettyResponse, {data: data})), 
+				React.createElement("div", {id: "responseData"}, React.createElement(ResponseData, {data: data, type: type}))
+			)
 			)
 		)
 	}
 });
 
 module.exports = ResponseList;
-},{"./PostBody.react":"/Users/tibarra1/Documents/http-react/public/js/components/PostBody.react.js","./PrettyResponse.react":"/Users/tibarra1/Documents/http-react/public/js/components/PrettyResponse.react.js","./RawResponse.react":"/Users/tibarra1/Documents/http-react/public/js/components/RawResponse.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/constants/AppConstants.js":[function(require,module,exports){
+},{"./PostBody.react":"/Users/tibarra1/Documents/http-react/public/js/components/PostBody.react.js","./PrettyResponse.react":"/Users/tibarra1/Documents/http-react/public/js/components/PrettyResponse.react.js","./RawResponse.react":"/Users/tibarra1/Documents/http-react/public/js/components/RawResponse.react.js","./ResponseData.react":"/Users/tibarra1/Documents/http-react/public/js/components/ResponseData.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/Text.react.js":[function(require,module,exports){
+var React = require('react');
+
+var Text = React.createClass({displayName: "Text",
+	render: function(){
+		var data = this.props.data;
+		var responseNodes;
+
+		if(data) {
+			var secData = data.data[0].securityData;
+			responseNodes = secData.map(function (sec) {
+				var info = [];
+				info.push(React.createElement("h3", {id: "security", key: sec.security}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
+				
+				for (var j in sec.fieldData){
+					var value = j;
+
+					if (value.indexOf("_") != -1){
+						value = value.replace(/_/g, " ");
+					}
+					
+					info.push(React.createElement("h4", {id: "fieldData", key: value.trim()}, " ", value.trim().toUpperCase() + ": " + sec.fieldData[j], " "))
+				}
+
+				return(
+					{info}
+				);
+			});
+		}
+		
+		return(
+			React.createElement("div", null, 
+				React.createElement("p", {className: "data"}, 
+					responseNodes
+				)
+			)
+		);
+	}
+});
+
+module.exports = Text;
+},{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/constants/AppConstants.js":[function(require,module,exports){
 module.exports = {
 	SUBMIT_QUERY: 'SUBMIT_QUERY',
 	HANDLE_ERROR: 'HANDLE_ERROR'
