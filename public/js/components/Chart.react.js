@@ -97,7 +97,7 @@ var Chart = React.createClass({
 		    pointDot : true,
 
 		    //Number - Radius of each point dot in pixels
-		    pointDotRadius : 4,
+		    pointDotRadius : 5,
 
 		    //Number - Pixel width of point dot stroke
 		    pointDotStrokeWidth : 1,

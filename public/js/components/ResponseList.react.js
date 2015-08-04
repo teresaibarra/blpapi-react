@@ -10,49 +10,65 @@ var ResponseList = React.createClass({
 		return {
 			postDisplay: {display:'none'},
 			rawResponseDisplay: {display:'none'},
-			prettyResponseDisplay: {display:'none'}
+			prettyResponseDisplay: {display:'none'},
+			selection: "responseData"
 		};
 	},
 	togglePostBody: function(){
-		this.setState({postDisplay:{display:'inline-block'}}, function(){
-			$('#responseData').hide();
-			$("#postBody")
-				.css('opacity', 0)
-				.fadeTo("fast", 1);	
-		});
-		this.setState({rawResponseDisplay:{display:'none'}});
-		this.setState({prettyResponseDisplay:{display:'none'}});
+		if(this.state.selection != "postBody")
+		{
+			this.setState({postDisplay:{display:'inline-block'}}, function(){
+				$('#responseData').hide();
+				$("#postBody")
+					.css('opacity', 0)
+					.fadeTo("fast", 1);	
+			});
+			this.setState({rawResponseDisplay:{display:'none'}});
+			this.setState({prettyResponseDisplay:{display:'none'}});
+			this.setState({selection:"postBody"});
+		}
 	},
 	toggleRawResponse: function(){
-		this.setState({postDisplay:{display:'none'}});
-		this.setState({rawResponseDisplay:{display:'block'}}, function(){
-			$('#responseData').hide();
-			$("#rawResponse")
-				.css('opacity', 0)
-				.fadeTo("fast", 1);	
-		});
-		this.setState({prettyResponseDisplay:{display:'none'}});
+		if(this.state.selection != "rawResponse")
+		{	
+			this.setState({postDisplay:{display:'none'}});
+			this.setState({rawResponseDisplay:{display:'block'}}, function(){
+				$('#responseData').hide();
+				$("#rawResponse")
+					.css('opacity', 0)
+					.fadeTo("fast", 1);	
+			});
+			this.setState({prettyResponseDisplay:{display:'none'}});
+			this.setState({selection:"rawResponse"});
+		}
 	},
 	togglePrettyResponse: function(){
-		this.setState({postDisplay:{display:'none'}});
-		this.setState({rawResponseDisplay:{display:'none'}});
-		this.setState({prettyResponseDisplay:{display:'block'}}, function(){
-			$('#responseData').hide();
-			$("#prettyResponse")
-				.css('opacity', 0)
-				.fadeTo("fast", 1);	
-		});
+		if(this.state.selection != "prettyResponse")
+		{
+			this.setState({postDisplay:{display:'none'}});
+			this.setState({rawResponseDisplay:{display:'none'}});
+			this.setState({prettyResponseDisplay:{display:'block'}}, function(){
+				$('#responseData').hide();
+				$("#prettyResponse")
+					.css('opacity', 0)
+					.fadeTo("fast", 1);	
+			});
+			this.setState({selection:"prettyResponse"});
+		}
 	},
 	toggleResponseData: function(){
-		this.setState({postDisplay:{display:'none'}});
-		this.setState({rawResponseDisplay:{display:'none'}});
-		this.setState({prettyResponseDisplay:{display:'none'}}, function(){
-			$('#responseData').show();
-			$("#responseData")
-				.css('opacity', 0)
-				.fadeTo("fast", 1);	
-		});
-
+		if(this.state.selection != "responseData")
+		{
+			this.setState({postDisplay:{display:'none'}});
+			this.setState({rawResponseDisplay:{display:'none'}});
+			this.setState({prettyResponseDisplay:{display:'none'}}, function(){
+				$('#responseData').show();
+				$("#responseData")
+					.css('opacity', 0)
+					.fadeTo("fast", 1);	
+			});
+			this.setState({selection:"responseData"});
+		}
 	},
 	render: function(){
 		var data = this.props.data[0];
