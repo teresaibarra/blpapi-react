@@ -6,45 +6,52 @@ var PostBody = require('./PostBody.react');
 
 var ResponseList = React.createClass({
 	getInitialState: function() {
-		return { formatted: true};
+		return {
+			postDisplay: {display:'none'},
+			rawResponseDisplay: {display:'none'},
+			prettyResponseDisplay: {display:'none'},
+			responseDataDisplay: {display:'block'}
+		};
 	},
 	togglePostBody: function(){
-		$('#postBody').show();
-		$('#RawResponse').hide();
-		$('#PrettyResponse').hide();
-		$('#responseData').hide();
-		$("#postBody")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);	
+		this.setState({postDisplay:{display:'inline-block'}}, function(){
+			$("#postBody")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+		});
+		this.setState({rawResponseDisplay:{display:'none'}});
+		this.setState({prettyResponseDisplay:{display:'none'}});
+		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	toggleRawResponse: function(){
-		formatted = false;
-		$('#postBody').hide();
-		$('#RawResponse').show();
-		$('#PrettyResponse').hide();
-		$('#responseData').hide();
-		$("#RawResponse")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);	
+		this.setState({postDisplay:{display:'none'}});
+		this.setState({rawResponseDisplay:{display:'block'}}, function(){
+			$("#rawResponse")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+		});
+		this.setState({prettyResponseDisplay:{display:'none'}});
+		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	togglePrettyResponse: function(){
-		formatted = true;
-		$('#postBody').hide();
-		$('#RawResponse').hide();
-		$('#PrettyResponse').show();
-		$('#responseData').hide();
-		$("#PrettyResponse")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);	
+		this.setState({postDisplay:{display:'none'}});
+		this.setState({rawResponseDisplay:{display:'none'}});
+		this.setState({prettyResponseDisplay:{display:'block'}}, function(){
+			$("#prettyResponse")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+		});
+		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	toggleResponseData: function(){
-		$('#postBody').hide();
-		$('#RawResponse').hide();
-		$('#PrettyResponse').hide();
-		$('#responseData').show();
-		$("#responseData")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);	
+		this.setState({postDisplay:{display:'none'}});
+		this.setState({rawResponseDisplay:{display:'none'}});
+		this.setState({prettyResponseDisplay:{display:'none'}});
+		this.setState({responseDataDisplay:{display:'block'}}, function(){
+			$("#responseData")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+		});
 	},
 	render: function(){
 		var data = this.props.data[0];
@@ -52,44 +59,28 @@ var ResponseList = React.createClass({
 		var type = this.props.data[2];
 		var error = this.props.data[3];
 		var url = this.props.data[4];
-		var buttons = [];
+		var node = [];
 
-		if (error) {
-			$('#postBody').hide();
-			$('#RawResponse').hide();
-			$('#PrettyResponse').hide();
-			$('#responseData').hide();
-			$("#responseList").hide();
-			buttons = [];
+		if (error || !data) {
+			node = [];
 		}else {
-			$("#responseList").show();
-			$('#postBody').hide();
-			$('#RawResponse').hide();
-			$('#PrettyResponse').hide();
-			$('#responseData').show();
-			$("#responseData")
-				.css('opacity', 0)
-				.fadeTo("fast", 1);	
-			if(data){
-				buttons.push(
-					<div id="buttons" key="buttons" >				
+			node.push(			
+			<div key="key">
+				<div id="buttons">				
 					<a className="tab" onClick={this.togglePostBody}>POST Request</a>
 					<a className="tab" onClick={this.toggleRawResponse}>Raw Response</a>
 					<a className="tab" onClick={this.togglePrettyResponse}>Pretty Response</a>
 					<a className="tab" onClick={this.toggleResponseData}>Response Data</a>
-					</div>);
-			}
+				</div>
+				<div id="postBody" style={this.state.postDisplay}><PostBody request={request} url ={url} /></div>
+				<div id="rawResponse" style={this.state.rawResponseDisplay}><RawResponse data={data} /></div>
+				<div id="prettyResponse" style={this.state.prettyResponseDisplay}><PrettyResponse data={data} /></div>
+				<div id="responseData" style={this.state.responseDataDisplay}><ResponseData data={data} type={type} /></div>
+			</div>);
 		}
+
 		return (
-			<div>
-				{buttons}
-			<div className="responseList" id="responseList">
-				<div id="postBody"><PostBody request={request} url ={url} /></div>
-				<div id="RawResponse"><RawResponse data={data} /></div>
-				<div id="PrettyResponse"><PrettyResponse data={data} /></div>
-				<div id="responseData"><ResponseData data={data} type={type} /></div>
-			</div>
-			</div>
+			<div>{node}</div>
 		)
 	}
 });

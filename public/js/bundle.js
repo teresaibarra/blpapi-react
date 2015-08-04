@@ -23465,45 +23465,52 @@ var PostBody = require('./PostBody.react');
 
 var ResponseList = React.createClass({displayName: "ResponseList",
 	getInitialState: function() {
-		return { formatted: true};
+		return {
+			postDisplay: {display:'none'},
+			rawResponseDisplay: {display:'none'},
+			prettyResponseDisplay: {display:'none'},
+			responseDataDisplay: {display:'block'}
+		};
 	},
 	togglePostBody: function(){
-		$('#postBody').show();
-		$('#RawResponse').hide();
-		$('#PrettyResponse').hide();
-		$('#responseData').hide();
-		$("#postBody")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);	
+		this.setState({postDisplay:{display:'inline-block'}}, function(){
+			$("#postBody")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+		});
+		this.setState({rawResponseDisplay:{display:'none'}});
+		this.setState({prettyResponseDisplay:{display:'none'}});
+		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	toggleRawResponse: function(){
-		formatted = false;
-		$('#postBody').hide();
-		$('#RawResponse').show();
-		$('#PrettyResponse').hide();
-		$('#responseData').hide();
-		$("#RawResponse")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);	
+		this.setState({postDisplay:{display:'none'}});
+		this.setState({rawResponseDisplay:{display:'block'}}, function(){
+			$("#rawResponse")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+		});
+		this.setState({prettyResponseDisplay:{display:'none'}});
+		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	togglePrettyResponse: function(){
-		formatted = true;
-		$('#postBody').hide();
-		$('#RawResponse').hide();
-		$('#PrettyResponse').show();
-		$('#responseData').hide();
-		$("#PrettyResponse")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);	
+		this.setState({postDisplay:{display:'none'}});
+		this.setState({rawResponseDisplay:{display:'none'}});
+		this.setState({prettyResponseDisplay:{display:'block'}}, function(){
+			$("#prettyResponse")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+		});
+		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	toggleResponseData: function(){
-		$('#postBody').hide();
-		$('#RawResponse').hide();
-		$('#PrettyResponse').hide();
-		$('#responseData').show();
-		$("#responseData")
-			.css('opacity', 0)
-			.fadeTo("fast", 1);	
+		this.setState({postDisplay:{display:'none'}});
+		this.setState({rawResponseDisplay:{display:'none'}});
+		this.setState({prettyResponseDisplay:{display:'none'}});
+		this.setState({responseDataDisplay:{display:'block'}}, function(){
+			$("#responseData")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
+		});
 	},
 	render: function(){
 		var data = this.props.data[0];
@@ -23511,44 +23518,28 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		var type = this.props.data[2];
 		var error = this.props.data[3];
 		var url = this.props.data[4];
-		var buttons = [];
+		var node = [];
 
-		if (error) {
-			$('#postBody').hide();
-			$('#RawResponse').hide();
-			$('#PrettyResponse').hide();
-			$('#responseData').hide();
-			$("#responseList").hide();
-			buttons = [];
+		if (error || !data) {
+			node = [];
 		}else {
-			$("#responseList").show();
-			$('#postBody').hide();
-			$('#RawResponse').hide();
-			$('#PrettyResponse').hide();
-			$('#responseData').show();
-			$("#responseData")
-				.css('opacity', 0)
-				.fadeTo("fast", 1);	
-			if(data){
-				buttons.push(
-					React.createElement("div", {id: "buttons", key: "buttons"}, 				
+			node.push(			
+			React.createElement("div", {key: "key"}, 
+				React.createElement("div", {id: "buttons"}, 				
 					React.createElement("a", {className: "tab", onClick: this.togglePostBody}, "POST Request"), 
 					React.createElement("a", {className: "tab", onClick: this.toggleRawResponse}, "Raw Response"), 
 					React.createElement("a", {className: "tab", onClick: this.togglePrettyResponse}, "Pretty Response"), 
 					React.createElement("a", {className: "tab", onClick: this.toggleResponseData}, "Response Data")
-					));
-			}
+				), 
+				React.createElement("div", {id: "postBody", style: this.state.postDisplay}, React.createElement(PostBody, {request: request, url: url})), 
+				React.createElement("div", {id: "rawResponse", style: this.state.rawResponseDisplay}, React.createElement(RawResponse, {data: data})), 
+				React.createElement("div", {id: "prettyResponse", style: this.state.prettyResponseDisplay}, React.createElement(PrettyResponse, {data: data})), 
+				React.createElement("div", {id: "responseData", style: this.state.responseDataDisplay}, React.createElement(ResponseData, {data: data, type: type}))
+			));
 		}
+
 		return (
-			React.createElement("div", null, 
-				buttons, 
-			React.createElement("div", {className: "responseList", id: "responseList"}, 
-				React.createElement("div", {id: "postBody"}, React.createElement(PostBody, {request: request, url: url})), 
-				React.createElement("div", {id: "RawResponse"}, React.createElement(RawResponse, {data: data})), 
-				React.createElement("div", {id: "PrettyResponse"}, React.createElement(PrettyResponse, {data: data})), 
-				React.createElement("div", {id: "responseData"}, React.createElement(ResponseData, {data: data, type: type}))
-			)
-			)
+			React.createElement("div", null, node)
 		)
 	}
 });

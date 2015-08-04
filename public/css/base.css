@@ -140,13 +140,11 @@ pre {
 	margin: 5px;
 }
 #postBody {
-	display:inline-block;
 	vertical-align: top;
 	width: 400px;
 }
 
 #responseBody {
-	display:inline-block;
 	vertical-align: top;
 	width: 700px;
 	height: 600px;
