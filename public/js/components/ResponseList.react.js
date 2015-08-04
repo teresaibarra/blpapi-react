@@ -6,52 +6,53 @@ var PostBody = require('./PostBody.react');
 
 var ResponseList = React.createClass({
 	getInitialState: function() {
+		$('#responseData').show();
 		return {
 			postDisplay: {display:'none'},
 			rawResponseDisplay: {display:'none'},
-			prettyResponseDisplay: {display:'none'},
-			responseDataDisplay: {display:'block'}
+			prettyResponseDisplay: {display:'none'}
 		};
 	},
 	togglePostBody: function(){
 		this.setState({postDisplay:{display:'inline-block'}}, function(){
+			$('#responseData').hide();
 			$("#postBody")
 				.css('opacity', 0)
 				.fadeTo("fast", 1);	
 		});
 		this.setState({rawResponseDisplay:{display:'none'}});
 		this.setState({prettyResponseDisplay:{display:'none'}});
-		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	toggleRawResponse: function(){
 		this.setState({postDisplay:{display:'none'}});
 		this.setState({rawResponseDisplay:{display:'block'}}, function(){
+			$('#responseData').hide();
 			$("#rawResponse")
 				.css('opacity', 0)
 				.fadeTo("fast", 1);	
 		});
 		this.setState({prettyResponseDisplay:{display:'none'}});
-		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	togglePrettyResponse: function(){
 		this.setState({postDisplay:{display:'none'}});
 		this.setState({rawResponseDisplay:{display:'none'}});
 		this.setState({prettyResponseDisplay:{display:'block'}}, function(){
+			$('#responseData').hide();
 			$("#prettyResponse")
 				.css('opacity', 0)
 				.fadeTo("fast", 1);	
 		});
-		this.setState({responseDataDisplay:{display:'none'}});
 	},
 	toggleResponseData: function(){
 		this.setState({postDisplay:{display:'none'}});
 		this.setState({rawResponseDisplay:{display:'none'}});
-		this.setState({prettyResponseDisplay:{display:'none'}});
-		this.setState({responseDataDisplay:{display:'block'}}, function(){
+		this.setState({prettyResponseDisplay:{display:'none'}}, function(){
+			$('#responseData').show();
 			$("#responseData")
 				.css('opacity', 0)
 				.fadeTo("fast", 1);	
 		});
+
 	},
 	render: function(){
 		var data = this.props.data[0];
@@ -64,6 +65,7 @@ var ResponseList = React.createClass({
 		if (error || !data) {
 			node = [];
 		}else {
+			$('#responseData').show();
 			node.push(			
 			<div key="key">
 				<div id="buttons">				
@@ -75,10 +77,9 @@ var ResponseList = React.createClass({
 				<div id="postBody" style={this.state.postDisplay}><PostBody request={request} url ={url} /></div>
 				<div id="rawResponse" style={this.state.rawResponseDisplay}><RawResponse data={data} /></div>
 				<div id="prettyResponse" style={this.state.prettyResponseDisplay}><PrettyResponse data={data} /></div>
-				<div id="responseData" style={this.state.responseDataDisplay}><ResponseData data={data} type={type} /></div>
+				<div id="responseData"><ResponseData data={data} type={type} /></div>
 			</div>);
 		}
-
 		return (
 			<div>{node}</div>
 		)
