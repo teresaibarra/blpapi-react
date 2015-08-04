@@ -6,13 +6,19 @@ var PostBody = require('./PostBody.react');
 
 var ResponseList = React.createClass({
 	getInitialState: function() {
-		$('#responseData').show();
 		return {
 			postDisplay: {display:'none'},
 			rawResponseDisplay: {display:'none'},
 			prettyResponseDisplay: {display:'none'},
 			selection: "responseData"
 		};
+	},
+	componentWillReceiveProps: function(){
+		this.setState({postDisplay: {display:'none'}});
+		this.setState({rawResponseDisplay: {display:'none'}});
+		this.setState({prettyResponseDisplay: {display:'none'}});
+		this.setState({selection: "responseData"});
+		$("#response").css('opacity', 0);
 	},
 	togglePostBody: function(){
 		if(this.state.selection != "postBody")
@@ -81,21 +87,22 @@ var ResponseList = React.createClass({
 		if (error || !data) {
 			node = [];
 		}else {
-			$('#responseData').show();
 			node.push(			
-			<div key="key">
-				<div id="buttons">				
-					<a className="tab" onClick={this.togglePostBody}>POST Request</a>
-					<a className="tab" onClick={this.toggleRawResponse}>Raw Response</a>
-					<a className="tab" onClick={this.togglePrettyResponse}>Pretty Response</a>
-					<a className="tab" onClick={this.toggleResponseData}>Response Data</a>
+				<div id="response" key={Math.floor(Math.random() * 1000)} onLoad={this.hideData}>
+					<div id="buttons">				
+						<a className="tab" onClick={this.togglePostBody}>POST Request</a>
+						<a className="tab" onClick={this.toggleRawResponse}>Raw Response</a>
+						<a className="tab" onClick={this.togglePrettyResponse}>Pretty Response</a>
+						<a className="tab" onClick={this.toggleResponseData}>Response Data</a>
+					</div>
+					<div id="postBody" style={this.state.postDisplay}><PostBody request={request} url ={url} /></div>
+					<div id="rawResponse" style={this.state.rawResponseDisplay}><RawResponse data={data} /></div>
+					<div id="prettyResponse" style={this.state.prettyResponseDisplay}><PrettyResponse data={data} /></div>
+					<div id="responseData" ><ResponseData data={data} type={type} /></div>
 				</div>
-				<div id="postBody" style={this.state.postDisplay}><PostBody request={request} url ={url} /></div>
-				<div id="rawResponse" style={this.state.rawResponseDisplay}><RawResponse data={data} /></div>
-				<div id="prettyResponse" style={this.state.prettyResponseDisplay}><PrettyResponse data={data} /></div>
-				<div id="responseData"><ResponseData data={data} type={type} /></div>
-			</div>);
+			);
 		}
+		$("#response").fadeTo("slow", 1);	
 		return (
 			<div>{node}</div>
 		)

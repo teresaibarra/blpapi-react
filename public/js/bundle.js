@@ -23070,48 +23070,42 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		}
 	},
 	handleCheckBox: function() {
+		this.setState({servTypeChoice: ""});
+		this.setState({reqTypeChoice: ""});
+
+		this.refs.service.getDOMNode().value = "";
+		this.refs.type.getDOMNode().value = "";
+		this.refs.securities.getDOMNode().value = "";
+		this.refs.fields.getDOMNode().value = "";
+		this.refs.startDate.getDOMNode().value = "";
+		this.refs.endDate.getDOMNode().value = "";
+		this.refs.period.getDOMNode().value = "";
+		this.refs.postTextArea.getDOMNode().value = "";
+		this.refs.url.getDOMNode().value = "";
+		this.refs.postTextArea.getDOMNode().value = "";
+
+		this.setState({hideSecurities: true});
+		this.setState({hideFields: true});
+		this.setState({hideStartDate: true});
+		this.setState({hideEndDate: true});
+		this.setState({hidePeriod: true});
+
 		if (checkBox.checked){
 			this.setState({hideService: true});
 			this.setState({hideReqTypes:true});
-			this.setState({hideSecurities: true});
-			this.setState({hideFields: true});
-			this.setState({hideStartDate: true});
-			this.setState({hideEndDate: true});
-			this.setState({hidePeriod: true});
 
 			this.setState({hideUrl: false});
 			this.setState({hidePostTextArea: false});
 			this.setState({hideSubmit: false});
 
-			this.refs.service.getDOMNode().value = "";
-			this.refs.type.getDOMNode().value = "";
-			this.refs.securities.getDOMNode().value = "";
-			this.refs.fields.getDOMNode().value = "";
-			this.refs.startDate.getDOMNode().value = "";
-			this.refs.endDate.getDOMNode().value = "";
-			this.refs.period.getDOMNode().value = "";
-			this.refs.postTextArea.getDOMNode().value = "";
-
 		} else {
+			this.setState({hideReqTypes:true});
+			this.setState({hideSubmit: true});
 			this.setState({hideUrl: true});
 			this.setState({hidePostTextArea: true});
-			this.setState({hideSecurities: true});
-			this.setState({hideFields: true});
-			this.setState({hideStartDate: true});
-			this.setState({hideEndDate: true});
-			this.setState({hidePeriod: true});
-			this.setState({hideSubmit: true});
 
 			this.setState({hideService: false});
 
-			this.refs.url.getDOMNode().value = "";
-			this.refs.postTextArea.getDOMNode().value = "";
-			this.refs.securities.getDOMNode().value = "";
-			this.refs.fields.getDOMNode().value = "";
-			this.refs.startDate.getDOMNode().value = "";
-			this.refs.endDate.getDOMNode().value = "";
-			this.refs.period.getDOMNode().value = "";
-			this.refs.postTextArea.getDOMNode().value = "";
 		}
 		return;
 	},
@@ -23465,13 +23459,19 @@ var PostBody = require('./PostBody.react');
 
 var ResponseList = React.createClass({displayName: "ResponseList",
 	getInitialState: function() {
-		$('#responseData').show();
 		return {
 			postDisplay: {display:'none'},
 			rawResponseDisplay: {display:'none'},
 			prettyResponseDisplay: {display:'none'},
 			selection: "responseData"
 		};
+	},
+	componentWillReceiveProps: function(){
+		this.setState({postDisplay: {display:'none'}});
+		this.setState({rawResponseDisplay: {display:'none'}});
+		this.setState({prettyResponseDisplay: {display:'none'}});
+		this.setState({selection: "responseData"});
+		$("#response").css('opacity', 0);
 	},
 	togglePostBody: function(){
 		if(this.state.selection != "postBody")
@@ -23540,21 +23540,22 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 		if (error || !data) {
 			node = [];
 		}else {
-			$('#responseData').show();
 			node.push(			
-			React.createElement("div", {key: "key"}, 
-				React.createElement("div", {id: "buttons"}, 				
-					React.createElement("a", {className: "tab", onClick: this.togglePostBody}, "POST Request"), 
-					React.createElement("a", {className: "tab", onClick: this.toggleRawResponse}, "Raw Response"), 
-					React.createElement("a", {className: "tab", onClick: this.togglePrettyResponse}, "Pretty Response"), 
-					React.createElement("a", {className: "tab", onClick: this.toggleResponseData}, "Response Data")
-				), 
-				React.createElement("div", {id: "postBody", style: this.state.postDisplay}, React.createElement(PostBody, {request: request, url: url})), 
-				React.createElement("div", {id: "rawResponse", style: this.state.rawResponseDisplay}, React.createElement(RawResponse, {data: data})), 
-				React.createElement("div", {id: "prettyResponse", style: this.state.prettyResponseDisplay}, React.createElement(PrettyResponse, {data: data})), 
-				React.createElement("div", {id: "responseData"}, React.createElement(ResponseData, {data: data, type: type}))
-			));
+				React.createElement("div", {id: "response", key: Math.floor(Math.random() * 1000), onLoad: this.hideData}, 
+					React.createElement("div", {id: "buttons"}, 				
+						React.createElement("a", {className: "tab", onClick: this.togglePostBody}, "POST Request"), 
+						React.createElement("a", {className: "tab", onClick: this.toggleRawResponse}, "Raw Response"), 
+						React.createElement("a", {className: "tab", onClick: this.togglePrettyResponse}, "Pretty Response"), 
+						React.createElement("a", {className: "tab", onClick: this.toggleResponseData}, "Response Data")
+					), 
+					React.createElement("div", {id: "postBody", style: this.state.postDisplay}, React.createElement(PostBody, {request: request, url: url})), 
+					React.createElement("div", {id: "rawResponse", style: this.state.rawResponseDisplay}, React.createElement(RawResponse, {data: data})), 
+					React.createElement("div", {id: "prettyResponse", style: this.state.prettyResponseDisplay}, React.createElement(PrettyResponse, {data: data})), 
+					React.createElement("div", {id: "responseData"}, React.createElement(ResponseData, {data: data, type: type}))
+				)
+			);
 		}
+		$("#response").fadeTo("slow", 1);	
 		return (
 			React.createElement("div", null, node)
 		)
