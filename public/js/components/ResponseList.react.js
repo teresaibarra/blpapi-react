@@ -18,7 +18,6 @@ var ResponseList = React.createClass({
 		this.setState({rawResponseDisplay: {display:'none'}});
 		this.setState({prettyResponseDisplay: {display:'none'}});
 		this.setState({selection: "responseData"});
-		$("#response").css('opacity', 0);
 	},
 	togglePostBody: function(){
 		if(this.state.selection != "postBody")
@@ -101,8 +100,7 @@ var ResponseList = React.createClass({
 					<div id="responseData" ><ResponseData data={data} type={type} /></div>
 				</div>
 			);
-		}
-		$("#response").fadeTo("slow", 1);	
+		
 		return (
 			<div>{node}</div>
 		)

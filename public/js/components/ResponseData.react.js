@@ -13,7 +13,7 @@ var ResponseData = React.createClass({
 		var secAmt = 0;
 
 		if(data) {
-			dataTitle = <h2 id="dataTitle"> Data </h2>;
+			dataTitle = <h2 id="dataTitle">Response Data</h2>;
 
 			if (type === 'HistoricalDataRequest') {
 				var responseNodes;
