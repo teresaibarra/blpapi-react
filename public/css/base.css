@@ -6,6 +6,7 @@ body {
 	margin: 0;
 	padding: 30px;
 	text-align: center;
+	color: #4A4A4A;
 }
 
 a {
@@ -34,7 +35,7 @@ h1, h2, h3, h4 {
 }
 
 h1 {
-	border-bottom: 3px solid #66A3FF;
+	border-bottom: 3px solid #70A7FD;
 	margin: auto;
 	font-size: 2.5em;
 	font-weight: bold;
@@ -47,27 +48,33 @@ h2 {
 	font-size: 2em;
 	margin-top: 0 auto;
 	margin-bottom: auto;
+	color: #4A4A4A;
 }
 
 h3 {
 	font-size: 1.5em;
+	color: #4A4A4A;
 }
 
 h4 {
 	font-size: 1.2em;
+	color: #4A4A4A;
 }
 h5 {
 	margin-top: auto;
 	font-size: 1em;
+	color: #4A4A4A;
 }
 
 p, ul {
 	margin: 15px 0;
 	text-align: center;
+	color: #4A4A4A;
 }
 
 ul {
 	padding-left: 30px;
+	color: #4A4A4A;
 }
 
 textarea {
@@ -79,11 +86,13 @@ textarea {
 	margin: 0 auto;
 	margin-top: 10px;
 	padding: 10px 10px;
-	resize: none;
+	resize: vertical;
+	outline: none;
 }
 
 pre {
 	text-align: left;
+	color: #4A4A4A;
 }
 
 #queryDiv {
@@ -110,23 +119,43 @@ pre {
 	padding: 8px;
 	margin: 0 auto;
 	margin-top: 8px;
+	outline: none;
+	color: #4A4A4A;
 }
 
 #submit {
-	width: 100px;
-	height: 35px;
+	width: 120px;
+	height: 40px;
 	border: none;
-	font-size: 17px;
-	font-weight: bold;
-	letter-spacing: 2px;
+	font-size: 20px;
+	letter-spacing: 1.5px;
 	text-align: center;
 	margin: 0 auto;
 	margin-top: 10px;
-	color: #4C4C4C;
+	color: #FFFFFF;
+	background-color: #A0A0A0;
+	outline: none;
+	-moz-border-radius:4px;
+	-webkit-border-radius:4px;
+	border-radius:4px;
+	border:1px solid #ffffff;
+	padding:6px 15px;
+	text-shadow:0px 1px 0px #707070;
+}
+
+#submit:hover {
+	background-color:#BCBCBC;
+	text-decoration: none;
+}
+#submit:active {
+	background-color: #D0D0D0;
+	position:relative;
+	top:1px;
 }
 
 #dataTitle {
 	text-decoration: underline;
+	color: #4A4A4A;
 }
 
 #security {
@@ -138,15 +167,10 @@ pre {
 	color: #808080;
 	margin: 5px;
 }
+
 #postBody {
 	vertical-align: top;
 	width: 400px;
-}
-
-#responseBody {
-	vertical-align: top;
-	width: 700px;
-	height: 600px;
 }
 
 #responseBodyInfo {
@@ -155,6 +179,7 @@ pre {
 	width: 600px;
 	height: 600px;
 	text-align: center;
+	color: #4A4A4A;
 }
 
 #buttons {
@@ -163,7 +188,7 @@ pre {
 }
 
 #error {
-	color: red;
+	color: #e4685d;
 }
 
 .tab {
@@ -181,12 +206,24 @@ pre {
 	text-shadow:0px 1px 0px #b23e35;
 	margin-left: 10px;
 }
+
 .tab:hover {
-	background-color:#EC958E;
+	background-color:#FF958D;
 	text-decoration: none;
 }
+
 .tab:active {
-	background-color: #F4C3BE;
+	background-color: #FFBCB7;
 	position:relative;
 	top:1px;
+}
+
+::-moz-selection { /* Code for Firefox */
+    color: #e4685d;
+    background: #FFF8DA;
+}
+
+::selection {
+    color: #e4685d; 
+    background: #FFF8DA;
 }

@@ -9,14 +9,16 @@ var ErrorMessage = require('./ErrorMessage.react');
 
 function getAppState() {
 	return {
-	appData: AppStore.getAll(),
-	listData: DatalistStore.getAll()
+		appData: AppStore.getAll()
 	};
 }
 
 var DemoApp = React.createClass({
 	getInitialState: function() {
-		return getAppState();
+		return {
+			appData: AppStore.getAll(),
+			listData: DatalistStore.getAll()
+		};
 	},
 
 	componentDidMount: function() {
