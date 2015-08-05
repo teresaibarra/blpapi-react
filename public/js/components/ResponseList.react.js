@@ -100,7 +100,7 @@ var ResponseList = React.createClass({
 					<div id="responseData" ><ResponseData data={data} type={type} /></div>
 				</div>
 			);
-		
+		}
 		return (
 			<div>{node}</div>
 		)
