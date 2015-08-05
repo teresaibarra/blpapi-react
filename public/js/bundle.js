@@ -22773,9 +22773,11 @@ var React = require('react');
 var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
 var DatalistStore = require('../stores/DatalistStore');
+
 var ResponseList = require('./ResponseList.react');
 var QueryForm = require('./QueryForm.react');
 var ErrorMessage = require('./ErrorMessage.react');
+var History = require('./History.react');
 
 function getAppState() {
 	return {
@@ -22807,6 +22809,7 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 			React.createElement("h1", null, "Bloomberg API Demonstration"), 
 			React.createElement("h2", null, "What would you like to look up?"), 
 			React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
+			React.createElement(History, {response: this.state.appData[5]}), 
 			React.createElement(QueryForm, {list: this.state.listData}), 
 			React.createElement(ErrorMessage, {error: this.state.appData[3]}), 
 			React.createElement(ResponseList, {data: this.state.appData})
@@ -22821,7 +22824,7 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 });
 
 module.exports = DemoApp;
-},{"../actions/AppActions":"/Users/tibarra1/Documents/http-react/public/js/actions/AppActions.js","../stores/AppStore":"/Users/tibarra1/Documents/http-react/public/js/stores/AppStore.js","../stores/DatalistStore":"/Users/tibarra1/Documents/http-react/public/js/stores/DatalistStore.js","./ErrorMessage.react":"/Users/tibarra1/Documents/http-react/public/js/components/ErrorMessage.react.js","./QueryForm.react":"/Users/tibarra1/Documents/http-react/public/js/components/QueryForm.react.js","./ResponseList.react":"/Users/tibarra1/Documents/http-react/public/js/components/ResponseList.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/ErrorMessage.react.js":[function(require,module,exports){
+},{"../actions/AppActions":"/Users/tibarra1/Documents/http-react/public/js/actions/AppActions.js","../stores/AppStore":"/Users/tibarra1/Documents/http-react/public/js/stores/AppStore.js","../stores/DatalistStore":"/Users/tibarra1/Documents/http-react/public/js/stores/DatalistStore.js","./ErrorMessage.react":"/Users/tibarra1/Documents/http-react/public/js/components/ErrorMessage.react.js","./History.react":"/Users/tibarra1/Documents/http-react/public/js/components/History.react.js","./QueryForm.react":"/Users/tibarra1/Documents/http-react/public/js/components/QueryForm.react.js","./ResponseList.react":"/Users/tibarra1/Documents/http-react/public/js/components/ResponseList.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/ErrorMessage.react.js":[function(require,module,exports){
 var React = require('react');
 
 var ErrorMessage = React.createClass({displayName: "ErrorMessage",
@@ -22845,6 +22848,55 @@ var ErrorMessage = React.createClass({displayName: "ErrorMessage",
 	}
 });
 module.exports = ErrorMessage;
+},{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/History.react.js":[function(require,module,exports){
+var React = require('react');
+var HistoryEvent = require('./HistoryEvent.react');
+
+var History = React.createClass({displayName: "History",
+	render: function(){
+		var response = this.props.response;
+		var events = [];
+
+		response.forEach(function (res, index){
+			events.push(React.createElement(HistoryEvent, {response: res, key: res[1].toUTCString()}))
+		})
+		return(
+			React.createElement("div", null, 
+				React.createElement("p", null, 
+					events
+				)
+			)
+		);
+	}
+});
+
+module.exports = History;
+},{"./HistoryEvent.react":"/Users/tibarra1/Documents/http-react/public/js/components/HistoryEvent.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/HistoryEvent.react.js":[function(require,module,exports){
+var React = require('react');
+
+var HistoryEvent = React.createClass({displayName: "HistoryEvent",
+	handleClick: function() {
+		console.log(this.props.response[1].getUTCMinutes());
+	},
+	render: function(){
+		var fields = this.props.response[0][0];
+		var url = this.props.response[0][1];
+		var service = this.props.response[0][2];
+		var type = this.props.response[0][3];
+		var date = this.props.response[1];
+		return(
+			React.createElement("div", {onClick: this.handleClick}, 
+				React.createElement("p", null, "Date: ", date.toUTCString(), 
+				React.createElement("br", null), 
+				"Service: ", service, 
+				React.createElement("br", null), 
+				"Request Type: ", type)
+			)
+		);
+	}
+});
+
+module.exports = HistoryEvent;
 },{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/PostBody.react.js":[function(require,module,exports){
 var React = require('react');
 
@@ -23189,7 +23241,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-
+			console.log(service)
 			if(!service){
 				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
@@ -23211,12 +23263,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					cleanFields.push(fld);
 				})
 
-				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, type]);
+				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, service, type]);
 			}
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-
+			console.log(service)
 			if(!service){
 				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
@@ -23248,7 +23300,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 				period = period.toUpperCase();
 
 				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
-					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, type]);
+					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);
 			}
 		}
 		else{
@@ -23265,9 +23317,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 						AppActions.handleError(["POST body.", url]);
 					}else {
 						postTextArea = JSON.parse(postTextArea);
-						var index = url.indexOf("type=") + 5;
-						type = url.substring(index);
-						AppActions.submitQuery([postTextArea, url, type]);
+						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
 				}
 			}else{
@@ -23277,9 +23327,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 						AppActions.handleError(["POST body.", url]);
 					}else {
 						postTextArea = JSON.parse(postTextArea);
-						var index = url.indexOf("type=") + 5;
-						type = url.substring(index);
-						AppActions.submitQuery([postTextArea, url, type]);
+						var typeIndex = url.indexOf("type=") + 5;
+						type = url.substring(typeIndex);
+
+						var serviceIndex = url.indexOf("service=") + 8;
+						service = url.substring(serviceIndex, typeIndex - 6);
+
+						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
 				}else 
 				{
@@ -23648,11 +23702,13 @@ var _postBody = "";
 var _requestType = "";
 var _error = "";
 var _url = "";
+var _history = [];
 
 function submitQuery(data) {
 	var query = data[0];
 	var url = data[1];
-	var type = data[2];
+	var service = data[2];
+	var type = data[3];
 
 	$.ajax({
 	url: url,
@@ -23664,7 +23720,7 @@ function submitQuery(data) {
 		_error = "";
 		_url = url;
 		_requestType = type;
-		AppStore.emitChange();
+		updateHistory(data, receivedData);
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
@@ -23687,9 +23743,15 @@ function handleError(data) {
 	AppStore.emitChange();
 }
 
+function updateHistory(request) {
+	var date = new Date();
+	_history.unshift([request, date]);
+	AppStore.emitChange();
+}
+
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_receivedData, _postBody, _requestType, _error, _url];
+		return [_receivedData, _postBody, _requestType, _error, _url, _history];
 	},
 
 	emitChange: function() {

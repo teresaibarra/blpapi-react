@@ -3,9 +3,11 @@ var React = require('react');
 var AppActions = require('../actions/AppActions');
 var AppStore = require('../stores/AppStore');
 var DatalistStore = require('../stores/DatalistStore');
+
 var ResponseList = require('./ResponseList.react');
 var QueryForm = require('./QueryForm.react');
 var ErrorMessage = require('./ErrorMessage.react');
+var History = require('./History.react');
 
 function getAppState() {
 	return {
@@ -37,6 +39,7 @@ var DemoApp = React.createClass({
 			<h1>Bloomberg API Demonstration</h1>
 			<h2>What would you like to look up?</h2>
 			<h5>Pro-Tip: Separate multiple parameters with commas.</h5>
+			<History response={this.state.appData[5]}/>
 			<QueryForm list={this.state.listData} />
 			<ErrorMessage error={this.state.appData[3]} />
 			<ResponseList data={this.state.appData} />

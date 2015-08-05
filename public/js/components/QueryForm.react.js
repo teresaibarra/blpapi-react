@@ -283,7 +283,7 @@ var QueryForm = React.createClass({
 
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-
+			console.log(service)
 			if(!service){
 				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
@@ -305,12 +305,12 @@ var QueryForm = React.createClass({
 					cleanFields.push(fld);
 				})
 
-				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, type]);
+				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, service, type]);
 			}
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-
+			console.log(service)
 			if(!service){
 				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
@@ -342,7 +342,7 @@ var QueryForm = React.createClass({
 				period = period.toUpperCase();
 
 				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
-					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, type]);
+					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);
 			}
 		}
 		else{
@@ -359,9 +359,7 @@ var QueryForm = React.createClass({
 						AppActions.handleError(["POST body.", url]);
 					}else {
 						postTextArea = JSON.parse(postTextArea);
-						var index = url.indexOf("type=") + 5;
-						type = url.substring(index);
-						AppActions.submitQuery([postTextArea, url, type]);
+						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
 				}
 			}else{
@@ -371,9 +369,13 @@ var QueryForm = React.createClass({
 						AppActions.handleError(["POST body.", url]);
 					}else {
 						postTextArea = JSON.parse(postTextArea);
-						var index = url.indexOf("type=") + 5;
-						type = url.substring(index);
-						AppActions.submitQuery([postTextArea, url, type]);
+						var typeIndex = url.indexOf("type=") + 5;
+						type = url.substring(typeIndex);
+
+						var serviceIndex = url.indexOf("service=") + 8;
+						service = url.substring(serviceIndex, typeIndex - 6);
+
+						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
 				}else 
 				{

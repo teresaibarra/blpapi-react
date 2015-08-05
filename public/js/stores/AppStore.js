@@ -10,11 +10,13 @@ var _postBody = "";
 var _requestType = "";
 var _error = "";
 var _url = "";
+var _history = [];
 
 function submitQuery(data) {
 	var query = data[0];
 	var url = data[1];
-	var type = data[2];
+	var service = data[2];
+	var type = data[3];
 
 	$.ajax({
 	url: url,
@@ -26,7 +28,7 @@ function submitQuery(data) {
 		_error = "";
 		_url = url;
 		_requestType = type;
-		AppStore.emitChange();
+		updateHistory(data, receivedData);
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
@@ -49,9 +51,15 @@ function handleError(data) {
 	AppStore.emitChange();
 }
 
+function updateHistory(request) {
+	var date = new Date();
+	_history.unshift([request, date]);
+	AppStore.emitChange();
+}
+
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_receivedData, _postBody, _requestType, _error, _url];
+		return [_receivedData, _postBody, _requestType, _error, _url, _history];
 	},
 
 	emitChange: function() {
