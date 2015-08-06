@@ -21,8 +21,7 @@ var QueryForm = React.createClass({
 	},
 	componentWillReceiveProps: function(){
 		var event = this.props.event;
-		console.log(event)
-		if(Object.keys(event).length){
+		if(Object.keys(event).length > 0){
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -44,8 +43,34 @@ var QueryForm = React.createClass({
 			    this.refs.type.getDOMNode().value = event[3];
 			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
 			});
+		}else{
+			checkBox.checked = false;
 
-		
+			this.setState({hideService:false});
+
+			this.setState({hideReqTypes:true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
+			this.setState({hideUrl: true});
+			this.setState({hidePostTextArea: true});
+
+			this.setState({hideSubmit: true});
+
+			this.refs.service.getDOMNode().value = "";
+			this.refs.type.getDOMNode().value = "";
+			this.refs.securities.getDOMNode().value = "";
+			this.refs.fields.getDOMNode().value = "";
+			this.refs.startDate.getDOMNode().value = "";
+			this.refs.endDate.getDOMNode().value = "";
+			this.refs.period.getDOMNode().value = "";
+			this.refs.url.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
+
+			this.setState({servTypeChoice: ""});
+			this.setState({reqTypeChoice: ""});			
 		}
 	},
 	handleServiceChoice: function() {
@@ -313,7 +338,6 @@ var QueryForm = React.createClass({
 
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-			console.log(service)
 			if(!service){
 				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
@@ -340,7 +364,6 @@ var QueryForm = React.createClass({
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-			console.log(service)
 			if(!service){
 				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){

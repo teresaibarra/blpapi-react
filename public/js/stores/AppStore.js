@@ -29,7 +29,8 @@ function submitQuery(data) {
 		_error = "";
 		_url = url;
 		_requestType = type;
-		updateHistory(data, receivedData);
+		_event = {};
+		updateHistory(data);
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
@@ -58,10 +59,9 @@ function updateHistory(request) {
 	AppStore.emitChange();
 }
 
-function revertToEvent(event) {
-	console.log("event reverted")
+function revertToEvent(event, callback) {
 	_event = event;
-	AppStore.emitChange();
+	callback();
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
@@ -88,19 +88,20 @@ AppDispatcher.register(function(payload){
 	switch(action.actionType) {
 		case AppConstants.SUBMIT_QUERY:
 			var data = payload.action.item;
-			_event = {};
 			submitQuery(data);
 			break;
 
 		case AppConstants.HANDLE_ERROR:
 			var data = payload.action.item;
-			_event = {};
 			handleError(data);
 			break;
 
 		case AppConstants.REVERT_TO_EVENT:
 			var event = payload.action.item;
-			revertToEvent(event);
+			revertToEvent(event, function(){
+				console.log("change emitted")
+				AppStore.emitChange();
+			});
 			break;
 
 		default:

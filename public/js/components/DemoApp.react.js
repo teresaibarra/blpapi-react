@@ -33,6 +33,12 @@ var DemoApp = React.createClass({
 		DatalistStore.addChangeListener(this._onChange);
 	},
 
+	_onChange: function() {
+		this.setState(getAppState(), function(){			
+				this.forceUpdate();
+		});
+	},
+
 	render: function(){
 		return (
 		<div>
@@ -49,12 +55,8 @@ var DemoApp = React.createClass({
 			</div>
 		</div>
 		)
-	},
-
-	_onChange: function() {
-		this.setState(getAppState());
-
 	}
+
 });
 
 module.exports = DemoApp;

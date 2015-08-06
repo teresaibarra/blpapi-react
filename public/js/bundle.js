@@ -22803,6 +22803,12 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 		DatalistStore.addChangeListener(this._onChange);
 	},
 
+	_onChange: function() {
+		this.setState(getAppState(), function(){			
+				this.forceUpdate();
+		});
+	},
+
 	render: function(){
 		return (
 		React.createElement("div", null, 
@@ -22819,12 +22825,8 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 			)
 		)
 		)
-	},
-
-	_onChange: function() {
-		this.setState(getAppState());
-
 	}
+
 });
 
 module.exports = DemoApp;
@@ -22998,8 +23000,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 	},
 	componentWillReceiveProps: function(){
 		var event = this.props.event;
-		console.log(event)
-		if(Object.keys(event).length){
+		if(Object.keys(event).length > 0){
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -23021,8 +23022,34 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			    this.refs.type.getDOMNode().value = event[3];
 			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
 			});
+		}else{
+			checkBox.checked = false;
 
-		
+			this.setState({hideService:false});
+
+			this.setState({hideReqTypes:true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
+			this.setState({hideUrl: true});
+			this.setState({hidePostTextArea: true});
+
+			this.setState({hideSubmit: true});
+
+			this.refs.service.getDOMNode().value = "";
+			this.refs.type.getDOMNode().value = "";
+			this.refs.securities.getDOMNode().value = "";
+			this.refs.fields.getDOMNode().value = "";
+			this.refs.startDate.getDOMNode().value = "";
+			this.refs.endDate.getDOMNode().value = "";
+			this.refs.period.getDOMNode().value = "";
+			this.refs.url.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
+
+			this.setState({servTypeChoice: ""});
+			this.setState({reqTypeChoice: ""});			
 		}
 	},
 	handleServiceChoice: function() {
@@ -23290,7 +23317,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-			console.log(service)
 			if(!service){
 				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
@@ -23317,7 +23343,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
-			console.log(service)
 			if(!service){
 				AppActions.handleError(["service.", "undefined"]);
 			}else if (!type){
@@ -23770,7 +23795,8 @@ function submitQuery(data) {
 		_error = "";
 		_url = url;
 		_requestType = type;
-		updateHistory(data, receivedData);
+		_event = {};
+		updateHistory(data);
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
@@ -23799,10 +23825,9 @@ function updateHistory(request) {
 	AppStore.emitChange();
 }
 
-function revertToEvent(event) {
-	console.log("event reverted")
+function revertToEvent(event, callback) {
 	_event = event;
-	AppStore.emitChange();
+	callback();
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
@@ -23829,19 +23854,20 @@ AppDispatcher.register(function(payload){
 	switch(action.actionType) {
 		case AppConstants.SUBMIT_QUERY:
 			var data = payload.action.item;
-			_event = {};
 			submitQuery(data);
 			break;
 
 		case AppConstants.HANDLE_ERROR:
 			var data = payload.action.item;
-			_event = {};
 			handleError(data);
 			break;
 
 		case AppConstants.REVERT_TO_EVENT:
 			var event = payload.action.item;
-			revertToEvent(event);
+			revertToEvent(event, function(){
+				console.log("change emitted")
+				AppStore.emitChange();
+			});
 			break;
 
 		default:
