@@ -14,9 +14,9 @@ var AppActions = {
 			item: item
 		})
 	},
-	updateDatalist: function(item){
+	revertToEvent: function(item){
 		AppDispatcher.handleViewAction({
-			actionType:AppConstants.UPDATE_DATALIST,
+			actionType:AppConstants.REVERT_TO_EVENT,
 			item: item
 		})		
 	}

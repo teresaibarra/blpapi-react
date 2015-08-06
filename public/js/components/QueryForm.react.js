@@ -19,6 +19,35 @@ var QueryForm = React.createClass({
 			reqTypeChoice: ""
 		};
 	},
+	componentWillReceiveProps: function(){
+		var event = this.props.event;
+		console.log(event)
+		if(Object.keys(event).length){
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
+			this.setState({hideUrl: true});
+
+			this.setState({hideService: false});
+			this.setState({hideReqTypes:false});
+			this.setState({hidePostTextArea: false});
+			this.setState({hideSubmit: false}, function(){
+				this.refs.securities.getDOMNode().value = "";
+			    this.refs.fields.getDOMNode().value = "";
+			    this.refs.startDate.getDOMNode().value = "";
+			    this.refs.endDate.getDOMNode().value = "";
+			    this.refs.period.getDOMNode().value = "";
+
+			    this.refs.service.getDOMNode().value = event[2];
+			    this.refs.type.getDOMNode().value = event[3];
+			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
+			});
+
+		
+		}
+	},
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
 			if (this.state.servTypeChoice != "")
@@ -209,6 +238,7 @@ var QueryForm = React.createClass({
 		var masterList = this.props.list;
 		var datalists = [];
 		var services = [];
+		var event = this.props.event;
 		for (var property in masterList) {
 			if(masterList.hasOwnProperty(property)) {
 				var options = [];
@@ -399,7 +429,6 @@ var QueryForm = React.createClass({
 		this.setState({hideSubmit: true});
 
 		this.refs.service.getDOMNode().value = "";
-
 		this.refs.type.getDOMNode().value = "";
 		this.refs.securities.getDOMNode().value = "";
 		this.refs.fields.getDOMNode().value = "";

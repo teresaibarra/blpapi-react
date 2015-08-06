@@ -1,8 +1,9 @@
 var React = require('react');
+var AppActions = require('../actions/AppActions');
 
 var HistoryEvent = React.createClass({
 	handleClick: function() {
-		console.log(this.props.response[1].getUTCMinutes());
+		AppActions.revertToEvent(this.props.response[0]);
 	},
 	render: function(){
 		var fields = this.props.response[0][0];

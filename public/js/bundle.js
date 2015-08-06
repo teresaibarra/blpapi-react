@@ -22623,9 +22623,9 @@ var AppActions = {
 			item: item
 		})
 	},
-	updateDatalist: function(item){
+	revertToEvent: function(item){
 		AppDispatcher.handleViewAction({
-			actionType:AppConstants.UPDATE_DATALIST,
+			actionType:AppConstants.REVERT_TO_EVENT,
 			item: item
 		})		
 	}
@@ -22810,7 +22810,7 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 				React.createElement("h2", null, "What would you like to look up?"), 
 				React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
 			React.createElement("div", {id: "interactiveArea"}, 
-				React.createElement(QueryForm, {list: this.state.listData}), 
+				React.createElement(QueryForm, {list: this.state.listData, event: this.state.appData[6]}), 
 				React.createElement(ErrorMessage, {error: this.state.appData[3]}), 
 				React.createElement(ResponseList, {data: this.state.appData})
 			), 
@@ -22864,9 +22864,9 @@ var History = React.createClass({displayName: "History",
 	},
 	toggleHistory: function() {
 		if(this.state.historyDisplay.display === 'none'){
-		this.setState({historyDisplay: {display:'block'}});
+			this.setState({historyDisplay: {display:'block'}});
 		}else{
-		this.setState({historyDisplay: {display:'none'}});
+			this.setState({historyDisplay: {display:'none'}});
 		}
 	},
 	render: function(){
@@ -22891,10 +22891,11 @@ var History = React.createClass({displayName: "History",
 module.exports = History;
 },{"./HistoryEvent.react":"/Users/tibarra1/Documents/http-react/public/js/components/HistoryEvent.react.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/HistoryEvent.react.js":[function(require,module,exports){
 var React = require('react');
+var AppActions = require('../actions/AppActions');
 
 var HistoryEvent = React.createClass({displayName: "HistoryEvent",
 	handleClick: function() {
-		console.log(this.props.response[1].getUTCMinutes());
+		AppActions.revertToEvent(this.props.response[0]);
 	},
 	render: function(){
 		var fields = this.props.response[0][0];
@@ -22915,7 +22916,7 @@ var HistoryEvent = React.createClass({displayName: "HistoryEvent",
 });
 
 module.exports = HistoryEvent;
-},{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/PostBody.react.js":[function(require,module,exports){
+},{"../actions/AppActions":"/Users/tibarra1/Documents/http-react/public/js/actions/AppActions.js","react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/PostBody.react.js":[function(require,module,exports){
 var React = require('react');
 
 var PostBody = React.createClass({displayName: "PostBody",
@@ -22994,6 +22995,35 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			servTypeChoice: "",
 			reqTypeChoice: ""
 		};
+	},
+	componentWillReceiveProps: function(){
+		var event = this.props.event;
+		console.log(event)
+		if(Object.keys(event).length){
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
+			this.setState({hideUrl: true});
+
+			this.setState({hideService: false});
+			this.setState({hideReqTypes:false});
+			this.setState({hidePostTextArea: false});
+			this.setState({hideSubmit: false}, function(){
+				this.refs.securities.getDOMNode().value = "";
+			    this.refs.fields.getDOMNode().value = "";
+			    this.refs.startDate.getDOMNode().value = "";
+			    this.refs.endDate.getDOMNode().value = "";
+			    this.refs.period.getDOMNode().value = "";
+
+			    this.refs.service.getDOMNode().value = event[2];
+			    this.refs.type.getDOMNode().value = event[3];
+			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
+			});
+
+		
+		}
 	},
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
@@ -23185,6 +23215,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		var masterList = this.props.list;
 		var datalists = [];
 		var services = [];
+		var event = this.props.event;
 		for (var property in masterList) {
 			if(masterList.hasOwnProperty(property)) {
 				var options = [];
@@ -23375,7 +23406,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		this.setState({hideSubmit: true});
 
 		this.refs.service.getDOMNode().value = "";
-
 		this.refs.type.getDOMNode().value = "";
 		this.refs.securities.getDOMNode().value = "";
 		this.refs.fields.getDOMNode().value = "";
@@ -23679,7 +23709,8 @@ module.exports = Text;
 },{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/constants/AppConstants.js":[function(require,module,exports){
 module.exports = {
 	SUBMIT_QUERY: 'SUBMIT_QUERY',
-	HANDLE_ERROR: 'HANDLE_ERROR'
+	HANDLE_ERROR: 'HANDLE_ERROR',
+	REVERT_TO_EVENT: 'REVERT_TO_EVENT'
 };
 
 },{}],"/Users/tibarra1/Documents/http-react/public/js/dispatcher/AppDispatcher.js":[function(require,module,exports){
@@ -23721,6 +23752,7 @@ var _requestType = "";
 var _error = "";
 var _url = "";
 var _history = [];
+var _event = {};
 
 function submitQuery(data) {
 	var query = data[0];
@@ -23767,9 +23799,15 @@ function updateHistory(request) {
 	AppStore.emitChange();
 }
 
+function revertToEvent(event) {
+	console.log("event reverted")
+	_event = event;
+	AppStore.emitChange();
+}
+
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_receivedData, _postBody, _requestType, _error, _url, _history];
+		return [_receivedData, _postBody, _requestType, _error, _url, _history, _event];
 	},
 
 	emitChange: function() {
@@ -23791,12 +23829,19 @@ AppDispatcher.register(function(payload){
 	switch(action.actionType) {
 		case AppConstants.SUBMIT_QUERY:
 			var data = payload.action.item;
+			_event = {};
 			submitQuery(data);
 			break;
 
 		case AppConstants.HANDLE_ERROR:
 			var data = payload.action.item;
+			_event = {};
 			handleError(data);
+			break;
+
+		case AppConstants.REVERT_TO_EVENT:
+			var event = payload.action.item;
+			revertToEvent(event);
 			break;
 
 		default:

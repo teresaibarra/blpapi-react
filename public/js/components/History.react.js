@@ -9,9 +9,9 @@ var History = React.createClass({
 	},
 	toggleHistory: function() {
 		if(this.state.historyDisplay.display === 'none'){
-		this.setState({historyDisplay: {display:'block'}});
+			this.setState({historyDisplay: {display:'block'}});
 		}else{
-		this.setState({historyDisplay: {display:'none'}});
+			this.setState({historyDisplay: {display:'none'}});
 		}
 	},
 	render: function(){
