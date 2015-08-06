@@ -34,8 +34,12 @@ var DemoApp = React.createClass({
 	},
 
 	_onChange: function() {
-		this.setState(getAppState(), function(){			
+		var oldData = this.state.appData[6];
+		this.setState(getAppState(), function(){	
+			var newData = this.state.appData[6];
+			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
 				this.forceUpdate();
+			}		
 		});
 	},
 

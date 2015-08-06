@@ -61,7 +61,7 @@ function updateHistory(request) {
 
 function revertToEvent(event, callback) {
 	_event = event;
-	callback();
+	AppStore.emitChange();
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
@@ -98,10 +98,7 @@ AppDispatcher.register(function(payload){
 
 		case AppConstants.REVERT_TO_EVENT:
 			var event = payload.action.item;
-			revertToEvent(event, function(){
-				console.log("change emitted")
-				AppStore.emitChange();
-			});
+			revertToEvent(event);
 			break;
 
 		default:
