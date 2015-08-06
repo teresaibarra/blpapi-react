@@ -227,3 +227,15 @@ pre {
     color: #e4685d; 
     background: #FFF8DA;
 }
+
+#history {
+	position: absolute;
+	display:inline-block;
+	overflow-y: auto;
+	top: 120px;
+	left: 60px;
+	width: 350px;
+	height: 600px;
+	text-align: left;
+	background-color: #FFFFFF;
+}

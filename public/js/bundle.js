@@ -22806,13 +22806,17 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 	render: function(){
 		return (
 		React.createElement("div", null, 
-			React.createElement("h1", null, "Bloomberg API Demonstration"), 
-			React.createElement("h2", null, "What would you like to look up?"), 
-			React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
-			React.createElement(History, {response: this.state.appData[5]}), 
-			React.createElement(QueryForm, {list: this.state.listData}), 
-			React.createElement(ErrorMessage, {error: this.state.appData[3]}), 
-			React.createElement(ResponseList, {data: this.state.appData})
+				React.createElement("h1", null, "Bloomberg API Demonstration"), 
+				React.createElement("h2", null, "What would you like to look up?"), 
+				React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
+			React.createElement("div", {id: "interactiveArea"}, 
+				React.createElement(QueryForm, {list: this.state.listData}), 
+				React.createElement(ErrorMessage, {error: this.state.appData[3]}), 
+				React.createElement(ResponseList, {data: this.state.appData})
+			), 
+			React.createElement("div", {id: "history"}, 
+				React.createElement(History, {response: this.state.appData[5]})
+			)
 		)
 		)
 	},
@@ -22853,18 +22857,32 @@ var React = require('react');
 var HistoryEvent = require('./HistoryEvent.react');
 
 var History = React.createClass({displayName: "History",
+	getInitialState: function(){
+		return{
+			historyDisplay: {display:'none'}
+		};
+	},
+	toggleHistory: function() {
+		if(this.state.historyDisplay.display === 'none'){
+		this.setState({historyDisplay: {display:'block'}});
+		}else{
+		this.setState({historyDisplay: {display:'none'}});
+		}
+	},
 	render: function(){
 		var response = this.props.response;
+		var button;
 		var events = [];
-
-		response.forEach(function (res, index){
-			events.push(React.createElement(HistoryEvent, {response: res, key: res[1].toUTCString()}))
-		})
+		if(response[0]){
+			button = React.createElement("a", {className: "tab", onClick: this.toggleHistory}, "History");
+			response.forEach(function (res, index){
+				events.push(React.createElement(HistoryEvent, {response: res, key: res[1].toUTCString()}))
+			})			
+		}
 		return(
 			React.createElement("div", null, 
-				React.createElement("p", null, 
-					events
-				)
+				button, 
+				React.createElement("p", {style: this.state.historyDisplay}, events)
 			)
 		);
 	}
