@@ -49,13 +49,12 @@ var DemoApp = React.createClass({
 				<h1>Bloomberg API Demonstration</h1>
 				<h2>What would you like to look up?</h2>
 				<h5>Pro-Tip: Separate multiple parameters with commas.</h5>
-			<div id="interactiveArea">
+			<div>
 				<QueryForm list={this.state.listData} event={this.state.appData[6]}/>
 				<ErrorMessage error={this.state.appData[3]} />
 				<ResponseList data={this.state.appData} />
 			</div>
-			<div id="history">
-				<History response={this.state.appData[5]}/> 
+			<div id="historySection"><History response={this.state.appData[5]}/> 
 			</div>
 		</div>
 		)

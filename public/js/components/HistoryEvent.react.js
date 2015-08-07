@@ -13,11 +13,11 @@ var HistoryEvent = React.createClass({
 		var date = this.props.response[1];
 		return(
 			<div onClick={this.handleClick}>
-				<p>Date: {date.toUTCString()}
+				<p id="historyLabel">Date: </p>{date.toUTCString()}
 				<br />
-				Service: {service}
+				<p id="historyLabel">Service: </p>{service}
 				<br />
-				Request Type: {type}</p>
+				<p id="historyLabel">Request Type: </p>{type}
 			</div>
 		);
 	}

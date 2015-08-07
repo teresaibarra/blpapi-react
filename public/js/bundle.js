@@ -22819,13 +22819,12 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 				React.createElement("h1", null, "Bloomberg API Demonstration"), 
 				React.createElement("h2", null, "What would you like to look up?"), 
 				React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
-			React.createElement("div", {id: "interactiveArea"}, 
+			React.createElement("div", null, 
 				React.createElement(QueryForm, {list: this.state.listData, event: this.state.appData[6]}), 
 				React.createElement(ErrorMessage, {error: this.state.appData[3]}), 
 				React.createElement(ResponseList, {data: this.state.appData})
 			), 
-			React.createElement("div", {id: "history"}, 
-				React.createElement(History, {response: this.state.appData[5]})
+			React.createElement("div", {id: "historySection"}, React.createElement(History, {response: this.state.appData[5]})
 			)
 		)
 		)
@@ -22880,15 +22879,18 @@ var History = React.createClass({displayName: "History",
 		var button;
 		var events = [];
 		if(response[0]){
-			button = React.createElement("a", {className: "tab", onClick: this.toggleHistory}, "History");
+			button = React.createElement("a", {id: "historyButton", onClick: this.toggleHistory}, "History");
 			response.forEach(function (res, index){
 				events.push(React.createElement(HistoryEvent, {response: res, key: res[1].toUTCString()}))
+				if(index != response.length - 1){
+					events.push(React.createElement("hr", null))
+				}
 			})			
 		}
 		return(
 			React.createElement("div", null, 
 				button, 
-				React.createElement("p", {style: this.state.historyDisplay}, events)
+				React.createElement("p", {style: this.state.historyDisplay, id: "history"}, events)
 			)
 		);
 	}
@@ -22911,11 +22913,11 @@ var HistoryEvent = React.createClass({displayName: "HistoryEvent",
 		var date = this.props.response[1];
 		return(
 			React.createElement("div", {onClick: this.handleClick}, 
-				React.createElement("p", null, "Date: ", date.toUTCString(), 
+				React.createElement("p", {id: "historyLabel"}, "Date: "), date.toUTCString(), 
 				React.createElement("br", null), 
-				"Service: ", service, 
+				React.createElement("p", {id: "historyLabel"}, "Service: "), service, 
 				React.createElement("br", null), 
-				"Request Type: ", type)
+				React.createElement("p", {id: "historyLabel"}, "Request Type: "), type
 			)
 		);
 	}
