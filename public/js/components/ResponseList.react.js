@@ -89,10 +89,10 @@ var ResponseList = React.createClass({
 			node.push(			
 				<div id="response" key={Math.floor(Math.random() * 1000)} onLoad={this.hideData}>
 					<div id="buttons">				
-						<a className="tab" onClick={this.togglePostBody}>POST Request</a>
-						<a className="tab" onClick={this.toggleRawResponse}>Raw Response</a>
-						<a className="tab" onClick={this.togglePrettyResponse}>Pretty Response</a>
-						<a className="tab" onClick={this.toggleResponseData}>Response Data</a>
+						<a id="redButton" onClick={this.togglePostBody}>POST Request</a>
+						<a id="redButton" onClick={this.toggleRawResponse}>Raw Response</a>
+						<a id="redButton" onClick={this.togglePrettyResponse}>Pretty Response</a>
+						<a id="redButton" onClick={this.toggleResponseData}>Response Data</a>
 					</div>
 					<div id="postBody" style={this.state.postDisplay}><PostBody request={request} url ={url} /></div>
 					<div id="rawResponse" style={this.state.rawResponseDisplay}><RawResponse data={data} /></div>

@@ -124,7 +124,7 @@ pre {
 	color: #4A4A4A;
 }
 
-#submit {
+#grayButton {
 	width: 120px;
 	height: 40px;
 	border: none;
@@ -142,13 +142,15 @@ pre {
 	border:1px solid #ffffff;
 	padding:6px 15px;
 	text-shadow:0px 1px 0px #707070;
+	margin-left: 5px;
+	margin-right: 5px;
 }
 
-#submit:hover {
+#grayButton:hover {
 	background-color:#BCBCBC;
 	text-decoration: none;
 }
-#submit:active {
+#grayButton:active {
 	background-color: #D0D0D0;
 	position:relative;
 	top:1px;
@@ -192,7 +194,7 @@ pre {
 	color: #e4685d;
 }
 
-.tab {
+#redButton {
 	background-color:#e4685d;
 	-moz-border-radius:4px;
 	-webkit-border-radius:4px;
@@ -206,20 +208,21 @@ pre {
 	text-decoration:none;
 	text-shadow:0px 1px 0px #70A7FD;
 	margin-left: 10px;
+	outline: none;
 }
 
-.tab:hover {
+#redButton:hover {
 	background-color:#FF958D;
 	text-decoration: none;
 }
 
-.tab:active {
+#redButton:active {
 	background-color: #FFBCB7;
 	position:relative;
 	top:1px;
 }
 
-#historyButton {
+#blueButton {
 	background-color:#70A7FD;
 	-moz-border-radius:4px;
 	-webkit-border-radius:4px;
@@ -233,14 +236,15 @@ pre {
 	text-decoration:none;
 	text-shadow:0px 1px 0px #b23e35;
 	margin-left: 10px;
+	outline: none;
 }
 
-#historyButton:hover {
+#blueButton:hover {
 	background-color:#CCE0FF;
 	text-decoration: none;
 }
 
-#historyButton:active {
+#blueButton:active {
 	background-color: #E1EDFF;
 	position:relative;
 	top:1px;

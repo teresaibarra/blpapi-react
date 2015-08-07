@@ -15,6 +15,7 @@ var QueryForm = React.createClass({
 			hideEndDate: true,
 			hidePeriod: true,
 			hidePostTextArea: true,
+			hideClear: true,
 			servTypeChoice: "",
 			reqTypeChoice: ""
 		};
@@ -32,6 +33,7 @@ var QueryForm = React.createClass({
 			this.setState({hideService: false});
 			this.setState({hideReqTypes:false});
 			this.setState({hidePostTextArea: false});
+			this.setState({hideClear: false});
 			this.setState({hideSubmit: false}, function(){
 				this.refs.securities.getDOMNode().value = "";
 			    this.refs.fields.getDOMNode().value = "";
@@ -43,34 +45,6 @@ var QueryForm = React.createClass({
 			    this.refs.type.getDOMNode().value = event[3];
 			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
 			});
-		}else{
-			checkBox.checked = false;
-
-			this.setState({hideService:false});
-
-			this.setState({hideReqTypes:true});
-			this.setState({hideSecurities: true});
-			this.setState({hideFields: true});
-			this.setState({hideStartDate: true});
-			this.setState({hideEndDate: true});
-			this.setState({hidePeriod: true});
-			this.setState({hideUrl: true});
-			this.setState({hidePostTextArea: true});
-
-			this.setState({hideSubmit: true});
-
-			this.refs.service.getDOMNode().value = "";
-			this.refs.type.getDOMNode().value = "";
-			this.refs.securities.getDOMNode().value = "";
-			this.refs.fields.getDOMNode().value = "";
-			this.refs.startDate.getDOMNode().value = "";
-			this.refs.endDate.getDOMNode().value = "";
-			this.refs.period.getDOMNode().value = "";
-			this.refs.url.getDOMNode().value = "";
-			this.refs.postTextArea.getDOMNode().value = "";
-
-			this.setState({servTypeChoice: ""});
-			this.setState({reqTypeChoice: ""});			
 		}
 	},
 	handleServiceChoice: function() {
@@ -90,6 +64,7 @@ var QueryForm = React.createClass({
 
 					this.setState({hidePostTextArea: true});
 					this.setState({hideSubmit: true});
+					this.setState({hideClear: true});
 
 					return;					
 				}
@@ -105,6 +80,7 @@ var QueryForm = React.createClass({
 					this.setState({hideReqTypes:false});
 					this.setState({hidePostTextArea: false});
 					this.setState({hideSubmit: false});
+					this.setState({hideClear: false});
 
 				    this.refs.securities.getDOMNode().value = "";
 				    this.refs.fields.getDOMNode().value = "";
@@ -131,6 +107,7 @@ var QueryForm = React.createClass({
 				this.setState({hideEndDate: true});
 				this.setState({hidePeriod: true});
 				this.setState({hideSubmit: true});
+				this.setState({hideClear: true});
 
 				this.setState({hidePostTextArea: true});
 
@@ -150,6 +127,7 @@ var QueryForm = React.createClass({
 			this.setState({hideEndDate: true});
 			this.setState({hidePeriod: true});
 			this.setState({hideSubmit: true});
+			this.setState({hideClear: true});
 
 		    this.refs.securities.getDOMNode().value = "";
 		    this.refs.fields.getDOMNode().value = "";
@@ -166,6 +144,7 @@ var QueryForm = React.createClass({
 					this.setState({hideSecurities: false});
 					this.setState({hideFields: false});
 					this.setState({hideSubmit: false});
+					this.setState({hideClear: false});
 
 					this.setState({hidePostTextArea: true});
 				}
@@ -176,6 +155,7 @@ var QueryForm = React.createClass({
 					this.setState({hideEndDate: false});
 					this.setState({hidePeriod: false});
 					this.setState({hideSubmit: false});
+					this.setState({hideClear: false});
 
 					this.setState({hidePostTextArea: true});
 				}
@@ -191,6 +171,7 @@ var QueryForm = React.createClass({
 					this.setState({hideReqTypes:false});
 					this.setState({hidePostTextArea: false});
 					this.setState({hideSubmit: false});
+					this.setState({hideClear: false});
 
 					return;
 				}
@@ -209,6 +190,7 @@ var QueryForm = React.createClass({
 				this.setState({hideEndDate: true});
 				this.setState({hidePeriod: true});
 				this.setState({hideSubmit: true});
+				this.setState({hideClear: true});
 
 				this.setState({hidePostTextArea: true});
 			}
@@ -249,10 +231,12 @@ var QueryForm = React.createClass({
 				this.setState({hideUrl: false});
 				this.setState({hidePostTextArea: false});
 				this.setState({hideSubmit: false});
+				this.setState({hideClear: false});
 
 			} else {
 				this.setState({hideReqTypes:true});
 				this.setState({hideSubmit: true});
+				this.setState({hideClear: true});
 				this.setState({hideUrl: true});
 				this.setState({hidePostTextArea: true});
 
@@ -271,6 +255,7 @@ var QueryForm = React.createClass({
 
 				this.setState({hideUrl: false});
 				this.setState({hidePostTextArea: false});
+				this.setState({hideClear: false});
 				this.setState({hideSubmit: false}, function(){
 					this.refs.securities.getDOMNode().value = "";
 				    this.refs.fields.getDOMNode().value = "";
@@ -294,6 +279,7 @@ var QueryForm = React.createClass({
 				this.setState({hideService: false});
 				this.setState({hideReqTypes:false});
 				this.setState({hidePostTextArea: false});
+				this.setState({hideClear: false});
 				this.setState({hideSubmit: false}, function(){
 					this.refs.securities.getDOMNode().value = "";
 				    this.refs.fields.getDOMNode().value = "";
@@ -309,11 +295,43 @@ var QueryForm = React.createClass({
 		}
 		return;
 	},
+	handleClear: function(){
+		checkBox.checked = false;
+
+		this.setState({hideService:false});
+
+		this.setState({hideReqTypes:true});
+		this.setState({hideSecurities: true});
+		this.setState({hideFields: true});
+		this.setState({hideStartDate: true});
+		this.setState({hideEndDate: true});
+		this.setState({hidePeriod: true});
+		this.setState({hideUrl: true});
+		this.setState({hidePostTextArea: true});
+
+		this.setState({hideSubmit: true});
+		this.setState({hideClear: true});
+
+		this.refs.service.getDOMNode().value = "";
+		this.refs.type.getDOMNode().value = "";
+		this.refs.securities.getDOMNode().value = "";
+		this.refs.fields.getDOMNode().value = "";
+		this.refs.startDate.getDOMNode().value = "";
+		this.refs.endDate.getDOMNode().value = "";
+		this.refs.period.getDOMNode().value = "";
+		this.refs.url.getDOMNode().value = "";
+		this.refs.postTextArea.getDOMNode().value = "";
+
+		this.setState({servTypeChoice: ""});
+		this.setState({reqTypeChoice: ""});
+	},
 	render: function() {
 		var masterList = this.props.list;
 		var datalists = [];
 		var services = [];
 		var event = this.props.event;
+		var clearButton;
+
 		for (var property in masterList) {
 			if(masterList.hasOwnProperty(property)) {
 				var options = [];
@@ -329,10 +347,16 @@ var QueryForm = React.createClass({
 				services.push(<option value={property} key={property}>{masterList[property].ServiceName}</option>);
 			}
 		}
+
 		datalists.push(
 			<datalist id="services" key="">
 				{services}
 			</datalist>	);
+
+		if(!this.state.hideClear){
+			clearButton = <input type="button" style={{backgroundColor: "#70A7FD"}} value="Clear" onClick={this.handleClear}
+			id="grayButton" hidden={this.state.hideClear} />
+		}
 		return(
 			<div id="queryDiv">
 				<form className="queryForm" id="queryForm" onSubmit={this._onSubmit}>
@@ -366,7 +390,10 @@ var QueryForm = React.createClass({
 
 					<br />
 
-					<input type="submit" value="Submit" id="submit" hidden={this.state.hideSubmit} />
+					<input type="submit" value="Submit" id="grayButton" hidden={this.state.hideSubmit} />
+
+					{clearButton}
+
 				</form>
 			</div>
 		);
@@ -408,7 +435,6 @@ var QueryForm = React.createClass({
 					fld = fld.trim();
 					cleanFields.push(fld);
 				})
-
 				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, service, type]);
 			}
 		}
@@ -486,33 +512,7 @@ var QueryForm = React.createClass({
 				}
 			}
 		}
-		checkBox.checked = false;
 
-		this.setState({hideService:false});
-
-		this.setState({hideReqTypes:true});
-		this.setState({hideSecurities: true});
-		this.setState({hideFields: true});
-		this.setState({hideStartDate: true});
-		this.setState({hideEndDate: true});
-		this.setState({hidePeriod: true});
-		this.setState({hideUrl: true});
-		this.setState({hidePostTextArea: true});
-
-		this.setState({hideSubmit: true});
-
-		this.refs.service.getDOMNode().value = "";
-		this.refs.type.getDOMNode().value = "";
-		this.refs.securities.getDOMNode().value = "";
-		this.refs.fields.getDOMNode().value = "";
-		this.refs.startDate.getDOMNode().value = "";
-		this.refs.endDate.getDOMNode().value = "";
-		this.refs.period.getDOMNode().value = "";
-		this.refs.url.getDOMNode().value = "";
-		this.refs.postTextArea.getDOMNode().value = "";
-
-		this.setState({servTypeChoice: ""});
-		this.setState({reqTypeChoice: ""});
 	}
 });
 
