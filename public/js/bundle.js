@@ -22808,7 +22808,14 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 		this.setState(getAppState(), function(){	
 			var newData = this.state.appData[6];
 			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
+				if(JSON.stringify(newData) != "{}"){
+					this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
+				}
+				//forceUpdate() called due to component rendering before setState finishes.
 				this.forceUpdate();
+			}else if (Object.is(JSON.stringify(oldData), JSON.stringify(newData)) && JSON.stringify(oldData) !="{}"){
+				this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
+				this.forceUpdate();				
 			}		
 		});
 	},
@@ -22883,7 +22890,7 @@ var History = React.createClass({displayName: "History",
 			response.forEach(function (res, index){
 				events.push(React.createElement(HistoryEvent, {response: res, key: res[1].toUTCString()}))
 				if(index != response.length - 1){
-					events.push(React.createElement("hr", null))
+					events.push(React.createElement("hr", {key: index}))
 				}
 			})			
 		}

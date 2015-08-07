@@ -23,7 +23,7 @@ var History = React.createClass({
 			response.forEach(function (res, index){
 				events.push(<HistoryEvent response={res} key={res[1].toUTCString()} />)
 				if(index != response.length - 1){
-					events.push(<hr />)
+					events.push(<hr key={index} />)
 				}
 			})			
 		}

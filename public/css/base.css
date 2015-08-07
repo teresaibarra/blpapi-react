@@ -262,7 +262,7 @@ pre {
 	top: 140px;
 	left: 60px;
 	width: 350px;
-	height: 600px;
+	height: 500px;
 	text-align: left;
 	background-color: #FFFFFF;
 }
@@ -275,7 +275,7 @@ hr {
 	color: #70A7FD;
 	background-color: #70A7FD;
 	border: none;
-	height: 3px;
+	height: 2px;
 	width: 60%;
 	margin-top: 20px;
 	margin-bottom: 20px;	
@@ -286,8 +286,8 @@ hr {
 	position: absolute;
 	display:inline-block;
 	overflow-y: auto;
-	width: 350px;
-	height: 600px;
+	width: 330px;
+	height: 500px;
 	text-align: center;
 	background-color: #FFFFFF;
 }

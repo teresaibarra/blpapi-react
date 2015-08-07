@@ -38,7 +38,14 @@ var DemoApp = React.createClass({
 		this.setState(getAppState(), function(){	
 			var newData = this.state.appData[6];
 			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
+				if(JSON.stringify(newData) != "{}"){
+					this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
+				}
+				//forceUpdate() called due to component rendering before setState finishes.
 				this.forceUpdate();
+			}else if (Object.is(JSON.stringify(oldData), JSON.stringify(newData)) && JSON.stringify(oldData) !="{}"){
+				this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
+				this.forceUpdate();				
 			}		
 		});
 	},
