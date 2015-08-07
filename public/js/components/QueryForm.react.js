@@ -416,13 +416,13 @@ var QueryForm = React.createClass({
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
-				AppActions.handleError(["service.", "undefined"]);
+				AppActions.handleError(["Missing service.", "undefined"]);
 			}else if (!type){
-				AppActions.handleError(["request type.", "undefined"]);
+				AppActions.handleError(["Missing request type.", "undefined"]);
 			}else if (!securities){
-				AppActions.handleError(["securities.", url]);
+				AppActions.handleError(["Missing securities.", url]);
 			}else if (!fields){
-				AppActions.handleError(["fields.", url]);
+				AppActions.handleError(["Missing fields.", url]);
 			}else {
 				securities = securities.split(",");
 				fields = fields.split(",");
@@ -441,19 +441,19 @@ var QueryForm = React.createClass({
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
-				AppActions.handleError(["service.", "undefined"]);
+				AppActions.handleError(["Missing service.", "undefined"]);
 			}else if (!type){
-				AppActions.handleError(["request type.", "undefined"]);
+				AppActions.handleError(["Missing request type.", "undefined"]);
 			}else if (!securities){
-				AppActions.handleError(["securities.", url]);
+				AppActions.handleError(["Missing securities.", url]);
 			}else if (!fields){
-				AppActions.handleError(["fields.", url]);
+				AppActions.handleError(["Missing fields.", url]);
 			}else if (!startDate){
-				AppActions.handleError(["start date.", url]);
+				AppActions.handleError(["Missing start date.", url]);
 			}else if (!endDate){
-				AppActions.handleError(["end date.", url]);
+				AppActions.handleError(["Missing end date.", url]);
 			}else if (!period){
-				AppActions.handleError(["period.", url]);
+				AppActions.handleError(["Missing period.", url]);
 			}
 			else {
 				securities = securities.split(",");
@@ -479,14 +479,19 @@ var QueryForm = React.createClass({
 
 			if(service || type){
 				if(!service){
-					AppActions.handleError(["service.", "undefined"]);
+					AppActions.handleError(["Missing service.", "undefined"]);
 				}else if (!type){
-					AppActions.handleError(["request type.", "undefined"]);
+					AppActions.handleError(["Missing request type.", "undefined"]);
 				}else{
 					url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 					if (!postTextArea){
-						AppActions.handleError(["POST body.", url]);
+						AppActions.handleError(["Missing POST body.", url]);
 					}else {
+						try {
+							JSON.parse(postTextArea);
+						} catch (e) {
+							AppActions.handleError(["This is not a valid JSON string.", url]);
+						}
 						postTextArea = JSON.parse(postTextArea);
 						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
@@ -495,8 +500,13 @@ var QueryForm = React.createClass({
 				if (this.refs.url.getDOMNode().value.trim()){
 					url = this.refs.url.getDOMNode().value.trim();
 					if (!postTextArea){
-						AppActions.handleError(["POST body.", url]);
+						AppActions.handleError(["Missing POST body.", url]);
 					}else {
+						try {
+							JSON.parse(postTextArea);
+						} catch (e) {
+							AppActions.handleError(["This is not a valid JSON string.", url]);
+						}
 						postTextArea = JSON.parse(postTextArea);
 						var typeIndex = url.indexOf("type=") + 5;
 						type = url.substring(typeIndex);
@@ -508,7 +518,7 @@ var QueryForm = React.createClass({
 					}
 				}else 
 				{
-					AppActions.handleError(["URL.", "undefined"]);
+					AppActions.handleError(["Missing URL.", "undefined"]);
 				}
 			}
 		}

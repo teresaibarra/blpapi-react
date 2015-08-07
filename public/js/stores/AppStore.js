@@ -49,7 +49,7 @@ function handleError(data) {
 
 	_postBody = "";
 	_receivedData = "";
-	_error = ["Missing " + field, url];
+	_error = [field, url];
 	AppStore.emitChange();
 }
 
