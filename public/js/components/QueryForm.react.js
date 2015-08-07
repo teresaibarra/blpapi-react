@@ -220,42 +220,92 @@ var QueryForm = React.createClass({
 		}
 	},
 	handleCheckBox: function() {
-		this.setState({servTypeChoice: ""});
-		this.setState({reqTypeChoice: ""});
+		var event = this.props.event;
+		if(!Object.keys(event).length > 0){
+			this.setState({servTypeChoice: ""});
+			this.setState({reqTypeChoice: ""});
 
-		this.refs.service.getDOMNode().value = "";
-		this.refs.type.getDOMNode().value = "";
-		this.refs.securities.getDOMNode().value = "";
-		this.refs.fields.getDOMNode().value = "";
-		this.refs.startDate.getDOMNode().value = "";
-		this.refs.endDate.getDOMNode().value = "";
-		this.refs.period.getDOMNode().value = "";
-		this.refs.postTextArea.getDOMNode().value = "";
-		this.refs.url.getDOMNode().value = "";
-		this.refs.postTextArea.getDOMNode().value = "";
+			this.refs.service.getDOMNode().value = "";
+			this.refs.type.getDOMNode().value = "";
+			this.refs.securities.getDOMNode().value = "";
+			this.refs.fields.getDOMNode().value = "";
+			this.refs.startDate.getDOMNode().value = "";
+			this.refs.endDate.getDOMNode().value = "";
+			this.refs.period.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
+			this.refs.url.getDOMNode().value = "";
+			this.refs.postTextArea.getDOMNode().value = "";
 
-		this.setState({hideSecurities: true});
-		this.setState({hideFields: true});
-		this.setState({hideStartDate: true});
-		this.setState({hideEndDate: true});
-		this.setState({hidePeriod: true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
 
-		if (checkBox.checked){
-			this.setState({hideService: true});
-			this.setState({hideReqTypes:true});
+			if (checkBox.checked){
+				this.setState({hideService: true});
+				this.setState({hideReqTypes:true});
 
-			this.setState({hideUrl: false});
-			this.setState({hidePostTextArea: false});
-			this.setState({hideSubmit: false});
+				this.setState({hideUrl: false});
+				this.setState({hidePostTextArea: false});
+				this.setState({hideSubmit: false});
 
+			} else {
+				this.setState({hideReqTypes:true});
+				this.setState({hideSubmit: true});
+				this.setState({hideUrl: true});
+				this.setState({hidePostTextArea: true});
+
+				this.setState({hideService: false});
+
+			}
 		} else {
-			this.setState({hideReqTypes:true});
-			this.setState({hideSubmit: true});
-			this.setState({hideUrl: true});
-			this.setState({hidePostTextArea: true});
+			if(checkBox.checked){
+				this.setState({hideSecurities: true});
+				this.setState({hideFields: true});
+				this.setState({hideStartDate: true});
+				this.setState({hideEndDate: true});
+				this.setState({hidePeriod: true});
+				this.setState({hideService: true});
+				this.setState({hideReqTypes:true});
 
-			this.setState({hideService: false});
+				this.setState({hideUrl: false});
+				this.setState({hidePostTextArea: false});
+				this.setState({hideSubmit: false}, function(){
+					this.refs.securities.getDOMNode().value = "";
+				    this.refs.fields.getDOMNode().value = "";
+				    this.refs.startDate.getDOMNode().value = "";
+				    this.refs.endDate.getDOMNode().value = "";
+				    this.refs.period.getDOMNode().value = "";
 
+				    this.refs.url.getDOMNode().value = 'http://localhost:3000/request?ns=blp' + '&service=' + event[2] + '&type=' + event[3];
+				    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
+				})
+
+
+			}else{
+				this.setState({hideSecurities: true});
+				this.setState({hideFields: true});
+				this.setState({hideStartDate: true});
+				this.setState({hideEndDate: true});
+				this.setState({hidePeriod: true});
+				this.setState({hideUrl: true});
+
+				this.setState({hideService: false});
+				this.setState({hideReqTypes:false});
+				this.setState({hidePostTextArea: false});
+				this.setState({hideSubmit: false}, function(){
+					this.refs.securities.getDOMNode().value = "";
+				    this.refs.fields.getDOMNode().value = "";
+				    this.refs.startDate.getDOMNode().value = "";
+				    this.refs.endDate.getDOMNode().value = "";
+				    this.refs.period.getDOMNode().value = "";
+
+				    this.refs.service.getDOMNode().value = event[2];
+				    this.refs.type.getDOMNode().value = event[3];
+				    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
+				});				
+			}
 		}
 		return;
 	},
