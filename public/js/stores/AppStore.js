@@ -31,11 +31,12 @@ function submitQuery(data) {
 		_requestType = type;
 		_event = {};
 		updateHistory(data);
+		console.log(data)
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
 		_receivedData = "";
-		_error = [err + ".", url];
+		_error = [err + ". (Status Code: " + xhr.status + ")", url];
 		_url = ""
 		_requestType = type;
 		AppStore.emitChange();
