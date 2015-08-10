@@ -80,6 +80,7 @@ ul {
 
 textarea {
 	background-color: #f8f8f8;
+	width: 310px;
 	border: 1px solid #ddd;
 	border-radius: 3px;
 	font-family: "Bitstream Vera Sans Mono", Consolas, Courier, monospace;
