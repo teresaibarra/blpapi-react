@@ -22804,9 +22804,9 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 	},
 
 	_onChange: function() {
-		var oldData = this.state.appData[6];
-		this.setState(getAppState(), function(){	
-			var newData = this.state.appData[6];
+		var oldData = this.state.appData[6][0];
+		this.setState(getAppState(), function(){
+			var newData = this.state.appData[6][0];
 			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
 				if(JSON.stringify(newData) != "{}"){
 					this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
@@ -22910,7 +22910,7 @@ var AppActions = require('../actions/AppActions');
 
 var HistoryEvent = React.createClass({displayName: "HistoryEvent",
 	handleClick: function() {
-		AppActions.revertToEvent(this.props.response[0]);
+		AppActions.revertToEvent([this.props.response[0], this.props.response[2]]);
 	},
 	render: function(){
 		var fields = this.props.response[0][0];
@@ -22993,7 +22993,6 @@ module.exports = PrettyResponse;
 var React = require('react');
 var AppActions = require('../actions/AppActions');
 
-
 var QueryForm = React.createClass({displayName: "QueryForm",
 	getInitialState: function() {
 		return {
@@ -23009,11 +23008,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			hidePostTextArea: true,
 			hideClear: true,
 			servTypeChoice: "",
-			reqTypeChoice: ""
+			reqTypeChoice: "",
+			event: [{}]
 		};
 	},
 	componentWillReceiveProps: function(){
-		var event = this.props.event;
+		this.setState({event: this.props.event})
+		var event = this.state.event[0];
 		if(Object.keys(event).length > 0){
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
@@ -23027,6 +23028,8 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			this.setState({hidePostTextArea: false});
 			this.setState({hideClear: false});
 			this.setState({hideSubmit: false}, function(){
+				checkBox.checked = false;
+
 				this.refs.securities.getDOMNode().value = "";
 			    this.refs.fields.getDOMNode().value = "";
 			    this.refs.startDate.getDOMNode().value = "";
@@ -23035,12 +23038,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 			    this.refs.service.getDOMNode().value = event[2];
 			    this.refs.type.getDOMNode().value = event[3];
-			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
+			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);
 			});
 		}
 	},
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
+			var event = this.state.event[0];
 			if (this.state.servTypeChoice != "")
 			{
 				if(this.state.servTypeChoice === "refdata" || this.state.servTypeChoice === "apiflds" 
@@ -23109,7 +23113,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 				return;
 			}
 		});
-
 	},
 	handleRequestChoice: function() {
 		if (this.refs.type){
@@ -23129,72 +23132,71 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		    this.refs.postTextArea.getDOMNode().value = "";
 
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString()}, function(){
+				if (this.state.reqTypeChoice != "")
+				{
+					if (this.state.reqTypeChoice === "ReferenceDataRequest") {
+						this.setState({hideSecurities: false});
+						this.setState({hideFields: false});
+						this.setState({hideSubmit: false});
+						this.setState({hideClear: false});
 
-			if (this.state.reqTypeChoice != "")
-			{
-				if (this.state.reqTypeChoice === "ReferenceDataRequest") {
-					this.setState({hideSecurities: false});
-					this.setState({hideFields: false});
-					this.setState({hideSubmit: false});
-					this.setState({hideClear: false});
+						this.setState({hidePostTextArea: true});
+					}
+					else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
+						this.setState({hideSecurities: false});
+						this.setState({hideFields: false});
+						this.setState({hideStartDate: false});
+						this.setState({hideEndDate: false});
+						this.setState({hidePeriod: false});
+						this.setState({hideSubmit: false});
+						this.setState({hideClear: false});
 
-					this.setState({hidePostTextArea: true});
+						this.setState({hidePostTextArea: true});
+					}
+					else{
+						this.setState({hideSecurities: true});
+						this.setState({hideFields: true});
+						this.setState({hideStartDate: true});
+						this.setState({hideEndDate: true});
+						this.setState({hidePeriod: true});
+						this.setState({hideUrl: true});
+
+						this.setState({hideService: false});
+						this.setState({hideReqTypes:false});
+						this.setState({hidePostTextArea: false});
+						this.setState({hideSubmit: false});
+						this.setState({hideClear: false});
+
+						return;
+					}
 				}
-				else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
-					this.setState({hideSecurities: false});
-					this.setState({hideFields: false});
-					this.setState({hideStartDate: false});
-					this.setState({hideEndDate: false});
-					this.setState({hidePeriod: false});
-					this.setState({hideSubmit: false});
-					this.setState({hideClear: false});
+				else if (this.state.reqTypeChoice === ""){
+				    this.refs.securities.getDOMNode().value = "";
+				    this.refs.fields.getDOMNode().value = "";
+				    this.refs.startDate.getDOMNode().value = "";
+				    this.refs.endDate.getDOMNode().value = "";
+				    this.refs.period.getDOMNode().value = "";
+				    this.refs.postTextArea.getDOMNode().value = "";
 
-					this.setState({hidePostTextArea: true});
-				}
-				else{
 					this.setState({hideSecurities: true});
 					this.setState({hideFields: true});
 					this.setState({hideStartDate: true});
 					this.setState({hideEndDate: true});
 					this.setState({hidePeriod: true});
-					this.setState({hideUrl: true});
+					this.setState({hideSubmit: true});
+					this.setState({hideClear: true});
 
-					this.setState({hideService: false});
-					this.setState({hideReqTypes:false});
-					this.setState({hidePostTextArea: false});
-					this.setState({hideSubmit: false});
-					this.setState({hideClear: false});
-
+					this.setState({hidePostTextArea: true});
+				}
+				else {
 					return;
 				}
-			}
-			else if (this.state.reqTypeChoice === ""){
-			    this.refs.securities.getDOMNode().value = "";
-			    this.refs.fields.getDOMNode().value = "";
-			    this.refs.startDate.getDOMNode().value = "";
-			    this.refs.endDate.getDOMNode().value = "";
-			    this.refs.period.getDOMNode().value = "";
-			    this.refs.postTextArea.getDOMNode().value = "";
-
-				this.setState({hideSecurities: true});
-				this.setState({hideFields: true});
-				this.setState({hideStartDate: true});
-				this.setState({hideEndDate: true});
-				this.setState({hidePeriod: true});
-				this.setState({hideSubmit: true});
-				this.setState({hideClear: true});
-
-				this.setState({hidePostTextArea: true});
-			}
-			else {
-				return;
-			}
-
 			});
+			
 		}
 	},
 	handleCheckBox: function() {
-		var event = this.props.event;
+		var event = this.state.event[0];
 		if(!Object.keys(event).length > 0){
 			this.setState({servTypeChoice: ""});
 			this.setState({reqTypeChoice: ""});
@@ -23233,7 +23235,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 				this.setState({hidePostTextArea: true});
 
 				this.setState({hideService: false});
-
 			}
 		} else {
 			if(checkBox.checked){
@@ -23304,6 +23305,8 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		this.setState({hideSubmit: true});
 		this.setState({hideClear: true});
 
+		this.setState({event: [{}]});
+
 		this.refs.service.getDOMNode().value = "";
 		this.refs.type.getDOMNode().value = "";
 		this.refs.securities.getDOMNode().value = "";
@@ -23321,8 +23324,9 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		var masterList = this.props.list;
 		var datalists = [];
 		var services = [];
-		var event = this.props.event;
 		var clearButton;
+
+				console.log(this.state.event)
 
 		for (var property in masterList) {
 			if(masterList.hasOwnProperty(property)) {
@@ -23362,10 +23366,10 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					React.createElement("input", {type: "text", placeholder: "url", ref: "url", id: "formbox", hidden: this.state.hideUrl}), 
 
 					React.createElement("input", {type: "text", list: "services", placeholder: "service", ref: "service", 
-					id: "formbox", hidden: this.state.hideService, onChange: this.handleServiceChoice}), 
+					id: "formbox", hidden: this.state.hideService, onInput: this.handleServiceChoice}), 
 
 					React.createElement("input", {type: "text", list: this.state.servTypeChoice, placeholder: "request type", ref: "type", 
-					id: "formbox", hidden: this.state.hideReqTypes, onChange: this.handleRequestChoice}), 
+					id: "formbox", hidden: this.state.hideReqTypes, onInput: this.handleRequestChoice}), 
 
 
 					React.createElement("input", {type: "text", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
@@ -23406,6 +23410,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		var cleanFields = [];
 
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
+					console.log("submitted")
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
 				AppActions.handleError(["Missing service.", "undefined"]);
@@ -23431,6 +23436,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			}
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
+					console.log("submitted")
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
 				AppActions.handleError(["Missing service.", "undefined"]);
@@ -23464,6 +23470,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
 					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);
+				console.log("submitted")
 			}
 		}
 		else{
@@ -23485,6 +23492,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 							AppActions.handleError(["This is not a valid JSON string.", url]);
 						}
 						postTextArea = JSON.parse(postTextArea);
+								console.log("submitted")
 						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
 				}
@@ -23505,11 +23513,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 						var serviceIndex = url.indexOf("service=") + 8;
 						service = url.substring(serviceIndex, typeIndex - 6);
-
+								console.log("submitted")
 						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
 				}else 
 				{
+							console.log("submitted")
 					AppActions.handleError(["Missing URL.", "undefined"]);
 				}
 			}
@@ -23844,37 +23853,36 @@ var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
 
-var _receivedData = "";
+var _response = "";
 var _postBody = "";
 var _requestType = "";
 var _error = "";
 var _url = "";
 var _history = [];
-var _event = {};
+var _event = [{}];
 
-function submitQuery(data) {
-	var query = data[0];
-	var url = data[1];
-	var service = data[2];
-	var type = data[3];
+function submitQuery(request) {
+	var query = request[0];
+	var url = request[1];
+	var service = request[2];
+	var type = request[3];
 
 	$.ajax({
 	url: url,
 	type: 'POST', 
 	data: JSON.stringify(query),
-	success: function(receivedData) {
+	success: function(response) {
 		_postBody = query;
-		_receivedData = receivedData;   
+		_response = response;   
 		_error = "";
 		_url = url;
 		_requestType = type;
-		_event = {};
-		updateHistory(data);
-		console.log(data)
+		_event = [{}];
+		updateHistory(request, response);
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
-		_receivedData = "";
+		_response = "";
 		_error = [err + ". (Status Code: " + xhr.status + ")", url];
 		_url = ""
 		_requestType = type;
@@ -23888,25 +23896,30 @@ function handleError(data) {
 	var url = data[1];
 
 	_postBody = "";
-	_receivedData = "";
+	_response = "";
 	_error = [field, url];
 	AppStore.emitChange();
 }
 
-function updateHistory(request) {
+function updateHistory(request, response) {
 	var date = new Date();
-	_history.unshift([request, date]);
+	_history.unshift([request, date, response]);
 	AppStore.emitChange();
 }
 
-function revertToEvent(event, callback) {
-	_event = event;
+function revertToEvent(request, response) {
+	var query = request[0];
+	var url = request[1];
+	var service = request[2];
+	var type = request[3];
+	
+	_event = [request, response, query, type, "", url];
 	AppStore.emitChange();
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_receivedData, _postBody, _requestType, _error, _url, _history, _event];
+		return [_response, _postBody, _requestType, _error, _url, _history, _event];
 	},
 
 	emitChange: function() {
@@ -23927,8 +23940,8 @@ AppDispatcher.register(function(payload){
 
 	switch(action.actionType) {
 		case AppConstants.SUBMIT_QUERY:
-			var data = payload.action.item;
-			submitQuery(data);
+			var request = payload.action.item;
+			submitQuery(request);
 			break;
 
 		case AppConstants.HANDLE_ERROR:
@@ -23937,8 +23950,9 @@ AppDispatcher.register(function(payload){
 			break;
 
 		case AppConstants.REVERT_TO_EVENT:
-			var event = payload.action.item;
-			revertToEvent(event);
+			var request = payload.action.item[0];
+			var response = payload.action.item[1];
+			revertToEvent(request, response);
 			break;
 
 		default:
@@ -23947,12 +23961,12 @@ AppDispatcher.register(function(payload){
 });
 
 module.exports = AppStore;
-
 },{"../constants/AppConstants":"/Users/tibarra1/Documents/http-react/public/js/constants/AppConstants.js","../dispatcher/AppDispatcher":"/Users/tibarra1/Documents/http-react/public/js/dispatcher/AppDispatcher.js","events":"/Users/tibarra1/Documents/http-react/node_modules/browserify/node_modules/events/events.js","object-assign":"/Users/tibarra1/Documents/http-react/node_modules/object-assign/index.js"}],"/Users/tibarra1/Documents/http-react/public/js/stores/DatalistStore.js":[function(require,module,exports){
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
+var AppActions = require('../actions/AppActions');
 
 var CHANGE_EVENT = 'change';
 var _data = "";
@@ -23965,6 +23979,9 @@ function getDatalist(){
 	    success: function (data) {
 	        _data = data;
 	    }.bind(this),
+		error: function(xhr, status, err) {
+			AppActions.handleError(["Datalist not loaded. Please refresh the page.", "undefined"]);
+		}.bind(this),
 	    async: false
 	});
 }
@@ -23998,4 +24015,4 @@ AppDispatcher.register(function(payload){
 });
 
 module.exports = DatalistStore;
-},{"../constants/AppConstants":"/Users/tibarra1/Documents/http-react/public/js/constants/AppConstants.js","../dispatcher/AppDispatcher":"/Users/tibarra1/Documents/http-react/public/js/dispatcher/AppDispatcher.js","events":"/Users/tibarra1/Documents/http-react/node_modules/browserify/node_modules/events/events.js","object-assign":"/Users/tibarra1/Documents/http-react/node_modules/object-assign/index.js"}]},{},["/Users/tibarra1/Documents/http-react/public/js/main.js"]);
+},{"../actions/AppActions":"/Users/tibarra1/Documents/http-react/public/js/actions/AppActions.js","../constants/AppConstants":"/Users/tibarra1/Documents/http-react/public/js/constants/AppConstants.js","../dispatcher/AppDispatcher":"/Users/tibarra1/Documents/http-react/public/js/dispatcher/AppDispatcher.js","events":"/Users/tibarra1/Documents/http-react/node_modules/browserify/node_modules/events/events.js","object-assign":"/Users/tibarra1/Documents/http-react/node_modules/object-assign/index.js"}]},{},["/Users/tibarra1/Documents/http-react/public/js/main.js"]);

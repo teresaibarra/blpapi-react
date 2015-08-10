@@ -3,7 +3,7 @@ var AppActions = require('../actions/AppActions');
 
 var HistoryEvent = React.createClass({
 	handleClick: function() {
-		AppActions.revertToEvent(this.props.response[0]);
+		AppActions.revertToEvent([this.props.response[0], this.props.response[2]]);
 	},
 	render: function(){
 		var fields = this.props.response[0][0];

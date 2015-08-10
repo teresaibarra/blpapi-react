@@ -34,9 +34,9 @@ var DemoApp = React.createClass({
 	},
 
 	_onChange: function() {
-		var oldData = this.state.appData[6];
-		this.setState(getAppState(), function(){	
-			var newData = this.state.appData[6];
+		var oldData = this.state.appData[6][0];
+		this.setState(getAppState(), function(){
+			var newData = this.state.appData[6][0];
 			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
 				if(JSON.stringify(newData) != "{}"){
 					this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})

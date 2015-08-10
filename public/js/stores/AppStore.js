@@ -5,37 +5,36 @@ var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
 
-var _receivedData = "";
+var _response = "";
 var _postBody = "";
 var _requestType = "";
 var _error = "";
 var _url = "";
 var _history = [];
-var _event = {};
+var _event = [{}];
 
-function submitQuery(data) {
-	var query = data[0];
-	var url = data[1];
-	var service = data[2];
-	var type = data[3];
+function submitQuery(request) {
+	var query = request[0];
+	var url = request[1];
+	var service = request[2];
+	var type = request[3];
 
 	$.ajax({
 	url: url,
 	type: 'POST', 
 	data: JSON.stringify(query),
-	success: function(receivedData) {
+	success: function(response) {
 		_postBody = query;
-		_receivedData = receivedData;   
+		_response = response;   
 		_error = "";
 		_url = url;
 		_requestType = type;
-		_event = {};
-		updateHistory(data);
-		console.log(data)
+		_event = [{}];
+		updateHistory(request, response);
 	}.bind(this),
 	error: function(xhr, status, err) {
 		_postBody = "";
-		_receivedData = "";
+		_response = "";
 		_error = [err + ". (Status Code: " + xhr.status + ")", url];
 		_url = ""
 		_requestType = type;
@@ -49,25 +48,30 @@ function handleError(data) {
 	var url = data[1];
 
 	_postBody = "";
-	_receivedData = "";
+	_response = "";
 	_error = [field, url];
 	AppStore.emitChange();
 }
 
-function updateHistory(request) {
+function updateHistory(request, response) {
 	var date = new Date();
-	_history.unshift([request, date]);
+	_history.unshift([request, date, response]);
 	AppStore.emitChange();
 }
 
-function revertToEvent(event, callback) {
-	_event = event;
+function revertToEvent(request, response) {
+	var query = request[0];
+	var url = request[1];
+	var service = request[2];
+	var type = request[3];
+	
+	_event = [request, response, query, type, "", url];
 	AppStore.emitChange();
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_receivedData, _postBody, _requestType, _error, _url, _history, _event];
+		return [_response, _postBody, _requestType, _error, _url, _history, _event];
 	},
 
 	emitChange: function() {
@@ -88,8 +92,8 @@ AppDispatcher.register(function(payload){
 
 	switch(action.actionType) {
 		case AppConstants.SUBMIT_QUERY:
-			var data = payload.action.item;
-			submitQuery(data);
+			var request = payload.action.item;
+			submitQuery(request);
 			break;
 
 		case AppConstants.HANDLE_ERROR:
@@ -98,8 +102,9 @@ AppDispatcher.register(function(payload){
 			break;
 
 		case AppConstants.REVERT_TO_EVENT:
-			var event = payload.action.item;
-			revertToEvent(event);
+			var request = payload.action.item[0];
+			var response = payload.action.item[1];
+			revertToEvent(request, response);
 			break;
 
 		default:

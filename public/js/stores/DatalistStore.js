@@ -2,6 +2,7 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
+var AppActions = require('../actions/AppActions');
 
 var CHANGE_EVENT = 'change';
 var _data = "";
@@ -14,6 +15,9 @@ function getDatalist(){
 	    success: function (data) {
 	        _data = data;
 	    }.bind(this),
+		error: function(xhr, status, err) {
+			AppActions.handleError(["Datalist not loaded. Please refresh the page.", "undefined"]);
+		}.bind(this),
 	    async: false
 	});
 }

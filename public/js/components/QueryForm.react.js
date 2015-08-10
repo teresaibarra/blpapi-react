@@ -1,7 +1,6 @@
 var React = require('react');
 var AppActions = require('../actions/AppActions');
 
-
 var QueryForm = React.createClass({
 	getInitialState: function() {
 		return {
@@ -17,11 +16,13 @@ var QueryForm = React.createClass({
 			hidePostTextArea: true,
 			hideClear: true,
 			servTypeChoice: "",
-			reqTypeChoice: ""
+			reqTypeChoice: "",
+			event: [{}]
 		};
 	},
 	componentWillReceiveProps: function(){
-		var event = this.props.event;
+		this.setState({event: this.props.event})
+		var event = this.state.event[0];
 		if(Object.keys(event).length > 0){
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
@@ -35,6 +36,8 @@ var QueryForm = React.createClass({
 			this.setState({hidePostTextArea: false});
 			this.setState({hideClear: false});
 			this.setState({hideSubmit: false}, function(){
+				checkBox.checked = false;
+
 				this.refs.securities.getDOMNode().value = "";
 			    this.refs.fields.getDOMNode().value = "";
 			    this.refs.startDate.getDOMNode().value = "";
@@ -43,12 +46,13 @@ var QueryForm = React.createClass({
 
 			    this.refs.service.getDOMNode().value = event[2];
 			    this.refs.type.getDOMNode().value = event[3];
-			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);	
+			    this.refs.postTextArea.getDOMNode().value = JSON.stringify(event[0], null, 3);
 			});
 		}
 	},
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
+			var event = this.state.event[0];
 			if (this.state.servTypeChoice != "")
 			{
 				if(this.state.servTypeChoice === "refdata" || this.state.servTypeChoice === "apiflds" 
@@ -117,7 +121,6 @@ var QueryForm = React.createClass({
 				return;
 			}
 		});
-
 	},
 	handleRequestChoice: function() {
 		if (this.refs.type){
@@ -137,72 +140,71 @@ var QueryForm = React.createClass({
 		    this.refs.postTextArea.getDOMNode().value = "";
 
 			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString()}, function(){
+				if (this.state.reqTypeChoice != "")
+				{
+					if (this.state.reqTypeChoice === "ReferenceDataRequest") {
+						this.setState({hideSecurities: false});
+						this.setState({hideFields: false});
+						this.setState({hideSubmit: false});
+						this.setState({hideClear: false});
 
-			if (this.state.reqTypeChoice != "")
-			{
-				if (this.state.reqTypeChoice === "ReferenceDataRequest") {
-					this.setState({hideSecurities: false});
-					this.setState({hideFields: false});
-					this.setState({hideSubmit: false});
-					this.setState({hideClear: false});
+						this.setState({hidePostTextArea: true});
+					}
+					else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
+						this.setState({hideSecurities: false});
+						this.setState({hideFields: false});
+						this.setState({hideStartDate: false});
+						this.setState({hideEndDate: false});
+						this.setState({hidePeriod: false});
+						this.setState({hideSubmit: false});
+						this.setState({hideClear: false});
 
-					this.setState({hidePostTextArea: true});
+						this.setState({hidePostTextArea: true});
+					}
+					else{
+						this.setState({hideSecurities: true});
+						this.setState({hideFields: true});
+						this.setState({hideStartDate: true});
+						this.setState({hideEndDate: true});
+						this.setState({hidePeriod: true});
+						this.setState({hideUrl: true});
+
+						this.setState({hideService: false});
+						this.setState({hideReqTypes:false});
+						this.setState({hidePostTextArea: false});
+						this.setState({hideSubmit: false});
+						this.setState({hideClear: false});
+
+						return;
+					}
 				}
-				else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
-					this.setState({hideSecurities: false});
-					this.setState({hideFields: false});
-					this.setState({hideStartDate: false});
-					this.setState({hideEndDate: false});
-					this.setState({hidePeriod: false});
-					this.setState({hideSubmit: false});
-					this.setState({hideClear: false});
+				else if (this.state.reqTypeChoice === ""){
+				    this.refs.securities.getDOMNode().value = "";
+				    this.refs.fields.getDOMNode().value = "";
+				    this.refs.startDate.getDOMNode().value = "";
+				    this.refs.endDate.getDOMNode().value = "";
+				    this.refs.period.getDOMNode().value = "";
+				    this.refs.postTextArea.getDOMNode().value = "";
 
-					this.setState({hidePostTextArea: true});
-				}
-				else{
 					this.setState({hideSecurities: true});
 					this.setState({hideFields: true});
 					this.setState({hideStartDate: true});
 					this.setState({hideEndDate: true});
 					this.setState({hidePeriod: true});
-					this.setState({hideUrl: true});
+					this.setState({hideSubmit: true});
+					this.setState({hideClear: true});
 
-					this.setState({hideService: false});
-					this.setState({hideReqTypes:false});
-					this.setState({hidePostTextArea: false});
-					this.setState({hideSubmit: false});
-					this.setState({hideClear: false});
-
+					this.setState({hidePostTextArea: true});
+				}
+				else {
 					return;
 				}
-			}
-			else if (this.state.reqTypeChoice === ""){
-			    this.refs.securities.getDOMNode().value = "";
-			    this.refs.fields.getDOMNode().value = "";
-			    this.refs.startDate.getDOMNode().value = "";
-			    this.refs.endDate.getDOMNode().value = "";
-			    this.refs.period.getDOMNode().value = "";
-			    this.refs.postTextArea.getDOMNode().value = "";
-
-				this.setState({hideSecurities: true});
-				this.setState({hideFields: true});
-				this.setState({hideStartDate: true});
-				this.setState({hideEndDate: true});
-				this.setState({hidePeriod: true});
-				this.setState({hideSubmit: true});
-				this.setState({hideClear: true});
-
-				this.setState({hidePostTextArea: true});
-			}
-			else {
-				return;
-			}
-
 			});
+			
 		}
 	},
 	handleCheckBox: function() {
-		var event = this.props.event;
+		var event = this.state.event[0];
 		if(!Object.keys(event).length > 0){
 			this.setState({servTypeChoice: ""});
 			this.setState({reqTypeChoice: ""});
@@ -241,7 +243,6 @@ var QueryForm = React.createClass({
 				this.setState({hidePostTextArea: true});
 
 				this.setState({hideService: false});
-
 			}
 		} else {
 			if(checkBox.checked){
@@ -312,6 +313,8 @@ var QueryForm = React.createClass({
 		this.setState({hideSubmit: true});
 		this.setState({hideClear: true});
 
+		this.setState({event: [{}]});
+
 		this.refs.service.getDOMNode().value = "";
 		this.refs.type.getDOMNode().value = "";
 		this.refs.securities.getDOMNode().value = "";
@@ -329,8 +332,9 @@ var QueryForm = React.createClass({
 		var masterList = this.props.list;
 		var datalists = [];
 		var services = [];
-		var event = this.props.event;
 		var clearButton;
+
+				console.log(this.state.event)
 
 		for (var property in masterList) {
 			if(masterList.hasOwnProperty(property)) {
@@ -370,10 +374,10 @@ var QueryForm = React.createClass({
 					<input type="text" placeholder="url" ref="url" id="formbox" hidden={this.state.hideUrl}/>
 
 					<input type="text" list="services" placeholder="service" ref="service" 
-					id="formbox" hidden={this.state.hideService} onChange={this.handleServiceChoice} />
+					id="formbox" hidden={this.state.hideService} onInput={this.handleServiceChoice} />
 
 					<input type="text" list={this.state.servTypeChoice} placeholder="request type" ref="type" 
-					id="formbox" hidden={this.state.hideReqTypes} onChange={this.handleRequestChoice}/>
+					id="formbox" hidden={this.state.hideReqTypes} onInput={this.handleRequestChoice}/>
 
 
 					<input type="text" placeholder="securities" ref="securities" id="formbox" hidden={this.state.hideSecurities}  />
@@ -414,6 +418,7 @@ var QueryForm = React.createClass({
 		var cleanFields = [];
 
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
+					console.log("submitted")
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
 				AppActions.handleError(["Missing service.", "undefined"]);
@@ -439,6 +444,7 @@ var QueryForm = React.createClass({
 			}
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
+					console.log("submitted")
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
 				AppActions.handleError(["Missing service.", "undefined"]);
@@ -472,6 +478,7 @@ var QueryForm = React.createClass({
 
 				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
 					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);
+				console.log("submitted")
 			}
 		}
 		else{
@@ -493,6 +500,7 @@ var QueryForm = React.createClass({
 							AppActions.handleError(["This is not a valid JSON string.", url]);
 						}
 						postTextArea = JSON.parse(postTextArea);
+								console.log("submitted")
 						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
 				}
@@ -513,11 +521,12 @@ var QueryForm = React.createClass({
 
 						var serviceIndex = url.indexOf("service=") + 8;
 						service = url.substring(serviceIndex, typeIndex - 6);
-
+								console.log("submitted")
 						AppActions.submitQuery([postTextArea, url, service, type]);
 					}
 				}else 
 				{
+							console.log("submitted")
 					AppActions.handleError(["Missing URL.", "undefined"]);
 				}
 			}
