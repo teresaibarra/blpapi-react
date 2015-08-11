@@ -35,29 +35,37 @@ var DemoApp = React.createClass({
 
 	_onChange: function() {
 		var oldData = this.state.appData[6][0];
+		
 		this.setState(getAppState(), function(){
 			var newData = this.state.appData[6][0];
 			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
 				if(JSON.stringify(newData) != "{}"){
-					this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
+					this.setState({appData: [this.state.appData[6][1], this.state.appData[6][2], this.state.appData[6][3], this.state.appData[6][4],
+					this.state.appData[6][5], this.state.appData[5], this.state.appData[6] ]}, function(){
+						this.forceUpdate();
+					})
+					console.log(this.state.appData[6][0])
 				}
 				//forceUpdate() called due to component rendering before setState finishes.
-				this.forceUpdate();
+
 			}else if (Object.is(JSON.stringify(oldData), JSON.stringify(newData)) && JSON.stringify(oldData) !="{}"){
-				this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
-				this.forceUpdate();				
+				this.setState({appData: [this.state.appData[6][1], this.state.appData[6][2], this.state.appData[6][3], this.state.appData[6][4],
+					this.state.appData[6][5], this.state.appData[5], this.state.appData[6] ]}, function(){
+						this.forceUpdate();
+					})		
 			}		
 		});
 	},
 
 	render: function(){
+		console.log("parent rendered")
 		return (
 		<div>
 				<h1>Bloomberg API Demonstration</h1>
 				<h2>What would you like to look up?</h2>
 				<h5>Pro-Tip: Separate multiple parameters with commas.</h5>
 			<div>
-				<QueryForm list={this.state.listData} event={this.state.appData[6]}/>
+				<QueryForm list={this.state.listData} event={this.state.appData[6][0]}/>
 				<ErrorMessage error={this.state.appData[3]} />
 				<ResponseList data={this.state.appData} />
 			</div>

@@ -17,13 +17,15 @@ var QueryForm = React.createClass({
 			hideClear: true,
 			servTypeChoice: "",
 			reqTypeChoice: "",
-			event: [{}]
+			event: {}
 		};
 	},
 	componentWillReceiveProps: function(){
 		this.setState({event: this.props.event})
-		var event = this.state.event[0];
+		var event = this.state.event;
 		if(Object.keys(event).length > 0){
+			console.log("got new props")
+			console.log(event)
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -52,7 +54,7 @@ var QueryForm = React.createClass({
 	},
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
-			var event = this.state.event[0];
+			var event = this.state.event;
 			if (this.state.servTypeChoice != "")
 			{
 				if(this.state.servTypeChoice === "refdata" || this.state.servTypeChoice === "apiflds" 
@@ -204,7 +206,7 @@ var QueryForm = React.createClass({
 		}
 	},
 	handleCheckBox: function() {
-		var event = this.state.event[0];
+		var event = this.state.event;
 		if(!Object.keys(event).length > 0){
 			this.setState({servTypeChoice: ""});
 			this.setState({reqTypeChoice: ""});
@@ -313,7 +315,7 @@ var QueryForm = React.createClass({
 		this.setState({hideSubmit: true});
 		this.setState({hideClear: true});
 
-		this.setState({event: [{}]});
+		this.setState({event: {}});
 
 		this.refs.service.getDOMNode().value = "";
 		this.refs.type.getDOMNode().value = "";
@@ -333,8 +335,7 @@ var QueryForm = React.createClass({
 		var datalists = [];
 		var services = [];
 		var clearButton;
-
-				console.log(this.state.event)
+		console.log("rendered")
 
 		for (var property in masterList) {
 			if(masterList.hasOwnProperty(property)) {
@@ -417,8 +418,8 @@ var QueryForm = React.createClass({
 		var cleanSecurities = [];
 		var cleanFields = [];
 
+
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
-					console.log("submitted")
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
 				AppActions.handleError(["Missing service.", "undefined"]);
@@ -440,11 +441,12 @@ var QueryForm = React.createClass({
 					fld = fld.trim();
 					cleanFields.push(fld);
 				})
-				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, service, type]);
+				this.setState({event: {}}, function(){
+					AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, service, type]);
+				});
 			}
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
-					console.log("submitted")
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
 				AppActions.handleError(["Missing service.", "undefined"]);
@@ -476,9 +478,10 @@ var QueryForm = React.createClass({
 
 				period = period.toUpperCase();
 
-				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
-					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);
-				console.log("submitted")
+				this.setState({event: {}}, function(){
+					AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
+						startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);				
+				});
 			}
 		}
 		else{
@@ -500,8 +503,10 @@ var QueryForm = React.createClass({
 							AppActions.handleError(["This is not a valid JSON string.", url]);
 						}
 						postTextArea = JSON.parse(postTextArea);
-								console.log("submitted")
-						AppActions.submitQuery([postTextArea, url, service, type]);
+
+						this.setState({event: {}}, function(){
+							AppActions.submitQuery([postTextArea, url, service, type]);
+						});
 					}
 				}
 			}else{
@@ -521,12 +526,13 @@ var QueryForm = React.createClass({
 
 						var serviceIndex = url.indexOf("service=") + 8;
 						service = url.substring(serviceIndex, typeIndex - 6);
-								console.log("submitted")
-						AppActions.submitQuery([postTextArea, url, service, type]);
+
+						this.setState({event: {}}, function(){
+							AppActions.submitQuery([postTextArea, url, service, type]);							
+						});
 					}
 				}else 
 				{
-							console.log("submitted")
 					AppActions.handleError(["Missing URL.", "undefined"]);
 				}
 			}

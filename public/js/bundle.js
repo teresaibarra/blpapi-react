@@ -22805,29 +22805,37 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 
 	_onChange: function() {
 		var oldData = this.state.appData[6][0];
+		
 		this.setState(getAppState(), function(){
 			var newData = this.state.appData[6][0];
 			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
 				if(JSON.stringify(newData) != "{}"){
-					this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
+					this.setState({appData: [this.state.appData[6][1], this.state.appData[6][2], this.state.appData[6][3], this.state.appData[6][4],
+					this.state.appData[6][5], this.state.appData[5], this.state.appData[6] ]}, function(){
+						this.forceUpdate();
+					})
+					console.log(this.state.appData[6][0])
 				}
 				//forceUpdate() called due to component rendering before setState finishes.
-				this.forceUpdate();
+
 			}else if (Object.is(JSON.stringify(oldData), JSON.stringify(newData)) && JSON.stringify(oldData) !="{}"){
-				this.setState({appData: ["", "", "", "", "", this.state.appData[5], this.state.appData[6]]})
-				this.forceUpdate();				
+				this.setState({appData: [this.state.appData[6][1], this.state.appData[6][2], this.state.appData[6][3], this.state.appData[6][4],
+					this.state.appData[6][5], this.state.appData[5], this.state.appData[6] ]}, function(){
+						this.forceUpdate();
+					})		
 			}		
 		});
 	},
 
 	render: function(){
+		console.log("parent rendered")
 		return (
 		React.createElement("div", null, 
 				React.createElement("h1", null, "Bloomberg API Demonstration"), 
 				React.createElement("h2", null, "What would you like to look up?"), 
 				React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
 			React.createElement("div", null, 
-				React.createElement(QueryForm, {list: this.state.listData, event: this.state.appData[6]}), 
+				React.createElement(QueryForm, {list: this.state.listData, event: this.state.appData[6][0]}), 
 				React.createElement(ErrorMessage, {error: this.state.appData[3]}), 
 				React.createElement(ResponseList, {data: this.state.appData})
 			), 
@@ -23009,13 +23017,15 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			hideClear: true,
 			servTypeChoice: "",
 			reqTypeChoice: "",
-			event: [{}]
+			event: {}
 		};
 	},
 	componentWillReceiveProps: function(){
 		this.setState({event: this.props.event})
-		var event = this.state.event[0];
+		var event = this.state.event;
 		if(Object.keys(event).length > 0){
+			console.log("got new props")
+			console.log(event)
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -23044,7 +23054,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 	},
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
-			var event = this.state.event[0];
+			var event = this.state.event;
 			if (this.state.servTypeChoice != "")
 			{
 				if(this.state.servTypeChoice === "refdata" || this.state.servTypeChoice === "apiflds" 
@@ -23196,7 +23206,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		}
 	},
 	handleCheckBox: function() {
-		var event = this.state.event[0];
+		var event = this.state.event;
 		if(!Object.keys(event).length > 0){
 			this.setState({servTypeChoice: ""});
 			this.setState({reqTypeChoice: ""});
@@ -23305,7 +23315,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		this.setState({hideSubmit: true});
 		this.setState({hideClear: true});
 
-		this.setState({event: [{}]});
+		this.setState({event: {}});
 
 		this.refs.service.getDOMNode().value = "";
 		this.refs.type.getDOMNode().value = "";
@@ -23325,8 +23335,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		var datalists = [];
 		var services = [];
 		var clearButton;
-
-				console.log(this.state.event)
+		console.log("rendered")
 
 		for (var property in masterList) {
 			if(masterList.hasOwnProperty(property)) {
@@ -23409,8 +23418,8 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		var cleanSecurities = [];
 		var cleanFields = [];
 
+
 		if (this.state.reqTypeChoice === "ReferenceDataRequest") {
-					console.log("submitted")
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
 				AppActions.handleError(["Missing service.", "undefined"]);
@@ -23432,11 +23441,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					fld = fld.trim();
 					cleanFields.push(fld);
 				})
-				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, service, type]);
+				this.setState({event: {}}, function(){
+					AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, service, type]);
+				});
 			}
 		}
 		else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
-					console.log("submitted")
 			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
 			if(!service){
 				AppActions.handleError(["Missing service.", "undefined"]);
@@ -23468,9 +23478,10 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				period = period.toUpperCase();
 
-				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
-					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);
-				console.log("submitted")
+				this.setState({event: {}}, function(){
+					AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
+						startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);				
+				});
 			}
 		}
 		else{
@@ -23492,8 +23503,10 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 							AppActions.handleError(["This is not a valid JSON string.", url]);
 						}
 						postTextArea = JSON.parse(postTextArea);
-								console.log("submitted")
-						AppActions.submitQuery([postTextArea, url, service, type]);
+
+						this.setState({event: {}}, function(){
+							AppActions.submitQuery([postTextArea, url, service, type]);
+						});
 					}
 				}
 			}else{
@@ -23513,12 +23526,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 						var serviceIndex = url.indexOf("service=") + 8;
 						service = url.substring(serviceIndex, typeIndex - 6);
-								console.log("submitted")
-						AppActions.submitQuery([postTextArea, url, service, type]);
+
+						this.setState({event: {}}, function(){
+							AppActions.submitQuery([postTextArea, url, service, type]);							
+						});
 					}
 				}else 
 				{
-							console.log("submitted")
 					AppActions.handleError(["Missing URL.", "undefined"]);
 				}
 			}
