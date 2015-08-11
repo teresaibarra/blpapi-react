@@ -30,7 +30,7 @@ var History = React.createClass({
 		return(
 			<div>
 				{button}
-				<p style={this.state.historyDisplay} id="history">{events}</p>
+				<div style={this.state.historyDisplay} id="history">{events}</div>
 			</div>
 		);
 	}

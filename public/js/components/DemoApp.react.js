@@ -35,7 +35,6 @@ var DemoApp = React.createClass({
 
 	_onChange: function() {
 		var oldData = this.state.appData[6][0];
-		
 		this.setState(getAppState(), function(){
 			var newData = this.state.appData[6][0];
 			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
@@ -44,21 +43,18 @@ var DemoApp = React.createClass({
 					this.state.appData[6][5], this.state.appData[5], this.state.appData[6] ]}, function(){
 						this.forceUpdate();
 					})
-					console.log(this.state.appData[6][0])
 				}
 				//forceUpdate() called due to component rendering before setState finishes.
-
 			}else if (Object.is(JSON.stringify(oldData), JSON.stringify(newData)) && JSON.stringify(oldData) !="{}"){
 				this.setState({appData: [this.state.appData[6][1], this.state.appData[6][2], this.state.appData[6][3], this.state.appData[6][4],
 					this.state.appData[6][5], this.state.appData[5], this.state.appData[6] ]}, function(){
 						this.forceUpdate();
-					})		
+				})		
 			}		
 		});
 	},
 
 	render: function(){
-		console.log("parent rendered")
 		return (
 		<div>
 				<h1>Bloomberg API Demonstration</h1>
