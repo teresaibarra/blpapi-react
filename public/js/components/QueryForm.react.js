@@ -17,14 +17,12 @@ var QueryForm = React.createClass({
 			hideClear: true,
 			servTypeChoice: "",
 			reqTypeChoice: "",
-			event: {},
 			formFormat: ""
 		};
 	},
-	componentWillReceiveProps: function(){
-		this.setState({event: this.props.event})
-		var event = this.state.event;
-		if(Object.keys(event).length > 0){
+	componentWillReceiveProps: function(nextProps){
+		var event = nextProps.event;
+		if(Object.keys(event).length > 0) {
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -49,7 +47,6 @@ var QueryForm = React.createClass({
 			    this.refs.type.getDOMNode().value = event[3];
 			    this.refs.textArea.getDOMNode().value = JSON.stringify(event[0], null, 3);
 
-			    this.setState({event: {}});
 			    this.setState({formFormat: "servTypeBody"}, function(){
 					this.handleServiceChoice();
 					this.handleRequestChoice();
@@ -60,7 +57,6 @@ var QueryForm = React.createClass({
 	},
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
-			var event = this.state.event;
 			if (this.state.formFormat === "servTypeBody"){
 				return;
 			}
@@ -221,7 +217,6 @@ var QueryForm = React.createClass({
 		}
 	},
 	handleCheckBox: function() {
-		var event = this.state.event;
 		this.refs.securities.getDOMNode().value = "";
 		this.refs.fields.getDOMNode().value = "";
 		this.refs.startDate.getDOMNode().value = "";
@@ -350,6 +345,7 @@ var QueryForm = React.createClass({
 			clearButton = <input type="button" style={{backgroundColor: "#70A7FD"}} value="Clear" onClick={this.handleClear}
 			id="grayButton" hidden={this.state.hideClear} />
 		}
+
 		return(
 			<div id="queryDiv">
 				<form className="queryForm" id="queryForm" onSubmit={this._onSubmit}>

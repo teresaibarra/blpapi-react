@@ -31,15 +31,14 @@ function submitQuery(request) {
 		_requestType = type;
 		_event = [{}];
 		updateHistory(request, response);
-	}.bind(this),
+	},
 	error: function(xhr, status, err) {
 		_postBody = "";
 		_response = "";
 		_error = [err + ". (Status Code: " + xhr.status + ")", url];
 		_url = ""
 		_requestType = type;
-		AppStore.emitChange();
-	}.bind(this)
+	}
 	})
 } 
 
@@ -50,7 +49,6 @@ function handleError(data) {
 	_postBody = "";
 	_response = "";
 	_error = [field, url];
-	AppStore.emitChange();
 }
 
 function updateHistory(request, response) {
@@ -110,6 +108,8 @@ AppDispatcher.register(function(payload){
 		default:
 		return true;
 	}
+
+	return true;
 });
 
 module.exports = AppStore;

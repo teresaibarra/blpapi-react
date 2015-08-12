@@ -5,7 +5,7 @@ var assign = require('object-assign');
 var AppActions = require('../actions/AppActions');
 
 var CHANGE_EVENT = 'change';
-var _data = "";
+var _data = null;
 
 function getDatalist(){
 	$.ajax({

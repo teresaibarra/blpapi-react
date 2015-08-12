@@ -22803,27 +22803,6 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 		DatalistStore.addChangeListener(this._onChange);
 	},
 
-	_onChange: function() {
-		var oldData = this.state.appData[6][0];
-		this.setState(getAppState(), function(){
-			var newData = this.state.appData[6][0];
-			if(!Object.is(JSON.stringify(oldData), JSON.stringify(newData))){
-				if(JSON.stringify(newData) != "{}"){
-					this.setState({appData: [this.state.appData[6][1], this.state.appData[6][2], this.state.appData[6][3], this.state.appData[6][4],
-					this.state.appData[6][5], this.state.appData[5], this.state.appData[6] ]}, function(){
-						this.forceUpdate();
-					})
-				}
-				//forceUpdate() called due to component rendering before setState finishes.
-			}else if (Object.is(JSON.stringify(oldData), JSON.stringify(newData)) && JSON.stringify(oldData) !="{}"){
-				this.setState({appData: [this.state.appData[6][1], this.state.appData[6][2], this.state.appData[6][3], this.state.appData[6][4],
-					this.state.appData[6][5], this.state.appData[5], this.state.appData[6] ]}, function(){
-						this.forceUpdate();
-				})		
-			}		
-		});
-	},
-
 	render: function(){
 		return (
 		React.createElement("div", null, 
@@ -22831,7 +22810,7 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 				React.createElement("h2", null, "What would you like to look up?"), 
 				React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
 			React.createElement("div", null, 
-				React.createElement(QueryForm, {list: this.state.listData, event: this.state.appData[6][0]}), 
+				React.createElement(QueryForm, {event: this.state.appData[6][0], list: this.state.listData}), 
 				React.createElement(ErrorMessage, {error: this.state.appData[3]}), 
 				React.createElement(ResponseList, {data: this.state.appData})
 			), 
@@ -22839,6 +22818,10 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 			)
 		)
 		)
+	},
+
+	_onChange: function() {
+		this.setState(getAppState());
 	}
 
 });
@@ -23013,14 +22996,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			hideClear: true,
 			servTypeChoice: "",
 			reqTypeChoice: "",
-			event: {},
 			formFormat: ""
 		};
 	},
-	componentWillReceiveProps: function(){
-		this.setState({event: this.props.event})
-		var event = this.state.event;
-		if(Object.keys(event).length > 0){
+	componentWillReceiveProps: function(nextProps){
+		var event = nextProps.event;
+		if(Object.keys(event).length > 0) {
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -23045,7 +23026,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			    this.refs.type.getDOMNode().value = event[3];
 			    this.refs.textArea.getDOMNode().value = JSON.stringify(event[0], null, 3);
 
-			    this.setState({event: {}});
 			    this.setState({formFormat: "servTypeBody"}, function(){
 					this.handleServiceChoice();
 					this.handleRequestChoice();
@@ -23056,7 +23036,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 	},
 	handleServiceChoice: function() {
 		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
-			var event = this.state.event;
 			if (this.state.formFormat === "servTypeBody"){
 				return;
 			}
@@ -23217,7 +23196,6 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		}
 	},
 	handleCheckBox: function() {
-		var event = this.state.event;
 		this.refs.securities.getDOMNode().value = "";
 		this.refs.fields.getDOMNode().value = "";
 		this.refs.startDate.getDOMNode().value = "";
@@ -23346,6 +23324,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			clearButton = React.createElement("input", {type: "button", style: {backgroundColor: "#70A7FD"}, value: "Clear", onClick: this.handleClear, 
 			id: "grayButton", hidden: this.state.hideClear})
 		}
+
 		return(
 			React.createElement("div", {id: "queryDiv"}, 
 				React.createElement("form", {className: "queryForm", id: "queryForm", onSubmit: this._onSubmit}, 
@@ -23895,15 +23874,14 @@ function submitQuery(request) {
 		_requestType = type;
 		_event = [{}];
 		updateHistory(request, response);
-	}.bind(this),
+	},
 	error: function(xhr, status, err) {
 		_postBody = "";
 		_response = "";
 		_error = [err + ". (Status Code: " + xhr.status + ")", url];
 		_url = ""
 		_requestType = type;
-		AppStore.emitChange();
-	}.bind(this)
+	}
 	})
 } 
 
@@ -23914,7 +23892,6 @@ function handleError(data) {
 	_postBody = "";
 	_response = "";
 	_error = [field, url];
-	AppStore.emitChange();
 }
 
 function updateHistory(request, response) {
@@ -23974,6 +23951,8 @@ AppDispatcher.register(function(payload){
 		default:
 		return true;
 	}
+
+	return true;
 });
 
 module.exports = AppStore;
@@ -23985,7 +23964,7 @@ var assign = require('object-assign');
 var AppActions = require('../actions/AppActions');
 
 var CHANGE_EVENT = 'change';
-var _data = "";
+var _data = null;
 
 function getDatalist(){
 	$.ajax({
