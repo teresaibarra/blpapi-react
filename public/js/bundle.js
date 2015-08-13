@@ -22617,12 +22617,14 @@ var AppActions = {
 			item: item
 		})
 	},
+
 	handleError: function(item){
 		AppDispatcher.handleViewAction({
 			actionType:AppConstants.HANDLE_ERROR,
 			item: item
 		})
 	},
+	
 	revertToEvent: function(item){
 		AppDispatcher.handleViewAction({
 			actionType:AppConstants.REVERT_TO_EVENT,
@@ -22637,13 +22639,12 @@ module.exports = AppActions;
 var React = require('react');
 var LineChart = require("react-chartjs").Line;
 	
-
 var Chart = React.createClass({displayName: "Chart",
 	render: function(){
 		var data = this.props.data;
-		var dateList = this.props.dateList;
+		var numericDateList = this.props.dateList;
 		var dataName = this.props.dateName;
-		var formattedDateList = [];
+		var alphabetDateList = [];
 		var info = [];
 		var responseNodes;
 
@@ -22666,8 +22667,8 @@ var Chart = React.createClass({displayName: "Chart",
 				});
 			}
 
-			for (date in dateList) {
-				var rawMonth = dateList[date].getMonth() + 1;
+			for (date in numericDateList) {
+				var rawMonth = numericDateList[date].getMonth() + 1;
 				var formattedMonth;
 
 				if (rawMonth == 1){
@@ -22697,13 +22698,13 @@ var Chart = React.createClass({displayName: "Chart",
 				}else {
 					return;
 				}
-				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
-				formattedDateList.push(temp);
+				var temp = formattedMonth + " " + numericDateList[date].getDate() + ",'" + numericDateList[date].getFullYear().toString().substring(2);
+				alphabetDateList.push(temp);
 			}
 		}
 
 		var chartData = {
-			labels: formattedDateList,
+			labels: alphabetDateList,
 		    datasets: info
 		}
 
@@ -22810,11 +22811,12 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 				React.createElement("h2", null, "What would you like to look up?"), 
 				React.createElement("h5", null, "Pro-Tip: Separate multiple parameters with commas."), 
 			React.createElement("div", null, 
-				React.createElement(QueryForm, {event: this.state.appData[6][0], list: this.state.listData}), 
-				React.createElement(ErrorMessage, {error: this.state.appData[3]}), 
+				React.createElement(QueryForm, {event: this.state.appData.event, list: this.state.listData}), 
+				React.createElement(ErrorMessage, {error: this.state.appData.error}), 
 				React.createElement(ResponseList, {data: this.state.appData})
 			), 
-			React.createElement("div", {id: "historySection"}, React.createElement(History, {response: this.state.appData[5]})
+			React.createElement("div", {id: "historySection"}, 
+				React.createElement(History, {history: this.state.appData.history})
 			)
 		)
 		)
@@ -22823,7 +22825,6 @@ var DemoApp = React.createClass({displayName: "DemoApp",
 	_onChange: function() {
 		this.setState(getAppState());
 	}
-
 });
 
 module.exports = DemoApp;
@@ -22836,20 +22837,23 @@ var ErrorMessage = React.createClass({displayName: "ErrorMessage",
 		var message = [];
 
 		if(error){
-			var type = error[0];
-			var url = error[1];
+			var type = error.type;
 			message.push(React.createElement("h3", {id: "error", key: type}, "ERROR! ", type));
+			$("#error")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
 		}else {
 			message = [];
 		}
 
 		return(
-			React.createElement("div", null, 
+			React.createElement("div", {id: "error"}, 
 				message
 			)
 		);
 	}
 });
+
 module.exports = ErrorMessage;
 },{"react":"/Users/tibarra1/Documents/http-react/node_modules/react/react.js"}],"/Users/tibarra1/Documents/http-react/public/js/components/History.react.js":[function(require,module,exports){
 var React = require('react');
@@ -22861,6 +22865,7 @@ var History = React.createClass({displayName: "History",
 			historyDisplay: {display:'none'}
 		};
 	},
+
 	toggleHistory: function() {
 		if(this.state.historyDisplay.display === 'none'){
 			this.setState({historyDisplay: {display:'block'}});
@@ -22868,19 +22873,22 @@ var History = React.createClass({displayName: "History",
 			this.setState({historyDisplay: {display:'none'}});
 		}
 	},
+
 	render: function(){
-		var response = this.props.response;
+		var history = this.props.history;
 		var button;
 		var events = [];
-		if(response[0]){
+
+		if(history[0]){
 			button = React.createElement("a", {id: "blueButton", onClick: this.toggleHistory}, "History");
-			response.forEach(function (res, index){
-				events.push(React.createElement(HistoryEvent, {response: res, key: res[1].toUTCString() + index}))
-				if(index != response.length - 1){
+			history.forEach(function (event, index){
+				events.push(React.createElement(HistoryEvent, {event: event, key: event.date.toUTCString() + index}))
+				if(index != history.length - 1){
 					events.push(React.createElement("hr", {key: index}))
 				}
 			})			
 		}
+		
 		return(
 			React.createElement("div", null, 
 				button, 
@@ -22897,21 +22905,25 @@ var AppActions = require('../actions/AppActions');
 
 var HistoryEvent = React.createClass({displayName: "HistoryEvent",
 	handleClick: function() {
-		AppActions.revertToEvent([this.props.response[0], this.props.response[2]]);
+		AppActions.revertToEvent({
+			request: this.props.event.request, 
+			response: this.props.event.response
+			}
+		);
 	},
+	
 	render: function(){
-		var fields = this.props.response[0][0];
-		var url = this.props.response[0][1];
-		var service = this.props.response[0][2];
-		var type = this.props.response[0][3];
-		var date = this.props.response[1];
+		var service = this.props.event.request.service;
+		var requestType = this.props.event.request.requestType;
+		var date = this.props.event.date;
+
 		return(
 			React.createElement("div", {onClick: this.handleClick}, 
 				React.createElement("p", {id: "historyLabel"}, "Date: "), date.toUTCString(), 
 				React.createElement("br", null), 
 				React.createElement("p", {id: "historyLabel"}, "Service: "), service, 
 				React.createElement("br", null), 
-				React.createElement("p", {id: "historyLabel"}, "Request Type: "), type
+				React.createElement("p", {id: "historyLabel"}, "Request Type: "), requestType
 			)
 		);
 	}
@@ -22923,27 +22935,27 @@ var React = require('react');
 
 var PostBody = React.createClass({displayName: "PostBody",
 	render: function(){
-		var title = "";
-		var data = "";
-		var url = "";
-		var dataTitle = "";
-		var urlTitle = "";
+		var responseTitle;
+		var urlTitle;
+		var url;
+		var bodyTitle;
+		var postBody;
 
-		if (this.props.request){
-			title = "POST Request";
+		if (this.props.postBody){
+			responseTitle = "POST Request";
 			urlTitle = "URL: ";
 			url = this.props.url;
-			dataTitle = "BODY:";
-			data = JSON.stringify(this.props.request, null, 3);
+			bodyTitle = "BODY:";
+			postBody = JSON.stringify(this.props.postBody, null, 3);
 		}
 
 		return(
 			React.createElement("div", {className: "postBody", id: "postBody"}, 
-				React.createElement("h2", {id: "dataTitle"}, title), 
+				React.createElement("h2", {id: "responseTitle"}, responseTitle), 
 				React.createElement("h3", null, urlTitle), 
 				React.createElement("h5", {id: "url"}, url), 
-				React.createElement("h3", null, dataTitle), 
-				React.createElement("pre", {className: "postBodyInfo"}, data)
+				React.createElement("h3", null, bodyTitle), 
+				React.createElement("pre", {className: "postBodyInfo"}, postBody)
 			)
 		);
 	}
@@ -22955,20 +22967,20 @@ var React = require('react');
 
 var PrettyResponse = React.createClass({displayName: "PrettyResponse",
 	render: function(){
-		var title = "";
-		var data = "";
-		var formatted = this.props.formatted;
+		var title;
+		var response;
 		
-		if (this.props.data)
+		if (this.props.response)
 		{
 				title = "Pretty Response";
-				data = JSON.stringify(this.props.data, null, 3);
+				response = JSON.stringify(this.props.response, null, 3);
 		}
+		
 		return(
 			React.createElement("div", {className: "prettyResponse", id: "prettyResponse"}, 
-				React.createElement("h2", {id: "dataTitle"}, title), 
+				React.createElement("h2", {id: "responseTitle"}, title), 
 				React.createElement("div", {id: "responseBodyInfo"}, 
-					React.createElement("pre", null, data)
+					React.createElement("pre", null, response)
 				)
 			)
 		);
@@ -22994,14 +23006,16 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			hidePeriod: true,
 			hideTextArea: true,
 			hideClear: true,
-			servTypeChoice: "",
-			reqTypeChoice: "",
-			formFormat: ""
+			serviceChoice: null,
+			requestTypeChoice: null,
+			formFormat: null
 		};
 	},
+
 	componentWillReceiveProps: function(nextProps){
-		var event = nextProps.event;
-		if(Object.keys(event).length > 0) {
+		var event;
+		if(nextProps.event){
+			event = nextProps.event;
 			this.setState({hideSecurities: true});
 			this.setState({hideFields: true});
 			this.setState({hideStartDate: true});
@@ -23016,49 +23030,49 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			this.setState({hideSubmit: false}, function(){
 				checkBox.checked = false;
 
-				this.refs.securities.getDOMNode().value = "";
-			    this.refs.fields.getDOMNode().value = "";
-			    this.refs.startDate.getDOMNode().value = "";
-			    this.refs.endDate.getDOMNode().value = "";
-			    this.refs.period.getDOMNode().value = "";
+				this.refs.securities.getDOMNode().value = null;
+			    this.refs.fields.getDOMNode().value = null;
+			    this.refs.startDate.getDOMNode().value = null;
+			    this.refs.endDate.getDOMNode().value = null;
+			    this.refs.period.getDOMNode().value = null;
 
-			    this.refs.service.getDOMNode().value = event[2];
-			    this.refs.type.getDOMNode().value = event[3];
-			    this.refs.textArea.getDOMNode().value = JSON.stringify(event[0], null, 3);
+			    this.refs.service.getDOMNode().value = event.service;
+			    this.refs.requestType.getDOMNode().value = event.requestType;
+			    this.refs.textArea.getDOMNode().value = JSON.stringify(event.request.postBody, null, 3);
 
 			    this.setState({formFormat: "servTypeBody"}, function(){
-					this.handleServiceChoice();
-					this.handleRequestChoice();
-					this.setState({eventTextArea: this.refs.textArea.getDOMNode().value})
+					this.setState({serviceChoice: this.refs.service.getDOMNode().value});
+					this.setState({requestTypeChoice: this.refs.requestType.getDOMNode().value});
 			    });
 			});
 		}
 	},
-	handleServiceChoice: function() {
-		this.setState({servTypeChoice: this.refs.service.getDOMNode().value.toString()}, function(){
-			if (this.state.formFormat === "servTypeBody"){
-				return;
-			}
-			else if (this.state.servTypeChoice != "")
-			{	
-				if(this.state.servTypeChoice === "refdata" || this.state.servTypeChoice === "apiflds" 
-					|| this.state.servTypeChoice === "tasvc"|| this.state.servTypeChoice === "instruments"){
-				    this.refs.securities.getDOMNode().value = "";
-				    this.refs.fields.getDOMNode().value = "";
-				    this.refs.startDate.getDOMNode().value = "";
-				    this.refs.endDate.getDOMNode().value = "";
-				    this.refs.period.getDOMNode().value = "";
-				    this.refs.textArea.getDOMNode().value = "";
 
+	handleServiceChoice: function() {
+		this.setState({serviceChoice: this.refs.service.getDOMNode().value.toString()}, function(){
+			if (this.state.serviceChoice)
+			{	
+				if(this.state.serviceChoice === "refdata" || this.state.serviceChoice === "apiflds" 
+					|| this.state.serviceChoice === "tasvc"|| this.state.serviceChoice === "instruments"){
+					this.setState({formFormat: null});
+
+				    this.refs.securities.getDOMNode().value = null;
+				    this.refs.fields.getDOMNode().value = null;
+				    this.refs.startDate.getDOMNode().value = null;
+				    this.refs.endDate.getDOMNode().value = null;
+				    this.refs.period.getDOMNode().value = null;
+
+				    this.setState({hideService: false});
 					this.setState({hideRequestType: false});
 
+					this.setState({hideUrl: true});
 					this.setState({hideTextArea: true});
 					this.setState({hideSubmit: true});
 					this.setState({hideClear: true});
-
 					return;					
 				}
 				else{
+					this.setState({formFormat: "servTypeBody"});
 					this.setState({hideSecurities: true});
 					this.setState({hideFields: true});
 					this.setState({hideStartDate: true});
@@ -23072,23 +23086,25 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					this.setState({hideSubmit: false});
 					this.setState({hideClear: false});
 
-				    this.refs.securities.getDOMNode().value = "";
-				    this.refs.fields.getDOMNode().value = "";
-				    this.refs.startDate.getDOMNode().value = "";
-				    this.refs.endDate.getDOMNode().value = "";
-				    this.refs.period.getDOMNode().value = "";
-				    this.refs.textArea.getDOMNode().value = "";
+				    this.refs.securities.getDOMNode().value = null;
+				    this.refs.fields.getDOMNode().value = null;
+				    this.refs.startDate.getDOMNode().value = null;
+				    this.refs.endDate.getDOMNode().value = null;
+				    this.refs.period.getDOMNode().value = null;
+
 					return;
 				}
 			}
-			else if (this.state.servTypeChoice === ""){
-				this.refs.type.getDOMNode().value = "";
-			    this.refs.securities.getDOMNode().value = "";
-			    this.refs.fields.getDOMNode().value = "";
-			    this.refs.startDate.getDOMNode().value = "";
-			    this.refs.endDate.getDOMNode().value = "";
-			    this.refs.period.getDOMNode().value = "";
-			    this.refs.textArea.getDOMNode().value = "";
+			else{
+				this.setState({formFormat: null});
+				this.refs.requestType.getDOMNode().value = null;
+			    this.refs.securities.getDOMNode().value = null;
+			    this.refs.fields.getDOMNode().value = null;
+			    this.refs.startDate.getDOMNode().value = null;
+			    this.refs.endDate.getDOMNode().value = null;
+			    this.refs.period.getDOMNode().value = null;
+
+			    this.setState({hideService:false});
 
 				this.setState({hideRequestType:true});
 				this.setState({hideSecurities: true});
@@ -23103,19 +23119,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				return;		
 			}
-			else {
-				return;
-			}
 		});
 	},
-	handleRequestChoice: function() {
-		if (this.refs.type){
-			this.setState({reqTypeChoice: this.refs.type.getDOMNode().value.toString()}, function(){
-				if (this.state.formFormat === "servTypeBody"){
-					return;
-				}
-				else if (this.state.reqTypeChoice != "")
-				{
+
+	handleRequestTypeChoice: function() {
+		this.setState({requestTypeChoice: this.refs.requestType.getDOMNode().value.toString()}, function(){
+			if (this.state.requestTypeChoice){
 					this.setState({hideSecurities: true});
 					this.setState({hideFields: true});
 					this.setState({hideStartDate: true});
@@ -23124,14 +23133,13 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					this.setState({hideSubmit: true});
 					this.setState({hideClear: true});
 
-				    this.refs.securities.getDOMNode().value = "";
-				    this.refs.fields.getDOMNode().value = "";
-				    this.refs.startDate.getDOMNode().value = "";
-				    this.refs.endDate.getDOMNode().value = "";
-				    this.refs.period.getDOMNode().value = "";
+				    this.refs.securities.getDOMNode().value = null;
+				    this.refs.fields.getDOMNode().value = null;
+				    this.refs.startDate.getDOMNode().value = null;
+				    this.refs.endDate.getDOMNode().value = null;
+				    this.refs.period.getDOMNode().value = null;
 
-				    this.refs.textArea.getDOMNode().value = "";
-					if (this.state.reqTypeChoice === "ReferenceDataRequest") {
+					if (this.state.requestTypeChoice === "ReferenceDataRequest" && !this.refs.textArea.getDOMNode().value) {
 						this.setState({formFormat: "refData"});
 						this.setState({hideSecurities: false});
 						this.setState({hideFields: false});
@@ -23140,7 +23148,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 						this.setState({hideTextArea: true});
 					}
-					else if (this.state.reqTypeChoice === "HistoricalDataRequest"){
+					else if (this.state.requestTypeChoice === "HistoricalDataRequest" && !this.refs.textArea.getDOMNode().value){
 						this.setState({formFormat: "hisData"});
 						this.setState({hideSecurities: false});
 						this.setState({hideFields: false});
@@ -23170,96 +23178,125 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 						return;
 					}
 				}
-				else if (this.state.reqTypeChoice === ""){
-				    this.refs.securities.getDOMNode().value = "";
-				    this.refs.fields.getDOMNode().value = "";
-				    this.refs.startDate.getDOMNode().value = "";
-				    this.refs.endDate.getDOMNode().value = "";
-				    this.refs.period.getDOMNode().value = "";
-				    this.refs.textArea.getDOMNode().value = "";
+			else if (this.refs.textArea.getDOMNode().value)	{
+				this.setState({formFormat: "servTypeBody"});
+				this.setState({hideSecurities: true});
+				this.setState({hideFields: true});
+				this.setState({hideStartDate: true});
+				this.setState({hideEndDate: true});
+				this.setState({hidePeriod: true});
+				this.setState({hideUrl: true});
 
-					this.setState({hideSecurities: true});
-					this.setState({hideFields: true});
-					this.setState({hideStartDate: true});
-					this.setState({hideEndDate: true});
-					this.setState({hidePeriod: true});
-					this.setState({hideSubmit: true});
-					this.setState({hideClear: true});
+				this.setState({hideService: false});
+				this.setState({hideRequestType:false});
+				this.setState({hideTextArea: false});
+				this.setState({hideSubmit: false});
+				this.setState({hideClear: false});
+			}
+			else {
+				this.setState({formFormat: null});
+			    this.refs.securities.getDOMNode().value = null;
+			    this.refs.fields.getDOMNode().value = null;
+			    this.refs.startDate.getDOMNode().value = null;
+			    this.refs.endDate.getDOMNode().value = null;
+			    this.refs.period.getDOMNode().value = null;
+			    this.refs.textArea.getDOMNode().value = null;
 
-					this.setState({hideTextArea: true});
-				}
-				else {
-					return;
-				}
-			});
-			
-		}
+				this.setState({hideTextArea: true});
+				this.setState({hideUrl: true});
+				this.setState({hideSecurities: true});
+				this.setState({hideFields: true});
+				this.setState({hideStartDate: true});
+				this.setState({hideEndDate: true});
+				this.setState({hidePeriod: true});
+				this.setState({hideSubmit: true});
+				this.setState({hideClear: true});
+
+				return;
+			}
+		});
 	},
+
 	handleCheckBox: function() {
-		this.refs.securities.getDOMNode().value = "";
-		this.refs.fields.getDOMNode().value = "";
-		this.refs.startDate.getDOMNode().value = "";
-		this.refs.endDate.getDOMNode().value = "";
-		this.refs.period.getDOMNode().value = "";
-
-		this.setState({hideSecurities: true});
-		this.setState({hideFields: true});
-		this.setState({hideStartDate: true});
-		this.setState({hideEndDate: true});
-		this.setState({hidePeriod: true});
-
 		if (checkBox.checked){
 			this.setState({formFormat: "urlBody"});
-			this.setState({hideService: true});
+
 			this.setState({hideRequestType:true});
+			this.setState({hideSecurities: true});
+			this.setState({hideFields: true});
+			this.setState({hideStartDate: true});
+			this.setState({hideEndDate: true});
+			this.setState({hidePeriod: true});
+			this.setState({hideUrl: true});
+			this.setState({hideTextArea: true});
+			this.setState({hideSubmit: true});
+			this.setState({hideClear: true});
+			this.setState({hideService: true});
 
 			this.setState({hideUrl: false});
 			this.setState({hideTextArea: false});
 			this.setState({hideSubmit: false});
 			this.setState({hideClear: false});
-			if(this.state.servTypeChoice || this.state.reqTypeChoice){
-				this.refs.url.getDOMNode().value = 'http://localhost:3000/request?ns=blp&service=' + this.state.servTypeChoice + '&type=' + this.state.reqTypeChoice;
-			}else{
-				this.refs.url.getDOMNode().value = "";
+
+			if(this.state.serviceChoice && this.state.requestTypeChoice){
+				this.refs.url.getDOMNode().value = 'http://localhost:3000/request?ns=blp&service=' + this.state.serviceChoice + '&type=' + this.state.requestTypeChoice;
+			}else {
+				this.refs.url.getDOMNode().value = null;
 			}
-		} else {
-			this.setState({formFormat: "servTypeBody"});
+		} else{
+			// null service
+			if(!this.refs.url.getDOMNode().value){
+				this.refs.service.getDOMNode().value = null;
+				this.refs.requestType.getDOMNode().value = null;
 
-			this.setState({hideUrl: true});
-
-			this.setState({hideService: false});
-			this.setState({hideRequestType: false});
-			this.setState({hideTextArea: false});
-			this.setState({hideSubmit: false});
-			this.setState({hideClear: false});
-
-			if (this.refs.url.getDOMNode().value && this.refs.url.getDOMNode().value.indexOf("http://localhost:3000/") != -1){
-				var url = this.refs.url.getDOMNode().value;
-				var typeIndex = url.indexOf("type=") + 5;
-				this.refs.type.getDOMNode().value = url.substring(typeIndex);
-
-				var serviceIndex = url.indexOf("service=") + 8;
-				this.refs.service.getDOMNode().value = url.substring(serviceIndex, typeIndex - 6);
+				this.setState({serviceChoice: this.refs.service.getDOMNode().value});
+				this.setState({requestTypeChoice: this.refs.requestType.getDOMNode().value});
 
 				this.handleServiceChoice();
-				this.handleRequestChoice();
-			}else if (!this.refs.url.getDOMNode().value){
-				this.refs.service.getDOMNode().value = "";
-				this.refs.type.getDOMNode().value = "";
+				this.handleRequestTypeChoice();
+			//recognized service:
+			}else if(this.state.serviceChoice === "refdata" || this.state.serviceChoice === "apiflds" 
+					|| this.state.serviceChoice === "tasvc"|| this.state.serviceChoice === "instruments"){
+				this.refs.service.getDOMNode().value = this.state.serviceChoice;
+				this.refs.requestType.getDOMNode().value = this.state.requestTypeChoice;
 
 				this.handleServiceChoice();
-				this.handleRequestChoice();
+				this.handleRequestTypeChoice();
 			}
-			else {
-				this.refs.service.getDOMNode().value = this.state.servTypeChoice;
-				this.refs.type.getDOMNode().value = this.state.reqTypeChoice;
+			//unrecognized service
+			else{
+				this.setState({formFormat: "servTypeBody"});
+
+				this.setState({hideUrl: true});
+
+				this.setState({hideService: false});
+				this.setState({hideRequestType: false});
+				this.setState({hideTextArea: false});
+				this.setState({hideSubmit: false});
+				this.setState({hideClear: false});
+
+				//known URL
+				if (this.refs.url.getDOMNode().value.indexOf("http://localhost:3000/") != -1){
+					var url = this.refs.url.getDOMNode().value;
+					var typeIndex = url.indexOf("type=") + 5;
+					this.refs.requestType.getDOMNode().value = url.substring(typeIndex);
+
+					var serviceIndex = url.indexOf("service=") + 8;
+					this.refs.service.getDOMNode().value = url.substring(serviceIndex, typeIndex - 6);
+
+					this.setState({serviceChoice: this.refs.service.getDOMNode().value});
+					this.setState({requestTypeChoice: this.refs.requestType.getDOMNode().value});
+				}
+				//unknown URL
+				else {
+					this.handleServiceChoice();
+					this.handleRequestTypeChoice();
+				}				
 			}
-
-
 		}
-		
 		return;
 	},
+
 	handleClear: function(){
 		checkBox.checked = false;
 
@@ -23277,20 +23314,20 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		this.setState({hideSubmit: true});
 		this.setState({hideClear: true});
 
-		this.refs.service.getDOMNode().value = "";
-		this.refs.type.getDOMNode().value = "";
-		this.refs.securities.getDOMNode().value = "";
-		this.refs.fields.getDOMNode().value = "";
-		this.refs.startDate.getDOMNode().value = "";
-		this.refs.endDate.getDOMNode().value = "";
-		this.refs.period.getDOMNode().value = "";
-		this.refs.url.getDOMNode().value = "";
-		this.refs.textArea.getDOMNode().value = "";
+		this.refs.service.getDOMNode().value = null;
+		this.refs.requestType.getDOMNode().value = null;
+		this.refs.securities.getDOMNode().value = null;
+		this.refs.fields.getDOMNode().value = null;
+		this.refs.startDate.getDOMNode().value = null;
+		this.refs.endDate.getDOMNode().value = null;
+		this.refs.period.getDOMNode().value = null;
+		this.refs.url.getDOMNode().value = null;
+		this.refs.textArea.getDOMNode().value = null;
 
-		this.setState({servTypeChoice: ""});
-		this.setState({reqTypeChoice: ""});
+		this.setState({serviceChoice: null});
+		this.setState({requestTypeChoice: null});
 
-		this.setState({formFormat: ""});
+		this.setState({formFormat: null});
 	},
 
 	render: function() {
@@ -23316,7 +23353,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		}
 
 		datalists.push(
-			React.createElement("datalist", {id: "services", key: ""}, 
+			React.createElement("datalist", {id: "services", key: "services"}, 
 				services
 			)	);
 
@@ -23341,8 +23378,8 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					React.createElement("input", {type: "text", list: "services", placeholder: "service", ref: "service", 
 					id: "formbox", hidden: this.state.hideService, onInput: this.handleServiceChoice}), 
 
-					React.createElement("input", {type: "text", list: this.state.servTypeChoice, placeholder: "request type", ref: "type", 
-					id: "formbox", hidden: this.state.hideRequestType, onInput: this.handleRequestChoice}), 
+					React.createElement("input", {type: "text", list: this.state.serviceChoice, placeholder: "request type", ref: "requestType", 
+					id: "formbox", hidden: this.state.hideRequestType, onInput: this.handleRequestTypeChoice}), 
 
 
 					React.createElement("input", {type: "text", placeholder: "securities", ref: "securities", id: "formbox", hidden: this.state.hideSecurities}), 
@@ -23356,7 +23393,7 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					React.createElement("input", {type: "text", placeholder: "periodicity", ref: "period", id: "formbox", hidden: this.state.hidePeriod}), 
 				
 					React.createElement("textarea", {rows: "4", cols: "50", placeholder: "Enter post body here.", ref: "textArea", 
-						hidden: this.state.hideTextArea, onInput: this.handleTextArea}), 
+						hidden: this.state.hideTextArea}), 
 
 					React.createElement("br", null), 
 
@@ -23368,11 +23405,12 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 			)
 		);
 	},
+	
 	_onSubmit: function(e){
 		e.preventDefault();
 
 		var service = this.refs.service.getDOMNode().value.trim();
-		var type = this.refs.type.getDOMNode().value.trim();
+		var requestType = this.refs.requestType.getDOMNode().value.trim();
 		var securities = this.refs.securities.getDOMNode().value.trim();
 		var fields = this.refs.fields.getDOMNode().value.trim();
 		var startDate = this.refs.startDate.getDOMNode().value.trim();
@@ -23384,15 +23422,19 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 		var cleanFields = [];
 
 		if (this.state.formFormat === "refData") {
-			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + requestType;
 			if(!service){
-				AppActions.handleError(["Missing service.", "undefined"]);
-			}else if (!type){
-				AppActions.handleError(["Missing request type.", "undefined"]);
+				AppActions.handleError({
+					type: "Missing service."});
+			}else if (!requestType){
+				AppActions.handleError({
+					type: "Missing request type."});
 			}else if (!securities){
-				AppActions.handleError(["Missing securities.", url]);
+				AppActions.handleError({
+					type: "Missing securities."});
 			}else if (!fields){
-				AppActions.handleError(["Missing fields.", url]);
+				AppActions.handleError({
+					type: "Missing fields."});
 			}else {
 				securities = securities.split(",");
 				fields = fields.split(",");
@@ -23405,31 +23447,46 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 					fld = fld.trim();
 					cleanFields.push(fld);
 				})
-				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields}, url, service, type]);
-
-				this.refs.startDate.getDOMNode().value = "";
-				this.refs.endDate.getDOMNode().value = "";
-				this.refs.period.getDOMNode().value = "";
-				this.refs.url.getDOMNode().value = "";
-				this.refs.textArea.getDOMNode().value = "";
+				AppActions.submitQuery({
+					postBody: {
+						securities: cleanSecurities, 
+						fields: cleanFields
+					}, 
+					url: url, 
+					service: service, 
+					requestType: requestType
+					}
+				);
+				this.refs.startDate.getDOMNode().value = null;
+				this.refs.endDate.getDOMNode().value = null;
+				this.refs.period.getDOMNode().value = null;
+				this.refs.url.getDOMNode().value = null;
+				this.refs.textArea.getDOMNode().value = null;
 			}
 		}
 		else if (this.state.formFormat === "hisData"){
-			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+			var url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + requestType;
 			if(!service){
-				AppActions.handleError(["Missing service.", "undefined"]);
-			}else if (!type){
-				AppActions.handleError(["Missing request type.", "undefined"]);
+				AppActions.handleError({
+					type: "Missing service."});
+			}else if (!requestType){
+				AppActions.handleError({
+					type: "Missing request type."});
 			}else if (!securities){
-				AppActions.handleError(["Missing securities.", url]);
+				AppActions.handleError({
+					type: "Missing securities."});
 			}else if (!fields){
-				AppActions.handleError(["Missing fields.", url]);
+				AppActions.handleError({
+					type: "Missing fields."});
 			}else if (!startDate){
-				AppActions.handleError(["Missing start date.", url]);
+				AppActions.handleError({
+					type: "Missing start date."});
 			}else if (!endDate){
-				AppActions.handleError(["Missing end date.", url]);
+				AppActions.handleError({
+					type: "Missing end date."});
 			}else if (!period){
-				AppActions.handleError(["Missing period.", url]);
+				AppActions.handleError({
+					type: "Missing periodicity."});
 			}
 			else {
 				securities = securities.split(",");
@@ -23446,78 +23503,107 @@ var QueryForm = React.createClass({displayName: "QueryForm",
 
 				period = period.toUpperCase();
 
-				AppActions.submitQuery([{securities: cleanSecurities, fields: cleanFields, 
-					startDate: startDate, endDate: endDate, "periodicitySelection": period}, url, service, type]);
-
-				this.refs.url.getDOMNode().value = "";
-				this.refs.textArea.getDOMNode().value = "";				
+				AppActions.submitQuery({
+					postBody: {
+						securities: cleanSecurities, 
+						fields: cleanFields, 
+						startDate: startDate, 
+						endDate: endDate, 
+						periodicitySelection: period}, 
+					url: url, 
+					service: service, 
+					requestType: requestType
+					}
+				);
+				this.refs.url.getDOMNode().value = null;
+				this.refs.textArea.getDOMNode().value = null;				
 			}
 		}
 		else if (this.state.formFormat === "servTypeBody"){
-			var url = "";
+			var url = null;
 			if(!service){
-				AppActions.handleError(["Missing service.", "undefined"]);
-			}else if (!type){
-				AppActions.handleError(["Missing request type.", "undefined"]);
+				AppActions.handleError({
+					type: "Missing service."});
+			}else if (!requestType){
+				AppActions.handleError({
+					type: "Missing request type."});
 			}else{
-				url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + type;
+				url = 'http://localhost:3000/request?ns=blp' + '&service=' + service + '&type=' + requestType;
 				if (!textArea){
-					AppActions.handleError(["Missing POST body.", url]);
+				AppActions.handleError({
+					type: "Missing POST body."});
 				}else {
 					try {
 						JSON.parse(textArea);
 					} catch (e) {
-						AppActions.handleError(["This is not a valid JSON string.", url]);
+						AppActions.handleError({
+							type: "This is not a valid JSON string."});
 					}
 					textArea = JSON.parse(textArea);
 
-					AppActions.submitQuery([textArea, url, service, type]);
+					AppActions.submitQuery({
+						postBody: textArea, 
+						url: url, 
+						service: service, 
+						requestType: requestType
+						}
+					);
 
-					this.refs.securities.getDOMNode().value = "";
-					this.refs.fields.getDOMNode().value = "";
-					this.refs.startDate.getDOMNode().value = "";
-					this.refs.endDate.getDOMNode().value = "";
-					this.refs.period.getDOMNode().value = "";
-					this.refs.url.getDOMNode().value = "";
+					this.refs.securities.getDOMNode().value = null;
+					this.refs.fields.getDOMNode().value = null;
+					this.refs.startDate.getDOMNode().value = null;
+					this.refs.endDate.getDOMNode().value = null;
+					this.refs.period.getDOMNode().value = null;
+					this.refs.url.getDOMNode().value = null;
 				}
 			}
 		}
 		else if (this.state.formFormat === "urlBody"){
-			var url = "";
+			var url = null;
 			if (this.refs.url.getDOMNode().value.trim()){
 				url = this.refs.url.getDOMNode().value.trim();
 				if (!textArea){
-					AppActions.handleError(["Missing POST body.", url]);
+					AppActions.handleError({
+						type: "Missing POST body."});
 				}else {
 					try {
 						JSON.parse(textArea);
 					} catch (e) {
-						AppActions.handleError(["This is not a valid JSON string.", url]);
+						AppActions.handleError({
+							type: "This is not a valid JSON string."});
 					}
 					textArea = JSON.parse(textArea);
 					var typeIndex = url.indexOf("type=") + 5;
-					type = url.substring(typeIndex);
+					requestType = url.substring(typeIndex);
 
 					var serviceIndex = url.indexOf("service=") + 8;
 					service = url.substring(serviceIndex, typeIndex - 6);
 
-					AppActions.submitQuery([textArea, url, service, type]);	
+					AppActions.submitQuery({
+						postBody: textArea, 
+						url: url, 
+						service: service, 
+						requestType: requestType
+						}
+					);	
 
-					this.refs.service.getDOMNode().value = "";
-					this.refs.type.getDOMNode().value = "";
-					this.refs.securities.getDOMNode().value = "";
-					this.refs.fields.getDOMNode().value = "";
-					this.refs.startDate.getDOMNode().value = "";
-					this.refs.endDate.getDOMNode().value = "";
-					this.refs.period.getDOMNode().value = "";				
+					this.refs.service.getDOMNode().value = null;
+					this.refs.requestType.getDOMNode().value = null;
+					this.refs.securities.getDOMNode().value = null;
+					this.refs.fields.getDOMNode().value = null;
+					this.refs.startDate.getDOMNode().value = null;
+					this.refs.endDate.getDOMNode().value = null;
+					this.refs.period.getDOMNode().value = null;				
 				}
 			}else 
 			{
-				AppActions.handleError(["Missing URL.", "undefined"]);
+				AppActions.handleError({
+					type: "Missing URL."});
 			}
 		}
 		else {
-			AppActions.handleError(["Undefined form format.", "undefined"]);
+			AppActions.handleError({
+				type: "Please fill out form completely."});
 		}
 	}
 });
@@ -23528,20 +23614,19 @@ var React = require('react');
 
 var RawResponse = React.createClass({displayName: "RawResponse",
 	render: function(){
-		var title = "";
-		var data = "";
-		var formatted = this.props.formatted;
+		var title;
+		var response;
 		
-		if (this.props.data)
-		{
+		if (this.props.response){
 				title = "Raw Response";
-				data = JSON.stringify(this.props.data).replace(/(.{63})/g, "$1\n")
+				response = JSON.stringify(this.props.response).replace(/(.{63})/g, "$1\n")
 		}
+		
 		return(
 			React.createElement("div", {className: "RawResponse", id: "RawResponse"}, 
-				React.createElement("h2", {id: "dataTitle"}, title), 
+				React.createElement("h2", {id: "responseTitle"}, title), 
 				React.createElement("div", {id: "responseBodyInfo"}, 
-					React.createElement("pre", null, data)
+					React.createElement("pre", null, response)
 				)
 			)
 		);
@@ -23556,20 +23641,19 @@ var Chart = require('./Chart.react');
 
 var ResponseData = React.createClass({displayName: "ResponseData",
 	render: function(){
-		var data = this.props.data;
-		var type = this.props.type;
+		var response = this.props.response;
+		var requestType = this.props.requestType;
 		var dataTitle;
-		var responseType;
-		var matchedData = [];
+		var visualType;
+		var organizedData = [];
 		var dateList = [];
-		var secAmt = 0;
+		var securityCount = 0;
 
-		if(data) {
-			dataTitle = React.createElement("h2", {id: "dataTitle"}, "Response Data");
-
-			if (type === 'HistoricalDataRequest') {
+		if(response) {
+			dataTitle = React.createElement("h2", {id: "responseTitle"}, "Response Data");
+			if (requestType === 'HistoricalDataRequest') {
 				var responseNodes;
-				var secData = data.data;
+				var secData = response.data;
 				var info = [];
 				var chartData = [];
 				var keyList = [];
@@ -23608,48 +23692,48 @@ var ResponseData = React.createClass({displayName: "ResponseData",
 						if(result.hasOwnProperty(key) && key != "date") {
 							for (var keyName in keyList){
 								if (key === keyList[keyName] && result[key].length != 0){
-									if (!matchedData[key])
+									if (!organizedData[key])
 									{
-										matchedData[key] = [];
-										matchedData[key].push([secName, result[key]]);
+										organizedData[key] = [];
+										organizedData[key].push([secName, result[key]]);
 									}else 
 									{
-										matchedData[key].push([])
-										matchedData[key].push([secName, result[key]]);
+										organizedData[key].push([])
+										organizedData[key].push([secName, result[key]]);
 									}
 								}
 							}
 						}
 					}
-					secAmt++;
+					securityCount++;
 				});
 
-				dateList = dateList.slice(0,(dateList.length)/secAmt);
+				dateList = dateList.slice(0,(dateList.length)/securityCount);
 
-				for(var array in matchedData) {
-					for (var data in matchedData[array]) {
-						if (matchedData[array][data].length == 0) {
-							matchedData[array].splice(data, 1);
+				for(var array in organizedData) {
+					for (var data in organizedData[array]) {
+						if (organizedData[array][data].length == 0) {
+							organizedData[array].splice(data, 1);
 						}
 					}
 				}
 
-				for (var array in matchedData)
+				for (var array in organizedData)
 				{
 					chartData.push(React.createElement("h3", {key: array.trim() + 1}, array.trim().toUpperCase()));
-					chartData.push(React.createElement(Chart, {data: matchedData[array], dateList: dateList, dataName: array.trim(), key: array.trim() + 2}))
+					chartData.push(React.createElement(Chart, {data: organizedData[array], dateList: dateList, dataName: array.trim(), key: array.trim() + 2}))
 				}
 
-				responseType = chartData;
+				visualType = chartData;
 			} else {
-				responseType = React.createElement(Text, {data: data})
+				visualType = React.createElement(Text, {response: response})
 			}
 		}
 		
 		return(
 			React.createElement("p", {className: "data", id: "responseData"}, 
 				dataTitle, 
-				responseType
+				visualType
 			)
 		);
 	}
@@ -23672,12 +23756,18 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 			selection: "responseData"
 		};
 	},
-	componentWillReceiveProps: function(){
+
+	componentWillReceiveProps: function(nextProps){
 		this.setState({postDisplay: {display:'none'}});
 		this.setState({rawResponseDisplay: {display:'none'}});
 		this.setState({prettyResponseDisplay: {display:'none'}});
-		this.setState({selection: "responseData"});
+		this.setState({selection: "responseData"}, function(){
+			$("#responseData")
+				.css('opacity', 0)
+				.fadeTo(400, 1);	
+		});
 	},
+
 	togglePostBody: function(){
 		if(this.state.selection != "postBody")
 		{
@@ -23692,6 +23782,7 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 			this.setState({selection:"postBody"});
 		}
 	},
+
 	toggleRawResponse: function(){
 		if(this.state.selection != "rawResponse")
 		{	
@@ -23706,6 +23797,7 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 			this.setState({selection:"rawResponse"});
 		}
 	},
+
 	togglePrettyResponse: function(){
 		if(this.state.selection != "prettyResponse")
 		{
@@ -23720,6 +23812,7 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 			this.setState({selection:"prettyResponse"});
 		}
 	},
+
 	toggleResponseData: function(){
 		if(this.state.selection != "responseData")
 		{
@@ -23734,15 +23827,30 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 			this.setState({selection:"responseData"});
 		}
 	},
+
 	render: function(){
-		var data = this.props.data[0];
-		var request = this.props.data[1];
-		var type = this.props.data[2];
-		var error = this.props.data[3];
-		var url = this.props.data[4];
+		var event = this.props.data.event;
+		var response;
+		var postBody;
+		var requestType;
+		var error;
+		var url;
 		var node = [];
 
-		if (error || !data) {
+		if(event){
+			response = event.response;
+			postBody = event.postBody;
+			requestType = event.requestType;
+			error = event.error;
+			url = event.url;			
+		}else {
+			response = this.props.data.response;
+			postBody = this.props.data.postBody;
+			requestType = this.props.data.requestType;
+			error = this.props.data.error;
+			url = this.props.data.url;
+		}
+		if (error || !response ) {
 			node = [];
 		}else {
 			node.push(			
@@ -23753,13 +23861,14 @@ var ResponseList = React.createClass({displayName: "ResponseList",
 						React.createElement("a", {id: "redButton", onClick: this.togglePrettyResponse}, "Pretty Response"), 
 						React.createElement("a", {id: "redButton", onClick: this.toggleResponseData}, "Response Data")
 					), 
-					React.createElement("div", {id: "postBody", style: this.state.postDisplay}, React.createElement(PostBody, {request: request, url: url})), 
-					React.createElement("div", {id: "rawResponse", style: this.state.rawResponseDisplay}, React.createElement(RawResponse, {data: data})), 
-					React.createElement("div", {id: "prettyResponse", style: this.state.prettyResponseDisplay}, React.createElement(PrettyResponse, {data: data})), 
-					React.createElement("div", {id: "responseData"}, React.createElement(ResponseData, {data: data, type: type}))
+					React.createElement("div", {id: "postBody", style: this.state.postDisplay}, React.createElement(PostBody, {postBody: postBody, url: url})), 
+					React.createElement("div", {id: "rawResponse", style: this.state.rawResponseDisplay}, React.createElement(RawResponse, {response: response})), 
+					React.createElement("div", {id: "prettyResponse", style: this.state.prettyResponseDisplay}, React.createElement(PrettyResponse, {response: response})), 
+					React.createElement("div", {id: "responseData"}, React.createElement(ResponseData, {response: response, requestType: requestType}))
 				)
 			);
 		}
+		
 		return (
 			React.createElement("div", null, node)
 		)
@@ -23772,22 +23881,20 @@ var React = require('react');
 
 var Text = React.createClass({displayName: "Text",
 	render: function(){
-		var data = this.props.data;
+		var response = this.props.response;
 		var responseNodes;
 
-		if(data) {
-			var secData = data.data[0].securityData;
+		if(response) {
+			var secData = response.data[0].securityData;
 			responseNodes = secData.map(function (sec) {
 				var info = [];
 				info.push(React.createElement("h3", {id: "security", key: sec.security}, " ", "SECURITY: " + sec.security.toUpperCase(), " "));
 				
 				for (var j in sec.fieldData){
 					var value = j;
-
 					if (value.indexOf("_") != -1){
 						value = value.replace(/_/g, " ");
 					}
-					
 					info.push(React.createElement("h4", {id: "fieldData", key: value.trim()}, " ", value.trim().toUpperCase() + ": " + sec.fieldData[j], " "))
 				}
 
@@ -23821,10 +23928,10 @@ var assign = require('object-assign');
 
 var AppDispatcher = assign(new Dispatcher(), {
 	handleViewAction: function(action) {
-	this.dispatch({
-		source: 'VIEW_ACTION',
-		action: action
-	});
+		this.dispatch({
+			source: 'VIEW_ACTION',
+			action: action
+		});
 	}
 });
 
@@ -23848,71 +23955,97 @@ var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
 
-var _response = "";
-var _postBody = "";
-var _requestType = "";
-var _error = "";
-var _url = "";
+var _response;
+var _postBody;
+var _requestType;
+var _error;
+var _url;
 var _history = [];
-var _event = [{}];
+var _event;
 
 function submitQuery(request) {
-	var query = request[0];
-	var url = request[1];
-	var service = request[2];
-	var type = request[3];
+	var postBody = request.postBody;
+	var url = request.url;
+	var service = request.service;
+	var requestType = request.requestType;
 
 	$.ajax({
-	url: url,
-	type: 'POST', 
-	data: JSON.stringify(query),
-	success: function(response) {
-		_postBody = query;
-		_response = response;   
-		_error = "";
-		_url = url;
-		_requestType = type;
-		_event = [{}];
-		updateHistory(request, response);
-	},
-	error: function(xhr, status, err) {
-		_postBody = "";
-		_response = "";
-		_error = [err + ". (Status Code: " + xhr.status + ")", url];
-		_url = ""
-		_requestType = type;
-	}
+		url: url,
+		type: 'POST', 
+		data: JSON.stringify(postBody),
+		success: function(response) {
+			_postBody = postBody;
+			_response = response;   
+			_error = null;
+			_url = url;
+			_requestType = requestType;
+			_event = null;
+			updateHistory(request, response);
+		},
+		error: function(xhr, status, err) {
+			_postBody = null;
+			_response = null;
+			_error = {type: err + " (Status Code: " + xhr.status + ")"};
+			_url = null;
+			_requestType = requestType;
+			AppStore.emitChange();
+		}
 	})
 } 
 
-function handleError(data) {
-	var field = data[0];
-	var url = data[1];
+function handleError(error) {
+	var type = error.type;
+	var url = error.url;
 
-	_postBody = "";
-	_response = "";
-	_error = [field, url];
+	_postBody = null;
+	_response = null;
+	_error = {type: type};
+	_event = null;
+	AppStore.emitChange();
 }
 
 function updateHistory(request, response) {
 	var date = new Date();
-	_history.unshift([request, date, response]);
+	_history.unshift({
+		request: request, 
+		date: date, 
+		response: response
+		}
+	);
 	AppStore.emitChange();
 }
 
 function revertToEvent(request, response) {
-	var query = request[0];
-	var url = request[1];
-	var service = request[2];
-	var type = request[3];
+	var postBody = request.postBody;
+	var url = request.url;
+	var service = request.service;
+	var requestType = request.requestType;
 	
-	_event = [request, response, query, type, "", url];
+	_event = {
+		request: request,
+		response: response, 
+		postBody: postBody,
+		requestType: requestType, 
+		error: null,
+		url: url,
+		service: service
+	};
+	_error = null;
+
 	AppStore.emitChange();
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_response, _postBody, _requestType, _error, _url, _history, _event];
+		return {
+			response: _response, 
+			postBody: _postBody,
+			requestType: _requestType, 
+			error: _error, 
+			url: _url, 
+			history: _history, 
+			event: _event
+		};
 	},
 
 	emitChange: function() {
@@ -23938,20 +24071,19 @@ AppDispatcher.register(function(payload){
 			break;
 
 		case AppConstants.HANDLE_ERROR:
-			var data = payload.action.item;
-			handleError(data);
+			var error = payload.action.item;
+			handleError(error);
 			break;
 
 		case AppConstants.REVERT_TO_EVENT:
-			var request = payload.action.item[0];
-			var response = payload.action.item[1];
+			var request = payload.action.item.request;
+			var response = payload.action.item.response;
 			revertToEvent(request, response);
 			break;
 
 		default:
 		return true;
 	}
-
 	return true;
 });
 
@@ -23964,7 +24096,7 @@ var assign = require('object-assign');
 var AppActions = require('../actions/AppActions');
 
 var CHANGE_EVENT = 'change';
-var _data = null;
+var _data;
 
 function getDatalist(){
 	$.ajax({
@@ -23975,7 +24107,8 @@ function getDatalist(){
 	        _data = data;
 	    }.bind(this),
 		error: function(xhr, status, err) {
-			AppActions.handleError(["Datalist not loaded. Please refresh the page.", "undefined"]);
+			AppActions.handleError({
+				type: "Datalist not loaded. Please refresh the page."});
 		}.bind(this),
 	    async: false
 	});
@@ -23994,7 +24127,7 @@ var DatalistStore = assign({}, EventEmitter.prototype, {
 	addChangeListener: function(callback) {
 		this.on(CHANGE_EVENT, callback);
 	},
-
+	
 	removeChangeListener: function(callback) {
 		this.removeListener(CHANGE_EVENT, callback);
 	}

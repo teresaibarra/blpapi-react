@@ -40,11 +40,12 @@ var DemoApp = React.createClass({
 				<h2>What would you like to look up?</h2>
 				<h5>Pro-Tip: Separate multiple parameters with commas.</h5>
 			<div>
-				<QueryForm event={this.state.appData[6][0]} list={this.state.listData} />
-				<ErrorMessage error={this.state.appData[3]} />
+				<QueryForm event={this.state.appData.event} list={this.state.listData} />
+				<ErrorMessage error={this.state.appData.error} />
 				<ResponseList data={this.state.appData} />
 			</div>
-			<div id="historySection"><History response={this.state.appData[5]}/> 
+			<div id="historySection">
+				<History history={this.state.appData.history}/> 
 			</div>
 		</div>
 		)
@@ -53,7 +54,6 @@ var DemoApp = React.createClass({
 	_onChange: function() {
 		this.setState(getAppState());
 	}
-
 });
 
 module.exports = DemoApp;

@@ -7,6 +7,7 @@ var History = React.createClass({
 			historyDisplay: {display:'none'}
 		};
 	},
+
 	toggleHistory: function() {
 		if(this.state.historyDisplay.display === 'none'){
 			this.setState({historyDisplay: {display:'block'}});
@@ -14,19 +15,22 @@ var History = React.createClass({
 			this.setState({historyDisplay: {display:'none'}});
 		}
 	},
+
 	render: function(){
-		var response = this.props.response;
+		var history = this.props.history;
 		var button;
 		var events = [];
-		if(response[0]){
+
+		if(history[0]){
 			button = <a id="blueButton" onClick={this.toggleHistory}>History</a>;
-			response.forEach(function (res, index){
-				events.push(<HistoryEvent response={res} key={res[1].toUTCString() + index} />)
-				if(index != response.length - 1){
+			history.forEach(function (event, index){
+				events.push(<HistoryEvent event={event} key={event.date.toUTCString() + index} />)
+				if(index != history.length - 1){
 					events.push(<hr key={index} />)
 				}
 			})			
 		}
+		
 		return(
 			<div>
 				{button}

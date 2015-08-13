@@ -6,18 +6,21 @@ var ErrorMessage = React.createClass({
 		var message = [];
 
 		if(error){
-			var type = error[0];
-			var url = error[1];
+			var type = error.type;
 			message.push(<h3 id="error" key={type} >ERROR! {type}</h3>);
+			$("#error")
+				.css('opacity', 0)
+				.fadeTo("fast", 1);	
 		}else {
 			message = [];
 		}
 
 		return(
-			<div>
+			<div id="error">
 				{message}
 			</div>
 		);
 	}
 });
+
 module.exports = ErrorMessage;

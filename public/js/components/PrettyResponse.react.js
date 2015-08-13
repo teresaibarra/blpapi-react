@@ -2,20 +2,20 @@ var React = require('react');
 
 var PrettyResponse = React.createClass({
 	render: function(){
-		var title = "";
-		var data = "";
-		var formatted = this.props.formatted;
+		var title;
+		var response;
 		
-		if (this.props.data)
+		if (this.props.response)
 		{
 				title = "Pretty Response";
-				data = JSON.stringify(this.props.data, null, 3);
+				response = JSON.stringify(this.props.response, null, 3);
 		}
+		
 		return(
 			<div className="prettyResponse" id="prettyResponse" >
-				<h2 id="dataTitle">{title}</h2>
+				<h2 id="responseTitle">{title}</h2>
 				<div id ="responseBodyInfo">
-					<pre>{data}</pre>
+					<pre>{response}</pre>
 				</div>
 			</div>
 		);

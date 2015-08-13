@@ -2,22 +2,20 @@ var React = require('react');
 
 var Text = React.createClass({
 	render: function(){
-		var data = this.props.data;
+		var response = this.props.response;
 		var responseNodes;
 
-		if(data) {
-			var secData = data.data[0].securityData;
+		if(response) {
+			var secData = response.data[0].securityData;
 			responseNodes = secData.map(function (sec) {
 				var info = [];
 				info.push(<h3 id="security" key={sec.security} > {"SECURITY: " + sec.security.toUpperCase()} </h3>);
 				
 				for (var j in sec.fieldData){
 					var value = j;
-
 					if (value.indexOf("_") != -1){
 						value = value.replace(/_/g, " ");
 					}
-					
 					info.push(<h4 id="fieldData" key={value.trim()}> {value.trim().toUpperCase() + ": " + sec.fieldData[j]} </h4>)
 				}
 

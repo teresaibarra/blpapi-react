@@ -5,7 +5,7 @@ var assign = require('object-assign');
 var AppActions = require('../actions/AppActions');
 
 var CHANGE_EVENT = 'change';
-var _data = null;
+var _data;
 
 function getDatalist(){
 	$.ajax({
@@ -16,7 +16,8 @@ function getDatalist(){
 	        _data = data;
 	    }.bind(this),
 		error: function(xhr, status, err) {
-			AppActions.handleError(["Datalist not loaded. Please refresh the page.", "undefined"]);
+			AppActions.handleError({
+				type: "Datalist not loaded. Please refresh the page."});
 		}.bind(this),
 	    async: false
 	});
@@ -35,7 +36,7 @@ var DatalistStore = assign({}, EventEmitter.prototype, {
 	addChangeListener: function(callback) {
 		this.on(CHANGE_EVENT, callback);
 	},
-
+	
 	removeChangeListener: function(callback) {
 		this.removeListener(CHANGE_EVENT, callback);
 	}

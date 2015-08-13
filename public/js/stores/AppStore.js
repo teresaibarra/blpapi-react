@@ -5,71 +5,97 @@ var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
 
-var _response = "";
-var _postBody = "";
-var _requestType = "";
-var _error = "";
-var _url = "";
+var _response;
+var _postBody;
+var _requestType;
+var _error;
+var _url;
 var _history = [];
-var _event = [{}];
+var _event;
 
 function submitQuery(request) {
-	var query = request[0];
-	var url = request[1];
-	var service = request[2];
-	var type = request[3];
+	var postBody = request.postBody;
+	var url = request.url;
+	var service = request.service;
+	var requestType = request.requestType;
 
 	$.ajax({
-	url: url,
-	type: 'POST', 
-	data: JSON.stringify(query),
-	success: function(response) {
-		_postBody = query;
-		_response = response;   
-		_error = "";
-		_url = url;
-		_requestType = type;
-		_event = [{}];
-		updateHistory(request, response);
-	},
-	error: function(xhr, status, err) {
-		_postBody = "";
-		_response = "";
-		_error = [err + ". (Status Code: " + xhr.status + ")", url];
-		_url = ""
-		_requestType = type;
-	}
+		url: url,
+		type: 'POST', 
+		data: JSON.stringify(postBody),
+		success: function(response) {
+			_postBody = postBody;
+			_response = response;   
+			_error = null;
+			_url = url;
+			_requestType = requestType;
+			_event = null;
+			updateHistory(request, response);
+		},
+		error: function(xhr, status, err) {
+			_postBody = null;
+			_response = null;
+			_error = {type: err + " (Status Code: " + xhr.status + ")"};
+			_url = null;
+			_requestType = requestType;
+			AppStore.emitChange();
+		}
 	})
 } 
 
-function handleError(data) {
-	var field = data[0];
-	var url = data[1];
+function handleError(error) {
+	var type = error.type;
+	var url = error.url;
 
-	_postBody = "";
-	_response = "";
-	_error = [field, url];
+	_postBody = null;
+	_response = null;
+	_error = {type: type};
+	_event = null;
+	AppStore.emitChange();
 }
 
 function updateHistory(request, response) {
 	var date = new Date();
-	_history.unshift([request, date, response]);
+	_history.unshift({
+		request: request, 
+		date: date, 
+		response: response
+		}
+	);
 	AppStore.emitChange();
 }
 
 function revertToEvent(request, response) {
-	var query = request[0];
-	var url = request[1];
-	var service = request[2];
-	var type = request[3];
+	var postBody = request.postBody;
+	var url = request.url;
+	var service = request.service;
+	var requestType = request.requestType;
 	
-	_event = [request, response, query, type, "", url];
+	_event = {
+		request: request,
+		response: response, 
+		postBody: postBody,
+		requestType: requestType, 
+		error: null,
+		url: url,
+		service: service
+	};
+	_error = null;
+
 	AppStore.emitChange();
 }
 
 var AppStore = assign({}, EventEmitter.prototype, {
 	getAll: function() {
-		return [_response, _postBody, _requestType, _error, _url, _history, _event];
+		return {
+			response: _response, 
+			postBody: _postBody,
+			requestType: _requestType, 
+			error: _error, 
+			url: _url, 
+			history: _history, 
+			event: _event
+		};
 	},
 
 	emitChange: function() {
@@ -95,20 +121,19 @@ AppDispatcher.register(function(payload){
 			break;
 
 		case AppConstants.HANDLE_ERROR:
-			var data = payload.action.item;
-			handleError(data);
+			var error = payload.action.item;
+			handleError(error);
 			break;
 
 		case AppConstants.REVERT_TO_EVENT:
-			var request = payload.action.item[0];
-			var response = payload.action.item[1];
+			var request = payload.action.item.request;
+			var response = payload.action.item.response;
 			revertToEvent(request, response);
 			break;
 
 		default:
 		return true;
 	}
-
 	return true;
 });
 

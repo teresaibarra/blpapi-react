@@ -4,20 +4,19 @@ var Chart = require('./Chart.react');
 
 var ResponseData = React.createClass({
 	render: function(){
-		var data = this.props.data;
-		var type = this.props.type;
+		var response = this.props.response;
+		var requestType = this.props.requestType;
 		var dataTitle;
-		var responseType;
-		var matchedData = [];
+		var visualType;
+		var organizedData = [];
 		var dateList = [];
-		var secAmt = 0;
+		var securityCount = 0;
 
-		if(data) {
-			dataTitle = <h2 id="dataTitle">Response Data</h2>;
-
-			if (type === 'HistoricalDataRequest') {
+		if(response) {
+			dataTitle = <h2 id="responseTitle">Response Data</h2>;
+			if (requestType === 'HistoricalDataRequest') {
 				var responseNodes;
-				var secData = data.data;
+				var secData = response.data;
 				var info = [];
 				var chartData = [];
 				var keyList = [];
@@ -56,48 +55,48 @@ var ResponseData = React.createClass({
 						if(result.hasOwnProperty(key) && key != "date") {
 							for (var keyName in keyList){
 								if (key === keyList[keyName] && result[key].length != 0){
-									if (!matchedData[key])
+									if (!organizedData[key])
 									{
-										matchedData[key] = [];
-										matchedData[key].push([secName, result[key]]);
+										organizedData[key] = [];
+										organizedData[key].push([secName, result[key]]);
 									}else 
 									{
-										matchedData[key].push([])
-										matchedData[key].push([secName, result[key]]);
+										organizedData[key].push([])
+										organizedData[key].push([secName, result[key]]);
 									}
 								}
 							}
 						}
 					}
-					secAmt++;
+					securityCount++;
 				});
 
-				dateList = dateList.slice(0,(dateList.length)/secAmt);
+				dateList = dateList.slice(0,(dateList.length)/securityCount);
 
-				for(var array in matchedData) {
-					for (var data in matchedData[array]) {
-						if (matchedData[array][data].length == 0) {
-							matchedData[array].splice(data, 1);
+				for(var array in organizedData) {
+					for (var data in organizedData[array]) {
+						if (organizedData[array][data].length == 0) {
+							organizedData[array].splice(data, 1);
 						}
 					}
 				}
 
-				for (var array in matchedData)
+				for (var array in organizedData)
 				{
 					chartData.push(<h3 key={array.trim() + 1}>{array.trim().toUpperCase()}</h3>);
-					chartData.push(<Chart data={matchedData[array]} dateList={dateList} dataName={array.trim()} key={array.trim() + 2} />)
+					chartData.push(<Chart data={organizedData[array]} dateList={dateList} dataName={array.trim()} key={array.trim() + 2} />)
 				}
 
-				responseType = chartData;
+				visualType = chartData;
 			} else {
-				responseType = <Text data={data} />
+				visualType = <Text response={response} />
 			}
 		}
 		
 		return(
 			<p className="data" id="responseData" >
 				{dataTitle}
-				{responseType}
+				{visualType}
 			</p>
 		);
 	}

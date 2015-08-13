@@ -1,13 +1,12 @@
 var React = require('react');
 var LineChart = require("react-chartjs").Line;
 	
-
 var Chart = React.createClass({
 	render: function(){
 		var data = this.props.data;
-		var dateList = this.props.dateList;
+		var numericDateList = this.props.dateList;
 		var dataName = this.props.dateName;
-		var formattedDateList = [];
+		var alphabetDateList = [];
 		var info = [];
 		var responseNodes;
 
@@ -30,8 +29,8 @@ var Chart = React.createClass({
 				});
 			}
 
-			for (date in dateList) {
-				var rawMonth = dateList[date].getMonth() + 1;
+			for (date in numericDateList) {
+				var rawMonth = numericDateList[date].getMonth() + 1;
 				var formattedMonth;
 
 				if (rawMonth == 1){
@@ -61,13 +60,13 @@ var Chart = React.createClass({
 				}else {
 					return;
 				}
-				var temp = formattedMonth + " " + dateList[date].getDate() + ",'" + dateList[date].getFullYear().toString().substring(2);
-				formattedDateList.push(temp);
+				var temp = formattedMonth + " " + numericDateList[date].getDate() + ",'" + numericDateList[date].getFullYear().toString().substring(2);
+				alphabetDateList.push(temp);
 			}
 		}
 
 		var chartData = {
-			labels: formattedDateList,
+			labels: alphabetDateList,
 		    datasets: info
 		}
 
