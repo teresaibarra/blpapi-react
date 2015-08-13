@@ -1,6 +1,6 @@
 ## blpapi-react
-A web application that demonstrates Bloomberg's API by sending HTTP requests and visualizing the returned data. <br>
-It uses the React, Flux, and Node.js.
+A web application that demonstrates [Bloomberg's API](http://www.bloomberglabs.com/api/) by sending HTTP requests and visualizing the returned data. <br>
+It uses React, Flux, and Node.js.
 
 ### Demonstration
 Running this requires a subscription to the Bloomberg Terminal. If you don't have one, you're not out of luck! <br>
