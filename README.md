@@ -6,7 +6,7 @@ It was built with React, Flux, and Node.js.
 Running this requires a subscription to the Bloomberg Terminal. If you don't have one, you're not out of luck! <br>
 Click the image below to check out the demo, cheesy tunes included.
 
-[![Click here for a demo and some rad tunes!](http://i.imgur.com/ZyRjuwA.png)](https://vimeo.com/136247382)
+[![Click here for a demo and some rad tunes!](http://i.imgur.com/ZyRjuwA.png)](https://youtu.be/1Znd8vi5oVc)
 
 ### Nifty Features
 * **Request History:** Click that history button, and get a list of all of the requests you've sent. The application caches *every* request you make, so you can check out how the data changes over time!
